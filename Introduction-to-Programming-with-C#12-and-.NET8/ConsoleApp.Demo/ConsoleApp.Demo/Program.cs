@@ -19,7 +19,7 @@ Console.Write("Please eneter your age: ");
 age = int.Parse(Console.ReadLine());
 
 Console.Write("Please eneter your salary: ");
-salary = decimal.Parse(Console.ReadLine());
+salary = decimal.Parse(Console.ReadLine()!);
 
 Console.Write("Please eneter your gender (M or F): ");
 gender = Convert.ToChar(Console.ReadLine());

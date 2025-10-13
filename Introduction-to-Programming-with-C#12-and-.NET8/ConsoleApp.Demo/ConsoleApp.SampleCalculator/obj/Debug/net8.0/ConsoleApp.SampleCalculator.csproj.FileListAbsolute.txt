@@ -1,0 +1,15 @@
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\bin\Debug\net8.0\ConsoleApp.SampleCalculator.exe
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\bin\Debug\net8.0\ConsoleApp.SampleCalculator.deps.json
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\bin\Debug\net8.0\ConsoleApp.SampleCalculator.runtimeconfig.json
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\bin\Debug\net8.0\ConsoleApp.SampleCalculator.dll
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\bin\Debug\net8.0\ConsoleApp.SampleCalculator.pdb
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.AssemblyInfoInputs.cache
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.AssemblyInfo.cs
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.csproj.CoreCompileInputs.cache
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.sourcelink.json
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.dll
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\refint\ConsoleApp.SampleCalculator.dll
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.pdb
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ConsoleApp.SampleCalculator.genruntimeconfig.cache
+C:\Users\ahorhocea\Documents\dotnet\Introduction-to-Programming-with-C#12-and-.NET8\ConsoleApp.Demo\ConsoleApp.SampleCalculator\obj\Debug\net8.0\ref\ConsoleApp.SampleCalculator.dll

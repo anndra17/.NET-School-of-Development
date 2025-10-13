@@ -1,0 +1,12 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "ConsoleApp.SampleCalculator\\ConsoleApp.SampleCalculator.csproj",
+        "Action": "Start",
+        "DebugTarget": "ConsoleApp.SampleCalculator"
+      }
+    ]
+  }
+]

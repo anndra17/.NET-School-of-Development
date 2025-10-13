@@ -11,3 +11,5 @@ ConsoleApp.Demo/obj
 *.suo
 *.userosscache
 *.sln.docstates
+bin/
+obj/

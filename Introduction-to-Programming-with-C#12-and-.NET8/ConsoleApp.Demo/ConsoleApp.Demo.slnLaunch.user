@@ -3,9 +3,9 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "ConsoleApp.ExceptionHandlingDemo\\ConsoleApp.ExceptionHandlingDemo.csproj",
+        "Path": "ConsoleApp.SampleCalculator\\ConsoleApp.SampleCalculator.csproj",
         "Action": "Start",
-        "DebugTarget": "ConsoleApp.ExceptionHandlingDemo"
+        "DebugTarget": "ConsoleApp.SampleCalculator"
       }
     ]
   }

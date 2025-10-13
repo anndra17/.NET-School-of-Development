@@ -1,12 +1,12 @@
 ﻿// Variable Declarations and Types
 
 string? firstName = string.Empty;
-string? lastName = string.Empty;
+string lastName = string.Empty;
 int age; // default 0
 int retirementAge = 65;
 decimal salary; // default 0.0m
-char gender; // default char.MinValue;
-bool working; // by default false
+char gender= char.MinValue; 
+bool working = true; // by default false
 
 // Prompt the user for imput
 Console.Write("Please eneter your first name: ");
@@ -19,7 +19,7 @@ Console.Write("Please eneter your age: ");
 age = int.Parse(Console.ReadLine());
 
 Console.Write("Please eneter your salary: ");
-salary = decimal.Parse(Console.ReadLine()!);
+salary = decimal.Parse(Console.ReadLine());
 
 Console.Write("Please eneter your gender (M or F): ");
 gender = Convert.ToChar(Console.ReadLine());

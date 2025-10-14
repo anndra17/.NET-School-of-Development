@@ -90,5 +90,14 @@ Console.WriteLine($"Your Dob is : {theDateOnly}");
 
 // TimeOnly
 var timeNow = TimeOnly.FromDateTime(now);
-Console.WriteLine($"It is ow {timeNow}");
-Console.WriteLine($"It is ow {timeNow:hh:mm tt}");
+Console.WriteLine($"It is now {timeNow}");
+Console.WriteLine($"It is now {timeNow:hh:mm tt}");
+
+// Date Comparisons
+var date1 = new DateTime(1985, 11, 23);
+var date2 = new DateTime(1965, 1, 20);
+
+Console.WriteLine($"Is '{nameof(date1)}' egual? {date1 == date2}");
+Console.WriteLine($"Is '{nameof(date1)}' egual? {date1.Equals(date2)}");
+Console.WriteLine($"Is '{nameof(date1)}' after? {date1 > date2}");
+Console.WriteLine($"Is '{nameof(date1)}' before? {date1 < date2}");

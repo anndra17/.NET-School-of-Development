@@ -94,5 +94,3 @@ chosen.ToString();
 Console.WriteLine($"{nameof(salary)} : {salary:C}"); // :C - currency format
 Console.WriteLine(nameof(salary) + ":" + value.ToString("C")); // "C" - currency format
 
-
-// String comparison

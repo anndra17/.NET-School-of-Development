@@ -57,9 +57,17 @@ if (!string.IsNullOrEmpty(s4))
     Console.WriteLine($"{nameof(s4)} has the length of {s4.Length}");
 }
 
-if(!string.IsNullOrEmpty(s5))
+
+if (!string.IsNullOrEmpty(s5))
 {
     Console.WriteLine($"{nameof(s5)} has the length of {s5.Length}");
+}
+
+// equivalent: s4 ??= "default value"; 
+// if s4 is null assign "default value"
+if (string.IsNullOrEmpty(s4))
+{
+    s4 = "default value";
 }
 
 

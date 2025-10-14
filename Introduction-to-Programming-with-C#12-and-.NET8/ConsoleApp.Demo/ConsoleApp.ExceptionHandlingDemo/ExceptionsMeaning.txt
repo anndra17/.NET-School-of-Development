@@ -1,0 +1,1 @@
+NullReferenceException - incerc sa accesez ceva ce este null sau nu a fost initializat inca

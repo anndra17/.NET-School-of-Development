@@ -3,9 +3,9 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "ConsoleApp.Demo\\ConsoleApp.Demo.csproj",
+        "Path": "ConsoleApp.SampleCalculator\\ConsoleApp.SampleCalculator.csproj",
         "Action": "Start",
-        "DebugTarget": "ConsoleApp.Demo"
+        "DebugTarget": "ConsoleApp.SampleCalculator"
       }
     ]
   }

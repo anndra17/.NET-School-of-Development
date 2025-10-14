@@ -3,9 +3,9 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "ConsoleApp.DateTimeManipulation\\ConsoleApp.DateTimeManipulation.csproj",
+        "Path": "ConsoleApp.Demo\\ConsoleApp.Demo.csproj",
         "Action": "Start",
-        "DebugTarget": "ConsoleApp.DateTimeManipulation"
+        "DebugTarget": "ConsoleApp.Demo"
       }
     ]
   }

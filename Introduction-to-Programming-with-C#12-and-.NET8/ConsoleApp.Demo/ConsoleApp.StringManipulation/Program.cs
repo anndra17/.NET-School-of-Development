@@ -24,7 +24,7 @@ string NEWPath = @"C\program files\programfolder";
 const string path = "C\\program files\\programfolder";
 
 // path = "new value"; ILLEGAL OPERATION AGAINST A CONSTANT
-s1 = "new string";
+// s1 = "new string";
 
 // Raw string literals
 string rawLiteral = """She said, "Hello, World!" """;
@@ -44,16 +44,55 @@ string newString2 = String.Format("Literal string {0} {1}", s1, s2); // start co
 
 /* String manipulation methods */
 
-// Substrings
-
 // Null or empty checks
 
+// - find the length of a string
+Console.WriteLine($"{nameof(s1)} has the length of {s1.Length}");
+Console.WriteLine($"{nameof(s2)} has the length of {s2.Length}");
+// Console.WriteLine($"{nameof(s4)} has the length of {s4.Length}"); // Will throw a null exception
+
+
+if (!string.IsNullOrEmpty(s4))
+{
+    Console.WriteLine($"{nameof(s4)} has the length of {s4.Length}");
+}
+
+if(!string.IsNullOrEmpty(s5))
+{
+    Console.WriteLine($"{nameof(s5)} has the length of {s5.Length}");
+}
+
+
+// Substrings
+string subString = s1.Substring(5); // from position 5 to the end, start counting from 0
+Console.WriteLine($"{nameof(subString)} : {subString}");
+subString = s1.Substring(5, 10); // startIndex=5, length=10 including startIndex
+Console.WriteLine($"{nameof(subString)} : {subString}");
+
 // Splitting strings
+var stringToSplit = s2.Split(' ');
+for (int i = 0;i < stringToSplit.Length; i++)
+{
+    Console.WriteLine($"Word {i}: {stringToSplit[i]}");
+}
 
 // Replace
+string replacements = s1.Replace('s', 'V');
+Console.WriteLine($"{nameof(replacements)} : {replacements}");
+
+string replacements1 = s1.Replace("string", "chicken");
+Console.WriteLine($"{nameof(replacements1)} : {replacements1}");
 
 // Convert to string
+string salary = 459797987.02.ToString();
+int value = 765675869;
+string stringValue = value.ToString();
+bool chosen = true;
+chosen.ToString();
 
 // Changing Formatting
+Console.WriteLine($"{nameof(salary)} : {salary:C}"); // :C - currency format
+Console.WriteLine(nameof(salary) + ":" + value.ToString("C")); // "C" - currency format
+
 
 // String comparison

@@ -3,9 +3,9 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "ConsoleApp.StringManipulation\\ConsoleApp.StringManipulation.csproj",
+        "Path": "ConsoleApp.Demo\\ConsoleApp.Demo.csproj",
         "Action": "Start",
-        "DebugTarget": "ConsoleApp.StringManipulation"
+        "DebugTarget": "ConsoleApp.Demo"
       }
     ]
   }

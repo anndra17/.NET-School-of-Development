@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MiniBankConsole.Models.Interfaces
 {
-    internal interface IStatement
+    public interface IStatement
     {
+        void PrintStatement();
     }
 }

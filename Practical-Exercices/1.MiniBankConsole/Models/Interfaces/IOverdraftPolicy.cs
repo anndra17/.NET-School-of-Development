@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace MiniBankConsole.Models.Interfaces
 {
-    internal interface IOverdraftPolicy
+    public interface IOverdraftPolicy
     {
+        decimal OverdraftLimit { get; }
+        bool CanWithdraw(decimal amount);
     }
 }

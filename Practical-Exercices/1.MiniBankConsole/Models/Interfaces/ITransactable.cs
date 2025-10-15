@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace MiniBankConsole.Models.Interfaces
 {
-    internal interface ITransactable
+    public interface ITransactable
     {
+        bool Deposit(decimal amount);
+        bool Withdraw(decimal amount);
     }
 }

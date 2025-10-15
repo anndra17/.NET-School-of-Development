@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MiniBankConsole.Models.Interfaces
 {
-    internal interface IInterestBearing
+    public interface IInterestBearing
     {
+        void ApplyMonthlyInterest();
     }
 }

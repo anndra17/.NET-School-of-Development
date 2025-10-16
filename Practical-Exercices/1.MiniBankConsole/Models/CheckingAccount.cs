@@ -18,40 +18,27 @@ namespace MiniBankConsole.Models
 
 
         // Methods
-        public override bool Deposit(decimal amount)
-        { 
-            if (amount > 0)
-            {
-                Console.WriteLine($"Congratulations! You've just deposited {amount.ToString("C")}.");
-                this.Balance += amount;
-                return true;
-            }
-            Console.WriteLine("Error: You've entered an invalid deposit amount.");
-            return false;
-        }
-
-        public override bool Withdraw(decimal amount, out string? error)
+        protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
             error = null;
-            if (amount > 0)
+            if (amount <=0)
             {
-                if (CanWithdraw(amount))
-                {
-                    this.Balance -= amount;
-                    Console.WriteLine($"Congratulations! You've just withdraw {amount.ToString("C")} successfully.");
-                    return true;
-                }
-                else
-                {
-                    error = "You've exceeded your overdraft limit.";
-                    return false;
-                }
+                error = "You've entered an invalid withdrawal amount.";
+                return false;
             }
-            error = "You've entered an invalid withdrawal amount.";
-            return false;
+
+            // Check if the withdrawal would exceed the overdraft limit
+            decimal newBalance = this.Balance - amount;
+            if (newBalance < _overdraftLimit)
+            {
+                error = "You've exceeded your overdraft limit.";
+                return false;
+            }
+            Console.WriteLine($"Congratulations! You've just withdraw {amount.ToString("C")} successfully.");
+            return true;
         }
 
-        public override void ViewDetails()
+        protected override void ViewDetails()
         {
             Console.WriteLine($"Account ID: {Id}");
             Console.WriteLine($"Account Owner: {Owner}");
@@ -62,13 +49,6 @@ namespace MiniBankConsole.Models
         {
             get { return _overdraftLimit; }
         }
-
-        public bool CanWithdraw(decimal amount)
-        {
-            decimal newBalance = this.Balance - amount;
-            return newBalance >= _overdraftLimit;
-        }
-
         public void PrintStatement()
         {
            

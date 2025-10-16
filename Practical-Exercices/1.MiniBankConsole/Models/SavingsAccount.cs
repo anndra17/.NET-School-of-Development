@@ -17,19 +17,7 @@ namespace MiniBankConsole.Models
             : base(owner, openingBalance) {  }
 
         // Methods
-        public override bool Deposit(decimal amount)
-        {
-            if (amount > 0)
-            {
-                Balance += amount;
-                Console.WriteLine($"Congratulations! You've just deposited {amount.ToString("C")} into your savings account.");
-                return true;
-            }
-            Console.WriteLine("Error: You've entered an invalid deposit amount.");
-            return false;
-        }
-
-        public override bool Withdraw(decimal amount, out string? error)
+        protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
             error = null;
             if (amount <= 0)
@@ -42,12 +30,10 @@ namespace MiniBankConsole.Models
                 error = $"Insufficient funds. Your current balance is {Balance.ToString("C")}.";
                 return false;
             }
-            Balance -= amount;
             Console.WriteLine($"Congratulations! You've just withdrawn {amount.ToString("C")} from your savings account.");
             return true;
         }
-
-        public override void ViewDetails()
+        protected override void ViewDetails()
         {
             Console.WriteLine($"Account ID: {Id}");
             Console.WriteLine($"Account Owner: {Owner}");

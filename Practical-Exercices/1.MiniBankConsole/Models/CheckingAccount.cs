@@ -38,20 +38,18 @@ namespace MiniBankConsole.Models
             return true;
         }
 
-        protected override void ViewDetails()
-        {
-            Console.WriteLine($"Account ID: {Id}");
-            Console.WriteLine($"Account Owner: {Owner}");
-            Console.WriteLine($"Account Balance: {Balance:C}");
-        }
         
         public decimal OverdraftLimit
         {
             get { return _overdraftLimit; }
         }
+
         public void PrintStatement()
         {
-           
+            foreach (var line in Log)
+            {
+                Console.WriteLine(line);
+            }
         }
     }
 }

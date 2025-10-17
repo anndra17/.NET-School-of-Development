@@ -33,13 +33,6 @@ namespace MiniBankConsole.Models
             Console.WriteLine($"Congratulations! You've just withdrawn {amount.ToString("C")} from your savings account.");
             return true;
         }
-        protected override void ViewDetails()
-        {
-            Console.WriteLine($"Account ID: {Id}");
-            Console.WriteLine($"Account Owner: {Owner}");
-            Console.WriteLine($"Account Balance: {Balance:C}");
-        }
-
         public void ApplyMonthlyInterest()
         {
             if (Balance > 0)
@@ -52,7 +45,10 @@ namespace MiniBankConsole.Models
 
         public void PrintStatement()
         {
-
+            foreach (var line in Log)
+            {
+                Console.WriteLine(line);
+            }
         }
     }
 }

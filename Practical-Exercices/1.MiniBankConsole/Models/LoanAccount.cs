@@ -18,24 +18,32 @@ namespace MiniBankConsole.Models
             : base(owner, openingBalance: -Math.Abs(initialLoan)) {}
 
         // Methods
-        public void Deposit(decimal amount) // Repay loan
+        public override void Deposit(decimal amount)
         {
-            // should i use try catch?
-            if (amount <= 0)
-            {
-                Console.WriteLine("Error: You've entered an invalid deposit amount.");
-            }
-            if (Balance == 0)
-            {
-                Console.WriteLine("Error: Your loan is already fully repaid.");
-            }
-            if (amount > Balance)
-            {
-                Console.WriteLine($"Error: The amount exceeds your outstanding loan balance of {Balance.ToString("C")}.");
-            }
-            Balance += amount;
-            Console.WriteLine($"Congratulations! You've just repaid {amount.ToString("C")} from your loan.");
+            if (amount <= 0 || Balance == 0) { /* Log + return */ return; }
+            var owed = -Balance;
+            var pay = Math.Min(amount, owed);
+            Balance += pay;
+            Log.Add($"LOAN REPAY {pay:C}; BAL {Balance:C}");
         }
+        //public void Deposit(decimal amount) // Repay loan
+        //{
+        //    // should i use try catch?
+        //    if (amount <= 0)
+        //    {
+        //        Console.WriteLine("Error: You've entered an invalid deposit amount.");
+        //    }
+        //    if (Balance == 0)
+        //    {
+        //        Console.WriteLine("Error: Your loan is already fully repaid.");
+        //    }
+        //    if (amount > Balance)
+        //    {
+        //        Console.WriteLine($"Error: The amount exceeds your outstanding loan balance of {Balance.ToString("C")}.");
+        //    }
+        //    Balance += amount;
+        //    Console.WriteLine($"Congratulations! You've just repaid {amount.ToString("C")} from your loan.");
+        //}
 
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
@@ -45,29 +53,28 @@ namespace MiniBankConsole.Models
                 error = "You've entered an invalid withdrawal amount.";
                 return false;
             }
-            Console.WriteLine($"Congratulations! You've just borrowed {amount.ToString("C")} successfully. Your current loan is {Balance.ToString("C")}.");
             return true;
         }
 
-        protected override void ViewDetails()
-        {
-            Console.WriteLine($"Account ID: {Id}");
-            Console.WriteLine($"Account Owner: {Owner}");
-            Console.WriteLine($"Account Balance: {Balance:C}");
-        }
         
         public void ApplyMonthlyInterest()
         {
             if (Balance < 0)
             {
-                decimal interest = Balance * _interestRate;
-                Balance += interest; 
-                Console.WriteLine($"Applied interest: {interest:C}. New loan balance: {Balance:C}");
+                var interest = -Math.Abs(Balance) * _interestRate;
+                Balance -= interest;
+                Log.Add($"INTEREST {interest.ToString("C")}; BAL {Balance.ToString("C")}");
+
+                // DE ADAUGAT IN UI
+                //Console.WriteLine($"Applied interest: {interest.ToString("C")}. New loan balance: {Balance.ToString("C")}");
             }
         }
         public void PrintStatement()
         {
-
+            foreach (var line in Log)
+            {
+                Console.WriteLine(line);
+            }   
         }
     }
 }

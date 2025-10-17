@@ -20,31 +20,18 @@ namespace MiniBankConsole.Models
         // Methods
         public override void Deposit(decimal amount)
         {
-            if (amount <= 0 || Balance == 0) { /* Log + return */ return; }
+            if (amount <= 0 || Balance == 0) 
+            { 
+                Log.Add($"DEPOSIT FAILED {amount.ToString("C")}");
+                return; 
+            }
+
             var owed = -Balance;
             var pay = Math.Min(amount, owed);
             Balance += pay;
-            Log.Add($"LOAN REPAY {pay:C}; BAL {Balance:C}");
+            Log.Add($"LOAN REPAY {pay.ToString("C")}; BAL {Balance.ToString("C")}");
         }
-        //public void Deposit(decimal amount) // Repay loan
-        //{
-        //    // should i use try catch?
-        //    if (amount <= 0)
-        //    {
-        //        Console.WriteLine("Error: You've entered an invalid deposit amount.");
-        //    }
-        //    if (Balance == 0)
-        //    {
-        //        Console.WriteLine("Error: Your loan is already fully repaid.");
-        //    }
-        //    if (amount > Balance)
-        //    {
-        //        Console.WriteLine($"Error: The amount exceeds your outstanding loan balance of {Balance.ToString("C")}.");
-        //    }
-        //    Balance += amount;
-        //    Console.WriteLine($"Congratulations! You've just repaid {amount.ToString("C")} from your loan.");
-        //}
-
+    
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
             error = null;
@@ -53,10 +40,10 @@ namespace MiniBankConsole.Models
                 error = "You've entered an invalid withdrawal amount.";
                 return false;
             }
+            Log.Add($"LOAN WITHDRAWAL APPROVED;  {amount.ToString("C")}");
             return true;
         }
 
-        
         public void ApplyMonthlyInterest()
         {
             if (Balance < 0)
@@ -64,11 +51,9 @@ namespace MiniBankConsole.Models
                 var interest = -Math.Abs(Balance) * _interestRate;
                 Balance -= interest;
                 Log.Add($"INTEREST {interest.ToString("C")}; BAL {Balance.ToString("C")}");
-
-                // DE ADAUGAT IN UI
-                //Console.WriteLine($"Applied interest: {interest.ToString("C")}. New loan balance: {Balance.ToString("C")}");
             }
         }
+
         public void PrintStatement()
         {
             foreach (var line in Log)

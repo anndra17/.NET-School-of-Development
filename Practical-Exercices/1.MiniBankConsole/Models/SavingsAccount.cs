@@ -30,16 +30,17 @@ namespace MiniBankConsole.Models
                 error = $"Insufficient funds. Your current balance is {Balance.ToString("C")}.";
                 return false;
             }
-            Console.WriteLine($"Congratulations! You've just withdrawn {amount.ToString("C")} from your savings account.");
+            Log.Add($"SUFFICIENT FUNDS CHECK PASSED; BAL {Balance:C}");
             return true;
         }
+
         public void ApplyMonthlyInterest()
         {
             if (Balance > 0)
             {
                 decimal interest = Balance * _interestRate;
                 Balance += interest;
-                Console.WriteLine($"Applied interest: {interest:C}. New balance: {Balance:C}");
+                Log.Add($"MONTHLY INTEREST {interest:C}; BAL {Balance:C}");
             }
         }
 

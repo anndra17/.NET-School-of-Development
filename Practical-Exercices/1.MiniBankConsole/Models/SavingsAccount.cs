@@ -46,6 +46,7 @@ namespace MiniBankConsole.Models
 
         public void PrintStatement()
         {
+            Console.WriteLine("SAVINGS ACCOUNT STATEMENT");
             foreach (var line in Log)
             {
                 Console.WriteLine(line);

@@ -10,7 +10,7 @@ namespace MiniBankConsole.Models
     public class CheckingAccount : BankAccount, IOverdraftPolicy, IStatement
     {
         // Properties
-        public const decimal _overdraftLimit = -200;
+        private const decimal _overdraftLimit = -200;
         public decimal OverdraftLimit
         {
             get { return _overdraftLimit; }
@@ -43,6 +43,7 @@ namespace MiniBankConsole.Models
 
         public void PrintStatement()
         {
+            Console.WriteLine("CHECKING ACCOUNT STATEMENT");
             foreach (var line in Log)
             {
                 Console.WriteLine(line);

@@ -10,12 +10,15 @@ namespace MiniBankConsole.Models
     public class CheckingAccount : BankAccount, IOverdraftPolicy, IStatement
     {
         // Properties
-        public const decimal _overdraftLimit = -200;
+        private const decimal _overdraftLimit = -200;
+        public decimal OverdraftLimit
+        {
+            get { return _overdraftLimit; }
+        }
 
         // Constructor
         public CheckingAccount(string owner, decimal openingBalance = 0) 
             : base(owner, openingBalance) { }
-
 
         // Methods
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
@@ -27,31 +30,24 @@ namespace MiniBankConsole.Models
                 return false;
             }
 
-            // Check if the withdrawal would exceed the overdraft limit
             decimal newBalance = this.Balance - amount;
             if (newBalance < _overdraftLimit)
             {
                 error = "You've exceeded your overdraft limit.";
                 return false;
             }
-            Console.WriteLine($"Congratulations! You've just withdraw {amount.ToString("C")} successfully.");
+
+            Log.Add($"OVERDRAFT CHECK PASSED; BAL {newBalance.ToString("C")}");
             return true;
         }
 
-        protected override void ViewDetails()
-        {
-            Console.WriteLine($"Account ID: {Id}");
-            Console.WriteLine($"Account Owner: {Owner}");
-            Console.WriteLine($"Account Balance: {Balance:C}");
-        }
-        
-        public decimal OverdraftLimit
-        {
-            get { return _overdraftLimit; }
-        }
         public void PrintStatement()
         {
-           
+            Console.WriteLine("CHECKING ACCOUNT STATEMENT");
+            foreach (var line in Log)
+            {
+                Console.WriteLine(line);
+            }
         }
     }
 }

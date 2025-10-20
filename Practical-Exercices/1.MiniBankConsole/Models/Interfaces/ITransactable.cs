@@ -8,7 +8,7 @@ namespace MiniBankConsole.Models.Interfaces
 {
     public interface ITransactable
     {
-        void Deposit(decimal amount);
+        bool Deposit(decimal amount, out decimal accepted);
         bool Withdraw(decimal amount, out string? error);
     }
 }

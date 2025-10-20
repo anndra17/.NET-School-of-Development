@@ -18,18 +18,21 @@ namespace MiniBankConsole.Models
             : base(owner, openingBalance: -Math.Abs(initialLoan)) {}
 
         // Methods
-        public override void Deposit(decimal amount)
+        public override bool Deposit(decimal amount, out decimal accepted)
         {
+            accepted = 0;
             if (amount <= 0 || Balance == 0) 
             { 
                 Log.Add($"DEPOSIT FAILED {amount.ToString("C")}");
-                return; 
+                return false; 
             }
 
-            var owed = -Balance;
+            var owed = Math.Abs(Balance);
             var pay = Math.Min(amount, owed);
             Balance += pay;
-            Log.Add($"LOAN REPAY {pay.ToString("C")}; BAL {Balance.ToString("C")}");
+            accepted = pay;
+            Log.Add($"LOAN REPAY {pay.ToString("C")}; BAL -{Math.Abs(Balance):C}");
+            return true;
         }
     
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
@@ -48,7 +51,7 @@ namespace MiniBankConsole.Models
         {
             if (Balance < 0)
             {
-                var interest = -Math.Abs(Balance) * _interestRate;
+                var interest = Math.Abs(Balance) * _interestRate;
                 Balance -= interest;
                 Log.Add($"INTEREST {interest.ToString("C")}; BAL {Balance.ToString("C")}");
             }

@@ -16,6 +16,8 @@ namespace MiniBankConsole.Models
         public string Owner { get; protected set; }
         public decimal Balance { get; protected set; }
         protected List<string> Log { get; set; }
+        public string AccountType => GetType().Name.Replace("Account", "");
+
 
         // Constructor
         protected BankAccount(string owner, decimal openingBalance = 0)
@@ -27,16 +29,19 @@ namespace MiniBankConsole.Models
         }
 
         // Methods
-        public virtual void Deposit(decimal amount)
+        public virtual bool Deposit(decimal amount, out decimal accepted)
         {
+            accepted = 0;
             if (amount <= 0)
             { 
-                Log.Add($"DEPOSIT FAILED {amount.ToString("C")}"); 
-                return; 
+                Log.Add($"DEPOSIT FAILED {amount.ToString("C")}");
+                return false; 
             }
 
             Balance += amount;
-            Log.Add($"DEPOSIT {amount.ToString("C")}; BAL {Balance.ToString("C")}");
+            accepted = amount;
+            Log.Add($"DEPOSIT {accepted.ToString("C")}; BAL {Balance.ToString("C")}");
+            return true;
         }
 
         public bool Withdraw(decimal amount, out string? error)

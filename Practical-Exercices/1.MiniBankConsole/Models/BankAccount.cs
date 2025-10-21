@@ -10,7 +10,6 @@ namespace MiniBankConsole.Models
     public abstract class BankAccount: ITransactable
     {
 
-        // Properties
         private static int _counter = 0;
         public int Id { get; protected set; }
         public string Owner { get; protected set; }
@@ -19,7 +18,6 @@ namespace MiniBankConsole.Models
         public string AccountType => GetType().Name.Replace("Account", "");
 
 
-        // Constructor
         protected BankAccount(string owner, decimal openingBalance = 0)
         {
             Id = ++_counter;
@@ -28,7 +26,6 @@ namespace MiniBankConsole.Models
             Log = new List<string>();
         }
 
-        // Methods
         public virtual bool Deposit(decimal amount, out decimal accepted)
         {
             accepted = 0;

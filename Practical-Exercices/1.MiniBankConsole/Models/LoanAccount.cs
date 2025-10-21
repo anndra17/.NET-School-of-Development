@@ -10,14 +10,11 @@ namespace MiniBankConsole.Models
 {
     public class LoanAccount: BankAccount, IInterestBearing, IStatement
     {
-        // Properties
         private const decimal _interestRate = 0.01m;
 
-        // Constructor
         public LoanAccount(string owner, decimal initialLoan)
             : base(owner, openingBalance: -Math.Abs(initialLoan)) {}
 
-        // Methods
         public override bool Deposit(decimal amount, out decimal accepted)
         {
             accepted = 0;

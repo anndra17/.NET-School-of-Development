@@ -9,14 +9,11 @@ namespace MiniBankConsole.Models
 {
     public class SavingsAccount: BankAccount, IInterestBearing, IStatement
     {
-        // Properties
         private const decimal _interestRate = 0.01m; 
 
-        // Constructor
         public SavingsAccount( string owner, decimal openingBalance) 
             : base(owner, openingBalance) {  }
 
-        // Methods
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
             error = null;

@@ -9,18 +9,15 @@ namespace MiniBankConsole.Models
 {
     public class CheckingAccount : BankAccount, IOverdraftPolicy, IStatement
     {
-        // Properties
         private const decimal _overdraftLimit = -200;
         public decimal OverdraftLimit
         {
             get { return _overdraftLimit; }
         }
 
-        // Constructor
         public CheckingAccount(string owner, decimal openingBalance = 0) 
             : base(owner, openingBalance) { }
 
-        // Methods
         protected override bool TryValidateWithdraw(decimal amount, out string? error)
         {
             error = null;

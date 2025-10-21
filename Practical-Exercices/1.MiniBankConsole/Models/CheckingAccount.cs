@@ -37,7 +37,7 @@ namespace MiniBankConsole.Models
                 return false;
             }
 
-            Log.Add($"OVERDRAFT CHECK PASSED; BAL {newBalance.ToString("C")}");
+            Log.Add($"OVERDRAFT CHECK PASSED; BALANCE {newBalance.ToString("C")}");
             return true;
         }
 

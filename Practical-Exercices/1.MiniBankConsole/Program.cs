@@ -39,7 +39,7 @@ class Program
                         {
                             foreach (var a in registry.List())
                                 Console.WriteLine(
-                                    $"#{a.Id} {a.Owner} {a.AccountType} BAL {(a.Balance < 0 ? "-" : "")}{Math.Abs(a.Balance).ToString("C")}"
+                                    $"#{a.Id} {a.Owner} {a.AccountType} BALANCE {(a.Balance < 0 ? "-" : "")}{Math.Abs(a.Balance).ToString("C")}"
                                 );
                         }
                         break;

@@ -118,6 +118,7 @@ namespace MiniBankConsole.Services
 
             error = "Account does not support statements.";
             return false;
+
         }
 
         public int RunMonthEnd()

@@ -40,7 +40,7 @@ namespace MiniBankConsole.Models
 
             Balance += amount;
             accepted = amount;
-            Log.Add($"DEPOSIT {accepted.ToString("C")}; BAL {Balance.ToString("C")}");
+            Log.Add($"DEPOSIT {accepted.ToString("C")}; BALANCE {Balance.ToString("C")}");
             return true;
         }
 
@@ -49,7 +49,7 @@ namespace MiniBankConsole.Models
             if (TryValidateWithdraw(amount, out error))
             {
                 Balance -= amount;
-                Log.Add($"WITHDRAW -{amount.ToString("C")}; BAL {Balance.ToString("C")}");
+                Log.Add($"WITHDRAW -{amount.ToString("C")}; BALANCE {Balance.ToString("C")}");
                 return true;
             }
             return false;

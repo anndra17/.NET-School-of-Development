@@ -30,7 +30,7 @@ namespace MiniBankConsole.Models
                 error = $"Insufficient funds. Your current balance is {Balance.ToString("C")}.";
                 return false;
             }
-            Log.Add($"SUFFICIENT FUNDS CHECK PASSED; BAL {Balance:C}");
+            Log.Add($"SUFFICIENT FUNDS CHECK PASSED; BALANCE {Balance:C}");
             return true;
         }
 
@@ -40,7 +40,7 @@ namespace MiniBankConsole.Models
             {
                 decimal interest = Balance * _interestRate;
                 Balance += interest;
-                Log.Add($"MONTHLY INTEREST {interest:C}; BAL {Balance:C}");
+                Log.Add($"MONTHLY INTEREST {interest:C}; BALANCE {Balance:C}");
             }
         }
 

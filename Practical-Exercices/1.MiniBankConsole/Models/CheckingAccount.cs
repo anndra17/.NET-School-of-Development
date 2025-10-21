@@ -14,7 +14,6 @@ namespace MiniBankConsole.Models
         {
             get { return _overdraftLimit; }
         }
-
         public CheckingAccount(string owner, decimal openingBalance = 0) 
             : base(owner, openingBalance) { }
 

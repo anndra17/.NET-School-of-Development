@@ -9,7 +9,6 @@ class Program
         var registry = new AccountRegistry();
         int choice = 0;
 
-
         while (choice != 7)
         {
             try 

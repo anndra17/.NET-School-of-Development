@@ -11,7 +11,6 @@ namespace MiniBankConsole.Models
     public class LoanAccount: BankAccount, IInterestBearing, IStatement
     {
         private const decimal _interestRate = 0.01m;
-
         public LoanAccount(string owner, decimal initialLoan)
             : base(owner, openingBalance: -Math.Abs(initialLoan)) {}
 

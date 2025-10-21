@@ -9,7 +9,6 @@ namespace MiniBankConsole.Models
 {
     public abstract class BankAccount: ITransactable
     {
-
         private static int _counter = 0;
         public int Id { get; protected set; }
         public string Owner { get; protected set; }

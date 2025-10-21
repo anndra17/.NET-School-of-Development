@@ -10,7 +10,6 @@ namespace MiniBankConsole.Models
     public class SavingsAccount: BankAccount, IInterestBearing, IStatement
     {
         private const decimal _interestRate = 0.01m; 
-
         public SavingsAccount( string owner, decimal openingBalance) 
             : base(owner, openingBalance) {  }
 

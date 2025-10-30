@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ReadingList.Domain\ReadingList.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace ReadingList.Domain.Entities;
+﻿using ReadingList.Domain.Results;
+
+namespace ReadingList.Domain.Entities;
 
 public class Book
 {
@@ -23,39 +25,44 @@ public class Book
         Rating = rating;
     }
 
-    public static Book Create(int id, string title, string author, int year, int pages, string genre, double rating, bool finished = false)
+    public static Result<Book> Create(int id, string title, string author, int year, int pages, string genre, double rating, bool finished = false)
     {
-        ValidateBookParameters(id, title, author, year, pages, genre, rating);
+        var validationError = ValidateParameters(id, title, author, year, pages, genre, rating);
+        if (validationError is not null)
+            return Result<Book>.Fail(validationError);
 
         title = title.Trim();
         author = author.Trim();
         genre = genre.Trim();
 
-        return new Book(id, title, author, year, pages, genre, rating, finished);
+        var book = new Book(id, title, author, year, pages, genre, rating, finished);
+        return Result<Book>.Ok(book);
     }
 
-    private static void ValidateBookParameters(int id, string title, string author, int year, int pages, string genre, double rating)
+    private static string? ValidateParameters(int id, string title, string author, int year, int pages, string genre, double rating)
     {
         if (id <= 0)
-            throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than 0.");
+            return "Id must be greater than 0.";
 
         if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty.", nameof(title));
+            return "Title cannot be empty.";
 
         if (string.IsNullOrWhiteSpace(author))
-            throw new ArgumentException("Author cannot be empty.", nameof(author));
+            return "Author cannot be empty.";
 
         if (string.IsNullOrWhiteSpace(genre))
-            throw new ArgumentException("Genre cannot be empty.", nameof(genre));
+            return "Genre cannot be empty.";
 
         if (pages <= 0)
-            throw new ArgumentOutOfRangeException(nameof(pages), "Pages must be greater than 0.");
+            return "Pages must be greater than 0.";
 
         if (year <= 0)
-            throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than 0.");
+            return "Year must be greater than 0.";
 
         if (double.IsNaN(rating) || double.IsInfinity(rating) || rating < 0 || rating > 5)
-            throw new ArgumentOutOfRangeException(nameof(rating), "Rating must be between 0 and 5.");
+            return "Rating must be between 0 and 5.";
+
+        return null;
     }
 
     public void MarkFinished()
@@ -63,12 +70,12 @@ public class Book
          Finished = true;
     }
 
-    public void SetRating(double value)
+    public Result SetRating(double value)
     {
         if (double.IsNaN(value) || double.IsInfinity(value) || value < 0 || value > 5)
-            throw new ArgumentOutOfRangeException(nameof(value), "Rating must be between 0 and 5.");
+            return Result.Fail("Rating must be between 0 and 5.");
 
         Rating = value;
+        return Result.Ok();
     }
-
 }

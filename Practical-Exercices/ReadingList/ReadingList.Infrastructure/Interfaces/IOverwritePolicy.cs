@@ -1,5 +1,4 @@
-﻿
-namespace ReadingList.Infrastructure.Interfaces;
+﻿namespace ReadingList.Infrastructure.Interfaces;
 
 public interface IOverwritePolicy
 {

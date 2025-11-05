@@ -4,7 +4,7 @@ namespace ReadingList.Domain.Extensions;
 
 public static class EnumerableBookExtensions
 {
-    public static double AverageRating(this IEnumerable<Book> source, bool ignoreZero = false)
+    public static double AverageRatingOrDefault(this IEnumerable<Book> source, bool ignoreZero = false)
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
@@ -31,7 +31,9 @@ public static class EnumerableBookExtensions
         if (n <= 0)
             return Enumerable.Empty<Book>();
 
-        var query = ignoreZero ? source.Where(b => b.Rating > 0.0) : source;
+        var query = ignoreZero 
+            ? source.Where(b => b.Rating > 0.0) 
+            : source;
         var ordered = query
             .OrderByDescending(b => b.Rating)
             .ThenBy(b => b.Title)

@@ -1,5 +1,4 @@
-﻿using ReadingList.Domain.Entities;
-using ReadingList.Domain.Interfaces;
+﻿using ReadingList.Domain.Interfaces;
 using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure.Repositories;

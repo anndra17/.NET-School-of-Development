@@ -1,5 +1,5 @@
-﻿using ReadingList.App.Commands.Abstractions;
+﻿using ReadingList.CLI.Commands.Abstractions;
 
-namespace ReadingList.App.Commands.Models;
+namespace ReadingList.CLI.Commands.Models;
 
 public sealed record ListAllCommand() : ICommand;

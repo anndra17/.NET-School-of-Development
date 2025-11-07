@@ -1,6 +1,7 @@
-﻿using ReadingList.Domain.Entities;
+﻿using ReadingList.Application.Abstractions.IO;
+using ReadingList.Application.Abstractions.Logs;
+using ReadingList.Domain.Entities;
 using ReadingList.Domain.Results;
-using ReadingList.Infrastructure.Interfaces;
 using System.Text.Json;
 
 namespace ReadingList.Infrastructure.Export;
@@ -8,17 +9,17 @@ namespace ReadingList.Infrastructure.Export;
 public sealed class JsonExportStrategy : IExportStrategy
 {
     private readonly IFileSystem _fileSystem;
-    private readonly ILogger _logger;
+    private readonly ISystemLogger _systemLogger;
     private static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
 
-    public JsonExportStrategy(IFileSystem fileSystem, ILogger logger)
+    public JsonExportStrategy(IFileSystem fileSystem, ISystemLogger systemLogger)
     {
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _systemLogger = systemLogger ?? throw new ArgumentNullException(nameof(systemLogger));
     }
 
     public async Task<Result> ExportAsync(
@@ -55,7 +56,7 @@ public sealed class JsonExportStrategy : IExportStrategy
         }
         catch (IOException e)
         {
-            _logger.Error($"JSON export failed: {e.Message}");
+            _systemLogger.Error($"JSON export failed: {e.Message}");
             return Result.Fail($"JSON export failed: {e.Message}");
         }
     }

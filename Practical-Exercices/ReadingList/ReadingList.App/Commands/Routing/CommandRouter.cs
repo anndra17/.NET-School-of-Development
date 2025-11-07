@@ -1,9 +1,9 @@
-﻿using ReadingList.App.Commands.Abstractions;
-using ReadingList.App.Commands.Models;
-using ReadingList.App.Commands.Routing.Abstractions;
-using ReadingList.App.UI.Abstractions;
+﻿using ReadingList.CLI.Commands.Abstractions;
+using ReadingList.CLI.Commands.Models;
+using ReadingList.CLI.Commands.Routing.Abstractions;
+using ReadingList.CLI.UI.Abstractions;
 
-namespace ReadingList.App.Commands.Routing;
+namespace ReadingList.CLI.Commands.Routing;
 
 public sealed class CommandRouter
 {
@@ -13,7 +13,7 @@ public sealed class CommandRouter
     private readonly IExportHandler _export;
     private readonly IHelpHandler _help;
     private readonly IExitHandler _exit;
-    private readonly IAppLogger _logger;
+    private readonly IConsoleNotifier _consoleNotifier;
 
     public CommandRouter(
             IImportHandler import,
@@ -22,7 +22,7 @@ public sealed class CommandRouter
             IExportHandler export,
             IHelpHandler help,
             IExitHandler exit,
-            IAppLogger logger)
+            IConsoleNotifier consoleNotifier)
     {
         _import = import ?? throw new ArgumentNullException(nameof(import));
         _query = query ?? throw new ArgumentNullException(nameof(query));
@@ -30,7 +30,7 @@ public sealed class CommandRouter
         _export = export ?? throw new ArgumentNullException(nameof(export));
         _help = help ?? throw new ArgumentNullException(nameof(help));
         _exit = exit ?? throw new ArgumentNullException(nameof(exit));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _consoleNotifier = consoleNotifier ?? throw new ArgumentNullException(nameof(consoleNotifier));
     }
 
     public async Task RouteAsync(ICommand command, CancellationToken ct)
@@ -54,7 +54,7 @@ public sealed class CommandRouter
             case ExitCommand c: await _exit.HandleAsync(c, ct); return;
 
             default:
-                _logger.Error("Unknown command. Try 'help'.");
+                _consoleNotifier.Error("Unknown command. Try 'help'.");
                 return;
         }
     }

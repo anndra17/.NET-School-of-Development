@@ -1,8 +1,8 @@
-﻿using ReadingList.App.Commands.Models;
-using ReadingList.Infrastructure.Enums;
+﻿using ReadingList.Application.Enums;
+using ReadingList.CLI.Commands.Models;
 using System.Globalization;
 
-namespace ReadingList.App.Commands.Parsing;
+namespace ReadingList.CLI.Commands.Parsing;
 
 public sealed class CommandParser
 {
@@ -55,7 +55,7 @@ public sealed class CommandParser
     private static ParseResult ParseList(IReadOnlyList<string> args)
     {
         // list all
-        if (args.Count == 0 || (args.Count == 1 && args[0].Equals("all", StringComparison.OrdinalIgnoreCase)))
+        if (args.Count == 0 || args.Count == 1 && args[0].Equals("all", StringComparison.OrdinalIgnoreCase))
             return ParseResult.Ok(new ListAllCommand());
 
         return ParseResult.Fail("Usage: list all");

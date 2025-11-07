@@ -1,6 +1,6 @@
-﻿using ReadingList.App.Commands.Models;
+﻿using ReadingList.CLI.Commands.Models;
 
-namespace ReadingList.App.Commands.Routing.Abstractions;
+namespace ReadingList.CLI.Commands.Routing.Abstractions;
 
 public interface IImportHandler
 {

@@ -1,4 +1,4 @@
-﻿namespace ReadingList.App.Commands.Abstractions;
+﻿namespace ReadingList.CLI.Commands.Abstractions;
 
 public interface ICommand
 {

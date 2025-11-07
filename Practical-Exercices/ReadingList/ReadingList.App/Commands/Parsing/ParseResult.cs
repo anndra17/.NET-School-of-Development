@@ -1,4 +1,4 @@
-﻿namespace ReadingList.App.Commands.Parsing;
+﻿namespace ReadingList.CLI.Commands.Parsing;
 
 public sealed class ParseResult
 {

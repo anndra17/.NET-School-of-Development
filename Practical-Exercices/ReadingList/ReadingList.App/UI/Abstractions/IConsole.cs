@@ -1,4 +1,4 @@
-﻿namespace ReadingList.App.UI.Abstractions;
+﻿namespace ReadingList.CLI.UI.Abstractions;
 
 public interface IConsole
 {

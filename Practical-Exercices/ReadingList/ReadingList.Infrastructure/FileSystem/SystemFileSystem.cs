@@ -1,6 +1,6 @@
-﻿using ReadingList.Infrastructure.Interfaces;
+﻿using ReadingList.Application.Abstractions.IO;
 
-namespace ReadingList.Infrastructure.SystemIO;
+namespace ReadingList.Infrastructure.FileSystem;
 
 public sealed class SystemFileSystem: IFileSystem
 {

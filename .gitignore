@@ -8,3 +8,5 @@
 *.sln.docstates
 bin/
 obj/
+/Practical-Exercices/ReadingList/exported.csv
+/Practical-Exercices/ReadingList/test.csv

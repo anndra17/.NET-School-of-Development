@@ -1,0 +1,13 @@
+﻿using CafeConsole.Domain.Abstractions;
+
+namespace CafeConsole.Domain.Models.Base;
+
+public class Espresso : IBeverage
+{
+    private const decimal _price = 2.50m;
+    public string Name => "Espresso";
+
+    public decimal Cost() => _price;
+
+    public string Describe() => $"{Name}. Price {_price.ToString("C")}";
+}

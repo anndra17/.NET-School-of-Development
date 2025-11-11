@@ -9,9 +9,7 @@ public abstract class BeverageDecorator : IBeverage
     protected BeverageDecorator(IBeverage baseBeverage) => _baseBeverage = baseBeverage;
 
     protected abstract string AddedDecorator { get; }   
-
     protected abstract decimal DecoratorPrice { get; }
-
 
     public string Name => $"{_baseBeverage.Name} + {AddedDecorator}";
 

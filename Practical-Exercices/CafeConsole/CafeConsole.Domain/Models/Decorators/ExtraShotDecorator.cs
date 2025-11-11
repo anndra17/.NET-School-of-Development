@@ -2,13 +2,12 @@
 
 namespace CafeConsole.Domain.Models.Decorators;
 
-public class ExtraShotDecorator : IBeverage
+public class ExtraShotDecorator : BeverageDecorator
 {
     private const decimal _price = 0.80m;
 
-    public string Name => "Extra Shot";
+    public ExtraShotDecorator(IBeverage baseBeverage) : base(baseBeverage) { }
 
-    public decimal Cost() => _price;
-
-    public string Describe() => $"{Name}. Price {_price.ToString("C")}";
+    protected override string AddedDecorator => "Extra Shot";
+    protected override decimal DecoratorPrice => _price;
 }

@@ -2,13 +2,13 @@
 
 namespace CafeConsole.Domain.Models.Decorators;
 
-public class SyrupDecorator : IBeverage
+public class SyrupDecorator : BeverageDecorator
 {
     private const decimal _price = 0.50m;
-    public string flavor = string.Empty;
-    public string Name => $"{flavor} syrup";
+    private string _flavor;
 
-    public decimal Cost() => _price;
+    public SyrupDecorator(IBeverage baseBeverage, string flavor) : base(baseBeverage) => _flavor = flavor;
 
-    public string Describe() => $"{Name}. Price {_price.ToString("C")}";
+    protected override string AddedDecorator => $"{_flavor} Syrup";
+    protected override decimal DecoratorPrice => _price;
 }

@@ -9,5 +9,5 @@ public class HotChocolate : IBeverage
 
     public decimal Cost() => _price;
 
-    public string Describe() => $"{Name}. Price {_price.ToString("C")}";
+    public string Describe() => Name;
 }

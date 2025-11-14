@@ -51,9 +51,7 @@ public class AddOnMenu : IAddOnMenu
                 default:
                     Console.WriteLine("Invalid choice. Try again.");
                     break;
-
             }
-
         }
     }
 }

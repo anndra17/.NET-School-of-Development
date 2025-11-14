@@ -7,13 +7,13 @@ public class ConsoleOrderLogger : IOrderEventSubscriber
 {
     public void On(OrderPlaced orderEvent)
     {
+        Console.WriteLine();
         Console.WriteLine($"""
             Order {orderEvent.Id} @ {orderEvent.At}
             Items: {orderEvent.Description}
             Subtotal: {orderEvent.Subtotal.ToString("C")}
             Pricing: TODO
-            Total: {orderEvent.Total.ToString("C")}";
+            Total: {orderEvent.Total.ToString("C")};
             """);
     }
-
 }

@@ -5,11 +5,16 @@ namespace CafeConsole.App.Events;
 
 public class SimpleOrderEventPublisher : IOrderEventPublisher
 {
-    private readonly IEnumerable<IOrderEventSubscriber> _subscribers;
-    
+    private readonly List<IOrderEventSubscriber> _subscribers = new();
+
+    public SimpleOrderEventPublisher()
+    {
+    }
+
     public SimpleOrderEventPublisher(IEnumerable<IOrderEventSubscriber> subscribers)
     {
-        _subscribers = subscribers;
+        if (subscribers is not null)
+            _subscribers.AddRange(subscribers);
     }
 
     public void Publish(OrderPlaced orderEvent)
@@ -18,5 +23,12 @@ public class SimpleOrderEventPublisher : IOrderEventPublisher
         {
             subscriber.On(orderEvent);
         }
+    }
+
+    public void Register(IOrderEventSubscriber subscriber)
+    {
+        if (subscriber is null)
+            throw new ArgumentNullException(nameof(subscriber));
+        _subscribers.Add(subscriber);
     }
 }

@@ -1,8 +1,6 @@
-﻿using CafeConsole.App.Services;
-using CafeConsole.CLI.Menus.Abstractions;
+﻿using CafeConsole.CLI.Menus.Abstractions;
 using CafeConsole.Domain.Abstractions;
 using CafeConsole.Domain.Models.Pricing;
-using System;
 
 namespace CafeConsole.CLI.Menus;
 

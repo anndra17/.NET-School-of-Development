@@ -1,0 +1,8 @@
+﻿using CafeConsole.Domain.Abstractions;
+
+namespace CafeConsole.CLI.Menus.Abstractions;
+
+public interface IReceiptMenu
+{
+    void Print(IBeverage beverage, IPricingStrategy strategy);
+}

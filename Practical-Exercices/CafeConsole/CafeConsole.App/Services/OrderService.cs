@@ -16,7 +16,7 @@ public class OrderService
         _selector = selector;
     }
 
-    public OrderPlaced PlaceOrder(IBeverage beverage, PricingPolicy policy)
+    public void PlaceOrder(IBeverage beverage, PricingPolicy policy)
     {
         var subtotal = beverage.Cost();
         var strategy = _selector.Resolve(policy);
@@ -32,6 +32,5 @@ public class OrderService
         );
 
         _publisher.Publish(orderEvent);
-        return orderEvent;
     }
 }

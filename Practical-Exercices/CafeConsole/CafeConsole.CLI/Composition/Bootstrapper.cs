@@ -15,7 +15,8 @@ public static class Bootstrapper
 {
     public static Task RunAsync()
     {
-        var logger = new ConsoleOrderLogger();
+        var currency = new CurrencyOptions { Symbol = "$" };
+        var logger = new ConsoleOrderLogger(currency);
         var analytics = new InMemoryOrderAnalytics();
 
         var publisher = new SimpleOrderEventPublisher();

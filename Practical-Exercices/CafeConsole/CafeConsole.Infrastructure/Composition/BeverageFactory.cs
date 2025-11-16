@@ -23,7 +23,7 @@ public class BeverageFactory : IBeverageFactory
 
         if (creator == null)
         {
-            throw new Exception($"Unknown beverage: {type}");
+            throw new ArgumentException($"Unknown beverage: {type}", nameof(type));
         }
 
         IBeverage beverage= creator();

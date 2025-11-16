@@ -7,15 +7,18 @@ namespace CafeConsole.Infrastructure.Observers;
 
 public class ConsoleOrderLogger : IOrderEventSubscriber
 {
+    private readonly CurrencyOptions _currency;
+    public ConsoleOrderLogger(CurrencyOptions currency) => _currency = currency;
+
     public void On(OrderPlaced orderEvent)
     {
         Console.WriteLine();
         Console.WriteLine($"""
             Order {orderEvent.Id} @ {orderEvent.At}
             Items: {orderEvent.Description}
-            Subtotal: {orderEvent.Subtotal.ToString("C")}
+            Subtotal: {_currency.Symbol}{orderEvent.Subtotal:0.00}
             Pricing: {FormatPolicy(orderEvent.Policy)}
-            Total: {orderEvent.Total.ToString("C")};
+            Total: {_currency.Symbol}{orderEvent.Total:0.00}
             """);
     }
 

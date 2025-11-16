@@ -37,8 +37,8 @@ public class Menu
     {
         var beverage = _beverageMenu.ChooseBase();
         beverage = _addOnMenu.ChooseAddOns(beverage);
-        var pricing = _pricingMenu.ChoosePricing();
-        _receiptMenu.Print(beverage, pricing);
+        var policy = _pricingMenu.ChoosePricing();
+        _receiptMenu.Print(beverage, policy);
     }
 
     private bool AnotherOrder()
@@ -48,7 +48,7 @@ public class Menu
         Console.WriteLine();
 
         Console.Write("Select: ");
-        var again = Console.ReadLine().Trim();
+        var again = Console.ReadLine().Trim() ?? string.Empty;
 
         if (again == "0") return false;
         Console.WriteLine();

@@ -35,7 +35,7 @@ public static class Bootstrapper
 
         var orderService = new OrderService(publisher, selector);
 
-        var beverageMenu = new BeverageMenu(beverageFactory);
+        var beverageMenu = new BeverageMenu(beverageFactory, currency);
         var addOnMenu = new AddOnMenu(beverageAssembler, currency);
         var pricingMenu = new PricingMenu();
         var receiptMenu = new ReceiptMenu(orderService);

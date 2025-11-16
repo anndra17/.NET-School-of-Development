@@ -4,7 +4,7 @@ namespace CafeConsole.Domain.Abstractions;
 
 public interface IPricingStrategy
 {
-    PricingPolicy Name { get; }
+    PricingPolicy Policy { get; }
 
     decimal Apply(decimal subtotal);
 }

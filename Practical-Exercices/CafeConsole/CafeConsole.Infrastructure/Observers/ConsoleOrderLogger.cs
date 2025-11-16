@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace CafeConsole.Infrastructure.Observers;
 
-public class ConsoleOrderLogger : IOrderEventSubscriber
+public sealed class ConsoleOrderLogger : IOrderEventSubscriber
 {
     private readonly CurrencyOptions _currency;
     public ConsoleOrderLogger(CurrencyOptions currency) => _currency = currency;

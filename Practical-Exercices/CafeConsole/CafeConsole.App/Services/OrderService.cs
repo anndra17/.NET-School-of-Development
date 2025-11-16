@@ -5,7 +5,7 @@ using CafeConsole.Domain.Models.Pricing;
 
 namespace CafeConsole.App.Services;
 
-public class OrderService
+public sealed class OrderService
 {
     private readonly IOrderEventPublisher _publisher;
     private readonly IPricingStrategySelector _selector;

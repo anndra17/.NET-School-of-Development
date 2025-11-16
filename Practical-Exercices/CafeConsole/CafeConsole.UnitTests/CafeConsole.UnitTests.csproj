@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CafeConsole.App\CafeConsole.App.csproj" />
+    <ProjectReference Include="..\CafeConsole.Domain\CafeConsole.Domain.csproj" />
+    <ProjectReference Include="..\CafeConsole.Infrastructure\CafeConsole.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

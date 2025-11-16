@@ -2,7 +2,7 @@
 
 namespace CafeConsole.Domain.Models.Decorators;
 
-public class MilkDecorator : BeverageDecorator
+public sealed class MilkDecorator : BeverageDecorator
 {
     private const decimal _price = 0.40m;
 

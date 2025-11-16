@@ -2,7 +2,7 @@
 
 namespace CafeConsole.Domain.Models.Base;
 
-public class HotChocolate : IBeverage
+public sealed class HotChocolate : IBeverage
 {
     private const decimal _price = 3m;
 

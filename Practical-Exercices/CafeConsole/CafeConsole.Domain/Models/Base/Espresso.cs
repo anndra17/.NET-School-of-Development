@@ -2,7 +2,7 @@
 
 namespace CafeConsole.Domain.Models.Base;
 
-public class Espresso : IBeverage
+public sealed class Espresso : IBeverage
 {
     private const decimal _price = 2.50m;
 

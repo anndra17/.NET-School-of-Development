@@ -27,7 +27,7 @@ public class OrderService
             At: DateTimeOffset.Now,
             Description: beverage.Describe(),
             Subtotal: subtotal,
-            Policy: strategy.Name,
+            Policy:policy,
             Total: total
         );
 

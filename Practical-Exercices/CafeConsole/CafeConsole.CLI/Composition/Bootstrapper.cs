@@ -40,7 +40,7 @@ public static class Bootstrapper
         var pricingMenu = new PricingMenu();
         var receiptMenu = new ReceiptMenu(orderService);
         
-        var menu = new Menu(beverageMenu, addOnMenu, pricingMenu, receiptMenu);
+        var menu = new Menu(beverageMenu, addOnMenu, pricingMenu, receiptMenu, currency, analytics);
         menu.Run();
 
 

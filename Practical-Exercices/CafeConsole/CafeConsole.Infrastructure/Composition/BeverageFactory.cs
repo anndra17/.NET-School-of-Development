@@ -4,7 +4,7 @@ using CafeConsole.Domain.Models.Base;
 
 namespace CafeConsole.Infrastructure.Factories;
 
-public class BeverageFactory : IBeverageFactory
+public sealed class BeverageFactory : IBeverageFactory
 {
     private readonly Dictionary<string, Func<IBeverage>> _creators = new Dictionary<string, Func<IBeverage>>();
 

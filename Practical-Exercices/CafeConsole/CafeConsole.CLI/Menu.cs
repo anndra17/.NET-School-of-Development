@@ -1,4 +1,6 @@
 ﻿using CafeConsole.CLI.Menus.Abstractions;
+using CafeConsole.Infrastructure.Observers;
+
 
 namespace CafeConsole.CLI;
 
@@ -8,13 +10,17 @@ public class Menu
     private readonly IAddOnMenu _addOnMenu;
     private readonly IPricingMenu _pricingMenu;
     private readonly IReceiptMenu _receiptMenu;
+    private readonly CurrencyOptions _currency;
+    private readonly dynamic _analytics;
 
-    public Menu(IBeverageMenu beverageMenu, IAddOnMenu addOnMenu, IPricingMenu pricingMenu, IReceiptMenu receiptMenu)
+    public Menu(IBeverageMenu beverageMenu, IAddOnMenu addOnMenu, IPricingMenu pricingMenu, IReceiptMenu receiptMenu, CurrencyOptions currency, object analytics)
     {
         _beverageMenu = beverageMenu;
         _addOnMenu = addOnMenu;
         _pricingMenu = pricingMenu;
         _receiptMenu = receiptMenu;
+        _currency = currency;
+        _analytics = analytics;
     }
 
     public void Run()
@@ -43,6 +49,8 @@ public class Menu
 
     private bool AnotherOrder()
     {
+        Console.WriteLine();
+        Console.WriteLine($"[Analytics] Orders: {_analytics.OrdersCount}, Revenue: {_currency.Symbol}{_analytics.TotalRevenue:0.00}");
         Console.WriteLine();
         Console.WriteLine("1) New order 0) Exit");
         Console.WriteLine();

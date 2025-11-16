@@ -1,17 +1,19 @@
 ﻿using CafeConsole.App.Abstractions;
 using CafeConsole.CLI.Menus.Abstractions;
 using CafeConsole.Domain.Abstractions;
-using System;
+using CafeConsole.Infrastructure.Observers;
 
 namespace CafeConsole.CLI.Menus;
 
 public class AddOnMenu : IAddOnMenu
 {
     private readonly IBeverageAssembler _assembler;
+    private readonly CurrencyOptions _currency;
 
-    public AddOnMenu(IBeverageAssembler assembler)
+    public AddOnMenu(IBeverageAssembler assembler, CurrencyOptions currency)
     {
         _assembler = assembler;
+        _currency = currency;
     }
 
     public IBeverage ChooseAddOns(IBeverage baseBeverage)
@@ -21,11 +23,11 @@ public class AddOnMenu : IAddOnMenu
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("""
+            Console.WriteLine($"""
                 Add-ons: 
-                1) Milk (+0.40) 
-                2) Syrup (+0.50) 
-                3) Extra shot (+0.80) 
+                1) Milk (+ {_currency.Symbol}0.40) 
+                2) Syrup (+ {_currency.Symbol}0.50) 
+                3) Extra shot (+ {_currency.Symbol}0.80) 
                 0) Done
                 """);
             Console.WriteLine();

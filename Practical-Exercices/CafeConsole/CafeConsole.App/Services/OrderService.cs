@@ -1,31 +1,37 @@
-﻿using CafeConsole.Domain.Abstractions;
+﻿using CafeConsole.App.Abstractions;
+using CafeConsole.Domain.Abstractions;
 using CafeConsole.Domain.Models.Events;
+using CafeConsole.Domain.Models.Pricing;
 
 namespace CafeConsole.App.Services;
 
 public class OrderService
 {
     private readonly IOrderEventPublisher _publisher;
+    private readonly IPricingStrategySelector _selector;
 
-    public OrderService(IOrderEventPublisher publisher)
+    public OrderService(IOrderEventPublisher publisher, IPricingStrategySelector selector)
     {
         _publisher = publisher;
+        _selector = selector;
     }
 
-    public void PlaceOrder(IBeverage beverage, IPricingStrategy pricing)
+    public OrderPlaced PlaceOrder(IBeverage beverage, PricingPolicy policy)
     {
         var subtotal = beverage.Cost();
-        var total = pricing.Apply(subtotal);
+        var strategy = _selector.Resolve(policy);
+        var total = strategy.Apply(subtotal);
 
-        var orderEvent = new OrderPlaced
-        {
-            Id = Guid.NewGuid(),
-            At = DateTimeOffset.Now,
-            Description = beverage.Describe(),
-            Subtotal = subtotal,
-            Total = total
-        };
+        var orderEvent = new OrderPlaced(
+            Id: Guid.NewGuid(),
+            At: DateTimeOffset.Now,
+            Description: beverage.Describe(),
+            Subtotal: subtotal,
+            Policy: strategy.Name,
+            Total: total
+        );
 
-        _publisher.Publish(orderEvent); 
+        _publisher.Publish(orderEvent);
+        return orderEvent;
     }
 }

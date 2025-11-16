@@ -2,7 +2,7 @@
 
 namespace CafeConsole.Domain.Models.Pricing;
 
-public class RegularPricing : IPricingStrategy
+public sealed class RegularPricing : IPricingStrategy
 {
     public PricingPolicy Policy => PricingPolicy.Regular;
 

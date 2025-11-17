@@ -13,7 +13,7 @@ namespace CafeConsole.CLI.Composition;
 
 public static class Bootstrapper
 {
-    public static Task RunAsync()
+    public static void Run()
     {
         var currency = new CurrencyOptions { Symbol = "$" };
         var logger = new ConsoleOrderLogger(currency);
@@ -42,8 +42,5 @@ public static class Bootstrapper
         
         var menu = new Menu(beverageMenu, addOnMenu, pricingMenu, receiptMenu, currency, analytics);
         menu.Run();
-
-
-        return Task.CompletedTask;
     }
 }

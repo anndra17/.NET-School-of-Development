@@ -25,12 +25,12 @@ public class Menu
 
     public void Run()
     {
-        while (true)
+        do
         {
             PrintTitle();
             AddMenus();
-            if (!AnotherOrder()) break;
         }
+        while (AnotherOrder());
     }
 
     private void PrintTitle()

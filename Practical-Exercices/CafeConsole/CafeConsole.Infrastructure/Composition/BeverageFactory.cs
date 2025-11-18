@@ -26,7 +26,7 @@ public sealed class BeverageFactory : IBeverageFactory
             throw new ArgumentException($"Unknown beverage: {type}", nameof(type));
         }
 
-        IBeverage beverage= creator();
+        IBeverage beverage = creator();
 
         return beverage;
     }

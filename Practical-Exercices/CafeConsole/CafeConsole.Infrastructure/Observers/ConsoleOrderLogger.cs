@@ -1,7 +1,6 @@
 ﻿using CafeConsole.Domain.Abstractions;
 using CafeConsole.Domain.Models.Events;
 using CafeConsole.Domain.Models.Pricing;
-using System.Globalization;
 
 namespace CafeConsole.Infrastructure.Observers;
 

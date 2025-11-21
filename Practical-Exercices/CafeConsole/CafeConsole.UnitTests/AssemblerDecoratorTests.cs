@@ -11,12 +11,7 @@ public class AssemblerDecoratorTests
     {
         var assembler = new BeverageAssembler();
         var baseBeverage = new Espresso();
-
-        var addOns = new List<AddOnDto>
-        {
-            new("milk"),
-            new("extra shot")
-        };
+        var addOns = new List<AddOnDto> { new("milk"), new("extra shot") };
 
         var composed = assembler.Assemble(baseBeverage, addOns);
         var cost = composed.Cost();

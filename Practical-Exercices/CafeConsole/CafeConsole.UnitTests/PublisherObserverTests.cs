@@ -13,9 +13,7 @@ public class PublisherObserverTests
     {
         var publisher = new SimpleOrderEventPublisher();
         var subscriberMock = new Mock<IOrderEventSubscriber>(MockBehavior.Strict);
-
         publisher.Register(subscriberMock.Object);
-
         var evt = new OrderPlaced(
             Id: Guid.NewGuid(),
             At: DateTimeOffset.Parse("2025-10-25T10:22:13+02:00"),
@@ -24,7 +22,6 @@ public class PublisherObserverTests
             Policy: PricingPolicy.HappyHour,
             Total: 8.00m
         );
-
         subscriberMock
             .Setup(s => s.On(It.Is<OrderPlaced>(e =>
                 e.Total == evt.Total &&

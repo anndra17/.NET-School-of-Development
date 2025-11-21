@@ -17,9 +17,6 @@ public class DecoratorTests
         var description = beverage.Describe();
 
         Assert.Equal(3.70m, cost);
-
-        Assert.Equal(3.70m, beverage.Cost());
-
         Assert.Contains("milk", description.ToLowerInvariant());
         Assert.Contains("extra shot", description.ToLowerInvariant());
     }

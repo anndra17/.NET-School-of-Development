@@ -22,7 +22,6 @@ public class OrderAnalyticsTests
             Policy: PricingPolicy.Regular,
             Total: 3.50m
         );
-
         var order2 = new OrderPlaced(
             Id: Guid.NewGuid(),
             At: DateTimeOffset.UtcNow,

@@ -1,4 +1,5 @@
 ﻿using CafeConsole.App.Abstractions;
+using CafeConsole.App.Dtos;
 using CafeConsole.Domain.Abstractions;
 using CafeConsole.Domain.Models.Decorators;
 
@@ -6,7 +7,7 @@ namespace CafeConsole.Infrastructure.Composition;
 
 public class BeverageAssembler : IBeverageAssembler
 {
-    public IBeverage Assemble(IBeverage baseType, IEnumerable<(string Name, string? flavor)> addOns)
+    public IBeverage Assemble(IBeverage baseType, IEnumerable<AddOnDto> addOns)
     {
         foreach (var (name, flavor) in addOns)
         {

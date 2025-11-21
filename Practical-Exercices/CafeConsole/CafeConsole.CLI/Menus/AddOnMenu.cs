@@ -1,4 +1,5 @@
 ﻿using CafeConsole.App.Abstractions;
+using CafeConsole.App.Dtos;
 using CafeConsole.CLI.Menus.Abstractions;
 using CafeConsole.Domain.Abstractions;
 using CafeConsole.Infrastructure.Observers;
@@ -18,7 +19,7 @@ public class AddOnMenu : IAddOnMenu
 
     public IBeverage ChooseAddOns(IBeverage baseBeverage)
     {
-        var currentBeverage = baseBeverage;
+        var selections = new List<AddOnDto>();
 
         while (true)
         {
@@ -33,23 +34,23 @@ public class AddOnMenu : IAddOnMenu
             Console.WriteLine();
 
             Console.WriteLine("Select: ");
-            var input = Console.ReadLine().Trim();
+            var input = (Console.ReadLine() ?? string.Empty).Trim();
 
             switch (input) 
             {
-                case "1": 
-                    currentBeverage = _assembler.Assemble(currentBeverage, new[] { ("milk", (string?) null) });
+                case "1":
+                    selections.Add(new AddOnDto("milk"));
                     break;
                 case "2":
                     Console.WriteLine("Insert flavor: ");
-                    string flavor = Console.ReadLine().Trim();
-                    currentBeverage = _assembler.Assemble(currentBeverage,new[] { ("syrup", flavor) });
+                    var flavor = (Console.ReadLine() ?? string.Empty).Trim();
+                    selections.Add(new AddOnDto("milk", flavor));
                     break;
                 case "3":
-                    currentBeverage = _assembler.Assemble(currentBeverage, new[] { ("extra shot", (string?)null) });
+                    selections.Add(new AddOnDto("extra shot"));
                     break;
                 case "0":
-                    return currentBeverage;
+                    return _assembler.Assemble(baseBeverage, selections);
                 default:
                     Console.WriteLine("Invalid choice. Try again.");
                     break;

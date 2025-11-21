@@ -45,7 +45,6 @@ public class PublisherObserverTests
 
         var sub1 = new Mock<IOrderEventSubscriber>(MockBehavior.Strict);
         var sub2 = new Mock<IOrderEventSubscriber>(MockBehavior.Strict);
-
         publisher.Register(sub1.Object);
         publisher.Register(sub2.Object);
 
@@ -58,8 +57,8 @@ public class PublisherObserverTests
             Total: 2.00m
         );
 
-        sub1.Setup(s => s.On(It.Is<OrderPlaced>(e => e.Total == 2.00m))).Verifiable();
-        sub2.Setup(s => s.On(It.Is<OrderPlaced>(e => e.Total == 2.00m))).Verifiable();
+        sub1.Setup(s => s.On(It.Is<OrderPlaced>(e => e.Total == 2.00m)));
+        sub2.Setup(s => s.On(It.Is<OrderPlaced>(e => e.Total == 2.00m)));
 
         publisher.Publish(evt);
 

@@ -1,4 +1,6 @@
 
+using Cms.Repository.Repositories;
+
 namespace Cms.WebApi
 {
     public class Program
@@ -8,6 +10,7 @@ namespace Cms.WebApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSingleton<ICmsRepository, InMemoryCmsRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

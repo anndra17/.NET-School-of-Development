@@ -2,7 +2,7 @@
 
 namespace Cms.Repository.Repositories;
 
-public class SqlCmsRepository : ICmsRepository
+public class SqlCmsRepository //: ICmsRepository
 {
     public SqlCmsRepository()
     {

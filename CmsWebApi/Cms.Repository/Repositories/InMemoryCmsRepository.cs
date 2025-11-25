@@ -59,6 +59,24 @@ public class InMemoryCmsRepository : ICmsRepository
         return _courses;
     }
 
+    public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+    {
+        return await Task.Run(() => _courses.ToList());
+    }
+
+    public bool IfCourseExists(int courseId)
+    {
+        return _courses.Any(c => c.CourseId == courseId);
+    }
+
+    public Course GetCourseById(int courseId)
+    {
+        var result = _courses.Where(c => c.CourseId == courseId)
+                             .SingleOrDefault();
+
+        return result;
+    }
+
     public Course AddCourse(Course newCourse)
     {
         var maxCourseId = _courses.Max(c => c.CourseId);
@@ -67,8 +85,20 @@ public class InMemoryCmsRepository : ICmsRepository
 
         return newCourse;
     }
-    public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+
+    public Course UpdateCourse(int courseId, Course course)
     {
-        return await Task.Run(() => _courses.ToList());
+        var result = _courses.Where(c => c.CourseId == courseId)
+                             .SingleOrDefault();
+
+        if (result != null)
+        {
+            result.CourseName = course.CourseName;
+            result.CourseDuration = course.CourseDuration;
+            result.CourseType = course.CourseType;
+        }
+
+        return result;
     }
+
 }

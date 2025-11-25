@@ -58,4 +58,9 @@ public class InMemoryCmsRepository : ICmsRepository
     {
         return _courses;
     }
+
+    public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+    {
+        return await Task.Run(() => _courses.ToList());
+    }
 }

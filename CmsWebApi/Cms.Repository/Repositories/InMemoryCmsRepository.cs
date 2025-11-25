@@ -59,6 +59,14 @@ public class InMemoryCmsRepository : ICmsRepository
         return _courses;
     }
 
+    public Course AddCourse(Course newCourse)
+    {
+        var maxCourseId = _courses.Max(c => c.CourseId);
+        newCourse.CourseId = ++maxCourseId;
+        _courses.Add(newCourse);
+
+        return newCourse;
+    }
     public async Task<IEnumerable<Course>> GetAllCoursesAsync()
     {
         return await Task.Run(() => _courses.ToList());

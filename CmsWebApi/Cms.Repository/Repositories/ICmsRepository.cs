@@ -10,4 +10,5 @@ public interface ICmsRepository
     bool IfCourseExists(int courseId);
     Course GetCourseById(int courseId);
     Course UpdateCourse(int courseId, Course course);
+    Course RemoveCourse(int courseId);
 }

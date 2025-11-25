@@ -101,4 +101,15 @@ public class InMemoryCmsRepository : ICmsRepository
         return result;
     }
 
+    public Course RemoveCourse(int courseId)
+    {
+        var result = _courses.Where(c => c.CourseId == courseId)
+                             .SingleOrDefault();
+        if (result != null)
+        {
+            _courses.Remove(result);
+        }
+
+        return result;
+    }
 }

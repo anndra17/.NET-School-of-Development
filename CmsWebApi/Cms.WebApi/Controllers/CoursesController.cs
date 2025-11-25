@@ -102,6 +102,23 @@ public class CoursesController : ControllerBase
         }
     }
 
+    [HttpPost]
+    public ActionResult<CourseDto> AddCourse([FromBody] CourseDto course)
+    {
+        try
+        {
+            var newCourse = _mapper.Map<Course>(course);
+
+            newCourse = _repository.AddCourse(newCourse);
+
+            return _mapper.Map<CourseDto>(newCourse);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     #region Custom mapper functions
     private CourseDto MapCourseToCourseDto(Course course)
     {

@@ -1,8 +1,8 @@
-﻿using Cms.Repository.DTOs;
+﻿using AutoMapper;
+using Cms.Repository.DTOs;
 using Cms.Repository.Models;
 using Cms.Repository.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Cms.WebApi.Controllers;
 
@@ -11,12 +11,15 @@ namespace Cms.WebApi.Controllers;
 public class CoursesController : ControllerBase
 {
     private readonly ICmsRepository _repository;
+    private readonly IMapper _mapper;
 
-    public CoursesController(ICmsRepository repository)
+    public CoursesController(ICmsRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
+    #region Return type approaches
     // Return type - Approach 1 - primitive or complex type
     //Approach 1: Using LINQ Select to map Course to CourseDto
     //[HttpGet]
@@ -62,24 +65,6 @@ public class CoursesController : ControllerBase
     //    }
     //}
 
-    // Return type - Approach 3 - ActionResult<T>
-    [HttpGet]
-    public ActionResult<List<CourseDto>> GetCoureses()
-    {
-        try
-        {
-            IEnumerable<Course> courses = _repository.GetAllCourses();
-
-            var result = MapCourseToCourseDto(courses);
-
-            return result.ToList(); // Convert to support IActionResult<T>
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
-
     // Return type - Approach 4 - Async Task<T>
     //[HttpGet]
     //public async Task<ActionResult<IEnumerable<CourseDto>>> GetCouresesAsync()
@@ -97,8 +82,27 @@ public class CoursesController : ControllerBase
     //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
     //    }
     //}
+    #endregion
 
-    //Custom mapper functions
+    // Return type - Approach 3 - ActionResult<T>
+    [HttpGet]
+    public ActionResult<List<CourseDto>> GetCoureses()
+    {
+        try
+        {
+            IEnumerable<Course> courses = _repository.GetAllCourses();
+
+            var result = _mapper.Map<CourseDto[]>(courses);
+
+            return result.ToList(); 
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    #region Custom mapper functions
     private CourseDto MapCourseToCourseDto(Course course)
     {
         return new CourseDto()
@@ -124,4 +128,5 @@ public class CoursesController : ControllerBase
 
         return result;
     }
+    #endregion
 }

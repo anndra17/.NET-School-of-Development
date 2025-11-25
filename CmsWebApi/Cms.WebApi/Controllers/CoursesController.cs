@@ -101,6 +101,43 @@ public class CoursesController : ControllerBase
         }
     }
 
+    [HttpGet("courseId")]
+    public ActionResult<CourseDto> GetCourse(int courseId)
+    {
+        try
+        {
+            if (!_repository.IfCourseExists(courseId))
+                return NotFound();
+
+            var searchedCourse = _repository.GetCourseById(courseId);
+
+            return _mapper.Map<CourseDto>(searchedCourse);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpPut("{courseId}")]
+    public ActionResult<CourseDto> UpdateCourse(int courseId, CourseDto course)
+    {
+        try
+        {
+            if (!_repository.IfCourseExists(courseId))
+                return NotFound();
+
+            var updatedCourse = _mapper.Map<Course>(course);
+            updatedCourse = _repository.UpdateCourse(courseId, updatedCourse);
+
+            return _mapper.Map<CourseDto>(updatedCourse);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     #region Async methods
     // Return type - Approach 4 - Async Task<T>
     //[HttpGet]

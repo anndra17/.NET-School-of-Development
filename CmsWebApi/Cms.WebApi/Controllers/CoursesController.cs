@@ -64,24 +64,6 @@ public class CoursesController : ControllerBase
     //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
     //    }
     //}
-
-    // Return type - Approach 4 - Async Task<T>
-    //[HttpGet]
-    //public async Task<ActionResult<IEnumerable<CourseDto>>> GetCouresesAsync()
-    //{
-    //    try
-    //    {
-    //        IEnumerable<Course> courses = await _repository.GetAllCoursesAsync();
-
-    //        var result = MapCourseToCourseDto(courses);
-
-    //        return result.ToList(); // Convert to support IActionResult<T>
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-    //    }
-    //}
     #endregion
 
     // Return type - Approach 3 - ActionResult<T>
@@ -118,6 +100,26 @@ public class CoursesController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    #region Async methods
+    // Return type - Approach 4 - Async Task<T>
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<CourseDto>>> GetCouresesAsync()
+    //{
+    //    try
+    //    {
+    //        IEnumerable<Course> courses = await _repository.GetAllCoursesAsync();
+
+    //        var result = MapCourseToCourseDto(courses);
+
+    //        return result.ToList(); // Convert to support IActionResult<T>
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
+    #endregion
 
     #region Custom mapper functions
     private CourseDto MapCourseToCourseDto(Course course)

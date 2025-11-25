@@ -17,6 +17,7 @@ public class CoursesController : ControllerBase
         _repository = repository;
     }
 
+    // Return type - Approach 1 - primitive or complex type
     //Approach 1: Using LINQ Select to map Course to CourseDto
     //[HttpGet]
     //public IEnumerable<Course> GetCoureses()
@@ -24,8 +25,46 @@ public class CoursesController : ControllerBase
     //    return _repository.GetAllCourses();
     //}
 
+
+    // Return type - Approach 1 - primitive or complex type
+    //[HttpGet]
+    //public IEnumerable<CourseDto> GetCoureses()
+    //{
+    //    try
+    //    {
+    //        IEnumerable<Course> courses = _repository.GetAllCourses();
+
+    //        var result = MapCourseToCourseDto(courses);
+
+    //        return result;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw;
+    //    }
+    //}
+
+    // Return type - Aproach 2 - use IActionResult
+    //[HttpGet]
+    //public IActionResult GetCoureses()
+    //{
+    //    try
+    //    {
+    //        IEnumerable<Course> courses = _repository.GetAllCourses();
+
+    //        var result = MapCourseToCourseDto(courses);
+
+    //        return Ok(result);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
+
+    // Return type - Approach 3 - ActionResult<T>
     [HttpGet]
-    public IEnumerable<CourseDto> GetCoureses()
+    public ActionResult<List<CourseDto>> GetCoureses()
     {
         try
         {
@@ -33,13 +72,31 @@ public class CoursesController : ControllerBase
 
             var result = MapCourseToCourseDto(courses);
 
-            return result;
+            return result.ToList(); // Convert to support IActionResult<T>
         }
         catch (Exception ex)
         {
-            throw;
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    // Return type - Approach 4 - Async Task<T>
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<CourseDto>>> GetCouresesAsync()
+    //{
+    //    try
+    //    {
+    //        IEnumerable<Course> courses = await _repository.GetAllCoursesAsync();
+
+    //        var result = MapCourseToCourseDto(courses);
+
+    //        return result.ToList(); // Convert to support IActionResult<T>
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
 
     //Custom mapper functions
     private CourseDto MapCourseToCourseDto(Course course)

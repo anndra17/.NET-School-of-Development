@@ -138,6 +138,27 @@ public class CoursesController : ControllerBase
         }
     }
 
+    [HttpDelete("courseId")]
+    public ActionResult<CourseDto> RemoveCourse(int courseId)
+    {
+        try
+        {
+            if (!_repository.IfCourseExists(courseId))
+                return NotFound();
+
+            var course = _repository.RemoveCourse(courseId);
+
+            if (course == null)
+                return BadRequest();
+
+            return _mapper.Map<CourseDto>(course);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     #region Async methods
     // Return type - Approach 4 - Async Task<T>
     //[HttpGet]

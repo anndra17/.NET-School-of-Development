@@ -1,6 +1,7 @@
 
 using Cms.Repository.Repositories;
 using Cms.WebApi.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cms.WebApi
 {
@@ -15,7 +16,14 @@ namespace Cms.WebApi
             builder.Services.AddAutoMapper(cfg => { }, typeof(CmsMapper));
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            // API Versioning
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

@@ -4,9 +4,11 @@ using Cms.Repository.Models;
 using Cms.Repository.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Cms.WebApi.Controllers;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("[controller]")]
 public class CoursesController : ControllerBase
 {

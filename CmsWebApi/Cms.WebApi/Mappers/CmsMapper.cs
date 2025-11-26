@@ -10,5 +10,7 @@ public class CmsMapper : Profile
     {
         CreateMap<CourseDto, Course>()
             .ReverseMap();
+        CreateMap<StudentDto, Student>()
+            .ReverseMap();
     }
 }

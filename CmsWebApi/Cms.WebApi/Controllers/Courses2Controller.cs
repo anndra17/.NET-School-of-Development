@@ -9,7 +9,7 @@ namespace Cms.WebApi.Controllers;
 
 [ApiController]
 [ApiVersion("2.0")]
-[Route("[controller]")]
+[Route("v{version:apiVersion}/courses")]
 public class Courses2Controller : ControllerBase
 {
     private readonly ICmsRepository _repository;
@@ -91,6 +91,30 @@ public class Courses2Controller : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    //[HttpGet]
+    //[MapToApiVersion("3.0")]
+    //public ActionResult<List<CourseDto>> GetCoureses_v3()
+    //{
+    //    try
+    //    {
+    //        IEnumerable<Course> courses = _repository.GetAllCourses();
+
+    //        var result = _mapper.Map<CourseDto[]>(courses);
+
+    //        // version 2 changes
+    //        foreach (var item in result)
+    //        {
+    //            item.CourseName += " (v3.0)";
+    //        }
+
+    //        return result.ToList();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    //    }
+    //}
 
     [HttpPost]
     public ActionResult<CourseDto> AddCourse([FromBody] CourseDto course)

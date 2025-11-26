@@ -5,6 +5,7 @@ namespace Cms.Repository.Repositories;
 public class InMemoryCmsRepository : ICmsRepository
 {
     List<Course> _courses = null;
+    List<Student> _students = null;
     public InMemoryCmsRepository()
     {
         _courses = new List<Course>();
@@ -50,6 +51,30 @@ public class InMemoryCmsRepository : ICmsRepository
                 CourseName = "BDS", 
                 CourseDuration = 5, 
                 CourseType = COURSE_TYPE.MEDICAL 
+            }
+        );
+
+        _students = new List<Student>();
+        _students.Add(
+            new Student()
+            {
+                StudentId = 101,
+                FirstName = "James",
+                LastName = "Smith",
+                PhoneNumber = "555-555-1234",
+                Address = "US",
+                Course = _courses.Where(c => c.CourseId == 1).SingleOrDefault()
+            }
+        );
+        _students.Add(
+            new Student()
+            {
+                StudentId = 102,
+                FirstName = "Ana",
+                LastName = "Moore",
+                PhoneNumber = "333-333-1234",
+                Address = "RO",
+                Course = _courses.Where(c => c.CourseId == 1).SingleOrDefault()
             }
         );
     }
@@ -112,4 +137,31 @@ public class InMemoryCmsRepository : ICmsRepository
 
         return result;
     }
+
+    public IEnumerable<Student> GetStudents(int courseId)
+    {
+        return _students.Where(s => s.Course.CourseId == courseId);
+    }
+
+    //public Student AddStudent(int courseId, Student student)
+    //{
+    //    var result = _courses.Where(c => c.CourseId == courseId).FirstOrDefault();
+
+    //    if (result != null)
+    //    {
+    //        _students.Add(
+    //            new Student
+    //            {
+    //                StudentId = student.StudentId,
+    //                FirstName = student.FirstName,
+    //                LastName = student.LastName,
+    //                PhoneNumber = student.PhoneNumber,
+    //                Address = student.Address,
+    //                Course = result
+    //            }
+    //        );
+    //    }
+
+    //    return student;
+    //}
 }

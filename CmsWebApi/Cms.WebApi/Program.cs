@@ -21,12 +21,17 @@ namespace Cms.WebApi
             // API Versioning
             builder.Services.AddApiVersioning(setupAction =>
             {
-                setupAction.DefaultApiVersion = new ApiVersion(1, 0);
-                setupAction.AssumeDefaultVersionWhenUnspecified = true;
+            setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+            setupAction.AssumeDefaultVersionWhenUnspecified = true;
 
                 //setupAction.ApiVersionReader = new QueryStringApiVersionReader("v"); // Query versioning
                 //setupAction.ApiVersionReader = new UrlSegmentApiVersionReader();  // URL Versioning
-                setupAction.ApiVersionReader = new HeaderApiVersionReader("X-Version");
+                //setupAction.ApiVersionReader = new HeaderApiVersionReader("X-Version");
+
+                setupAction.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("v"),
+                    new HeaderApiVersionReader("X-Version")
+                    );
             });
 
             builder.Services.AddEndpointsApiExplorer();

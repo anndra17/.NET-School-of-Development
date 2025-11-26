@@ -17,5 +17,5 @@ public interface ICmsRepository
 
     // Association
     IEnumerable<Student> GetStudents(int courseId);
-    //Student AddStudent(int courseId, Student student);
+    Student AddStudent(Student student);
 }

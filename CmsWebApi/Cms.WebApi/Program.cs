@@ -25,7 +25,8 @@ namespace Cms.WebApi
                 setupAction.AssumeDefaultVersionWhenUnspecified = true;
 
                 //setupAction.ApiVersionReader = new QueryStringApiVersionReader("v"); // Query versioning
-                setupAction.ApiVersionReader = new UrlSegmentApiVersionReader();
+                //setupAction.ApiVersionReader = new UrlSegmentApiVersionReader();  // URL Versioning
+                setupAction.ApiVersionReader = new HeaderApiVersionReader("X-Version");
             });
 
             builder.Services.AddEndpointsApiExplorer();

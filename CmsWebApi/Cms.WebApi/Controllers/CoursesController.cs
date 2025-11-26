@@ -9,7 +9,8 @@ namespace Cms.WebApi.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
+//[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class CoursesController : ControllerBase
 {
     private readonly ICmsRepository _repository;

@@ -143,25 +143,12 @@ public class InMemoryCmsRepository : ICmsRepository
         return _students.Where(s => s.Course.CourseId == courseId);
     }
 
-    //public Student AddStudent(int courseId, Student student)
-    //{
-    //    var result = _courses.Where(c => c.CourseId == courseId).FirstOrDefault();
+    public Student AddStudent(Student newStudent)
+    {
+        var maxStudentId = _students.Max(s => s.StudentId);
+        newStudent.StudentId = ++maxStudentId;
+        _students.Add(newStudent);
 
-    //    if (result != null)
-    //    {
-    //        _students.Add(
-    //            new Student
-    //            {
-    //                StudentId = student.StudentId,
-    //                FirstName = student.FirstName,
-    //                LastName = student.LastName,
-    //                PhoneNumber = student.PhoneNumber,
-    //                Address = student.Address,
-    //                Course = result
-    //            }
-    //        );
-    //    }
-
-    //    return student;
-    //}
+        return newStudent;
+    }
 }

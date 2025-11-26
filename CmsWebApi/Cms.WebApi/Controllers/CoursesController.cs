@@ -119,7 +119,7 @@ public class CoursesController : ControllerBase
         }
     }
 
-    [HttpPut("{courseId}")]
+    [HttpPut("courseId")]
     public ActionResult<CourseDto> UpdateCourse(int courseId, CourseDto course)
     {
         try
@@ -152,6 +152,26 @@ public class CoursesController : ControllerBase
                 return BadRequest();
 
             return _mapper.Map<CourseDto>(course);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    // Association
+    [HttpGet("courseId/students")]
+    public ActionResult<IEnumerable<StudentDto>> GetStudents(int courseId)
+    {
+        try
+        {
+            if (!_repository.IfCourseExists(courseId))
+                return NotFound();
+
+            IEnumerable<Student> students = _repository.GetStudents(courseId);
+            var result = _mapper.Map<StudentDto[]>(students);
+
+            return result;
         }
         catch (Exception ex)
         {

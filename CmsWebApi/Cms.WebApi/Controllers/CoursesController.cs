@@ -179,6 +179,30 @@ public class CoursesController : ControllerBase
         }
     }
 
+    [HttpPost("{courseId}/students")]
+    public ActionResult<StudentDto> AddStudent(int courseId, [FromBody] StudentDto student)
+    {
+        try
+        {
+            if (!_repository.IfCourseExists(courseId))
+                return NotFound();
+
+            var newStudent = _mapper.Map<Student>(student);
+
+            var course = _repository.GetCourseById(courseId);
+            newStudent.Course = course;
+
+            newStudent = _repository.AddStudent(newStudent);
+            var result = _mapper.Map<StudentDto>(newStudent);
+
+            return StatusCode(StatusCodes.Status201Created, result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     #region Async methods
     // Return type - Approach 4 - Async Task<T>
     //[HttpGet]

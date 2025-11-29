@@ -10,7 +10,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public GenericRepository(HotelListingDbContext context)
     {
-        context = _context;
+        _context = context;
     }
 
     public async Task<T> AddAsync(T entity)

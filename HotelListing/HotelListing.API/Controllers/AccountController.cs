@@ -56,4 +56,22 @@ public class AccountController : ControllerBase
 
         return Ok();
     }
+
+    // api/Account/refreshtoken
+    [HttpPost]
+    [Route("refreshtoken")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
+    {
+        var authResponse = await _authManager.VerifyRefreshToken(request);
+
+        if (authResponse is null)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(authResponse);
+    }
 }

@@ -1,11 +1,13 @@
 ﻿using HotelListing.API.Contracts;
 using HotelListing.API.Models.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelListing.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AccountController : ControllerBase
 {
     private readonly IAuthManager _authManager;
@@ -18,6 +20,7 @@ public class AccountController : ControllerBase
     // api/Account/login
     [HttpPost]
     [Route("login")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
@@ -29,12 +32,13 @@ public class AccountController : ControllerBase
             return Unauthorized();
         }
 
-        return Ok();
+        return Ok(authResponse);
     }
 
     // api/Account/register
     [HttpPost]
     [Route("register")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Register([FromBody] ApiUserDto apiUserDto)

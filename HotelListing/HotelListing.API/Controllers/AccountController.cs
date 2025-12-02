@@ -15,9 +15,26 @@ public class AccountController : ControllerBase
         _authManager = authManager;
     }
 
+    // api/Account/login
+    [HttpPost]
+    [Route("login")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
+    {
+        var isValidUser = await _authManager.Login(loginDto);
+
+        if (!isValidUser)
+        {
+            return Unauthorized();
+        }
+
+        return Ok();
+    }
+
     // api/Account/register
     [HttpPost]
-    [Route("/register")]
+    [Route("register")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Register([FromBody] ApiUserDto apiUserDto)

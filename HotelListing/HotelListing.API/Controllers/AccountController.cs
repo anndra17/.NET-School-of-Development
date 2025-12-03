@@ -28,22 +28,15 @@ public class AccountController : ControllerBase
     public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
     {
         _logger.LogInformation($"Login Attempt for {loginDto.Email}");
-        try
-        {
-            var authResponse = await _authManager.Login(loginDto);
 
-            if (authResponse is null)
-            {
-                return Unauthorized();
-            }
+        var authResponse = await _authManager.Login(loginDto);
 
-            return Ok(authResponse);
-        }
-        catch (Exception ex) 
+        if (authResponse is null)
         {
-            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Login)} - User Login attemtp for {loginDto.Email}\"");
-            return Problem($"Something Went Wrong in the {nameof(Login)}", statusCode: 500);
+            return Unauthorized();
         }
+
+        return Ok(authResponse);
     }
 
     // api/Account/register
@@ -56,26 +49,18 @@ public class AccountController : ControllerBase
     {
         _logger.LogInformation($"Registration Attempt for {apiUserDto.Email}");
 
-        try
-        {
-            var errors = await _authManager.Register(apiUserDto);
+        var errors = await _authManager.Register(apiUserDto);
 
-            if (errors.Any())
+        if (errors.Any())
+        {
+            foreach (var error in errors)
             {
-                foreach (var error in errors)
-                {
-                    ModelState.AddModelError(error.Code, error.Description);
-                }
-                return BadRequest(ModelState);
+                ModelState.AddModelError(error.Code, error.Description);
             }
+            return BadRequest(ModelState);
+        }
 
-            return Ok();
-        }
-        catch (Exception ex) 
-        {
-            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)} - User Registration attemtp for {apiUserDto.Email}");
-            return Problem($"Something Went Wrong in the {nameof(Register)}", statusCode: 500);
-        }
+        return Ok();
     }
 
     // api/Account/refreshtoken
@@ -88,21 +73,13 @@ public class AccountController : ControllerBase
     {
         _logger.LogInformation($"RefreshToken Attempt for user with ID {request.UserId}");
 
-        try
-        {
-            var authResponse = await _authManager.VerifyRefreshToken(request);
+        var authResponse = await _authManager.VerifyRefreshToken(request);
 
-            if (authResponse is null)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(authResponse);
-        }
-        catch (Exception ex)
+        if (authResponse is null)
         {
-            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)} - Refresh Token attemtp for User with ID {request.UserId}");
-            return Problem($"Something Went Wrong in the {nameof(RefreshToken)}", statusCode: 500);
+            return Unauthorized();
         }
+
+        return Ok(authResponse);
     }
 }

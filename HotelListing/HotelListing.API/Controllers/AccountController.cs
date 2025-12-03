@@ -11,10 +11,12 @@ namespace HotelListing.API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly IAuthManager _authManager;
+    private readonly ILogger<AccountController> _logger;
 
-    public AccountController(IAuthManager authManager)
+    public AccountController(IAuthManager authManager, ILogger<AccountController> logger)
     {
         _authManager = authManager;
+        _logger = logger;
     }
 
     // api/Account/login
@@ -25,14 +27,23 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
     {
-        var authResponse = await _authManager.Login(loginDto);
-
-        if (authResponse is null)
+        _logger.LogInformation($"Login Attempt for {loginDto.Email}");
+        try
         {
-            return Unauthorized();
-        }
+            var authResponse = await _authManager.Login(loginDto);
 
-        return Ok(authResponse);
+            if (authResponse is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(authResponse);
+        }
+        catch (Exception ex) 
+        {
+            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Login)} - User Login attemtp for {loginDto.Email}\"");
+            return Problem($"Something Went Wrong in the {nameof(Login)}", statusCode: 500);
+        }
     }
 
     // api/Account/register
@@ -43,18 +54,28 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Register([FromBody] ApiUserDto apiUserDto)
     {
-        var errors = await _authManager.Register(apiUserDto);
+        _logger.LogInformation($"Registration Attempt for {apiUserDto.Email}");
 
-        if (errors.Any())
+        try
         {
-            foreach (var error in errors) 
-            {
-                ModelState.AddModelError(error.Code, error.Description);
-            }
-            return BadRequest(ModelState);
-        }
+            var errors = await _authManager.Register(apiUserDto);
 
-        return Ok();
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            return Ok();
+        }
+        catch (Exception ex) 
+        {
+            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)} - User Registration attemtp for {apiUserDto.Email}");
+            return Problem($"Something Went Wrong in the {nameof(Register)}", statusCode: 500);
+        }
     }
 
     // api/Account/refreshtoken
@@ -65,13 +86,23 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
     {
-        var authResponse = await _authManager.VerifyRefreshToken(request);
+        _logger.LogInformation($"RefreshToken Attempt for user with ID {request.UserId}");
 
-        if (authResponse is null)
+        try
         {
-            return Unauthorized();
-        }
+            var authResponse = await _authManager.VerifyRefreshToken(request);
 
-        return Ok(authResponse);
+            if (authResponse is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(authResponse);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)} - Refresh Token attemtp for User with ID {request.UserId}");
+            return Problem($"Something Went Wrong in the {nameof(RefreshToken)}", statusCode: 500);
+        }
     }
 }

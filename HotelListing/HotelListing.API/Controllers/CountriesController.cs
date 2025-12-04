@@ -6,6 +6,7 @@ using HotelListing.API.Models;
 using HotelListing.API.Models.Country;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelListing.API.Controllers;
@@ -27,6 +28,7 @@ public class CountriesController : ControllerBase
 
     // GET: api/Countries/GetAll
     [HttpGet("GetAll")]
+    [EnableQuery]
     public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
     {
         var countries = await _countriesRepository.GetAllAsync();

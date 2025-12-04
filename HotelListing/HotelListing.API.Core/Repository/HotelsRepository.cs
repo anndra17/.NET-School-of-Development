@@ -2,7 +2,7 @@
 using HotelListing.API.Contracts;
 using HotelListing.API.Data;
 
-namespace HotelListing.API.Repository
+namespace HotelListing.API.Core.Repository
 {
     public class HotelsRepository : GenericRepository<Hotel>, IHotelRepository
     {

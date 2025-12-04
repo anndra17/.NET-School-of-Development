@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace HotelListing.API.Repository;
+namespace HotelListing.API.Core.Repository;
 
 public class AuthManager : IAuthManager
 {

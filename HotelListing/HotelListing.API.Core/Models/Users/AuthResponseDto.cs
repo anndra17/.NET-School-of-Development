@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace HotelListing.API.Models.Users;
+namespace HotelListing.API.Core.Models.Users;
 
 public class AuthResponseDto
 {

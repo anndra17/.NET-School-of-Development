@@ -5,17 +5,16 @@ namespace EFCore.Data.Repository;
 
 public class FootballLeagueDbContext : DbContext
 {
-    private string _dbPath;
+    private readonly string _dbPath;
 
     public FootballLeagueDbContext()
     {
-        var folder = Environment.SpecialFolder.ApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        _dbPath = Path.Combine(path, "FootballLeague_EfCore.db");
+        var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        _dbPath = Path.Combine(folder, "FootballLeague_EfCore.db");
     }
 
     public DbSet<Team> Teams { get; set; }
-    public DbSet<Coach> Coach { get; set; }
+    public DbSet<Coach> Coaches { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -24,6 +23,6 @@ public class FootballLeagueDbContext : DbContext
         //      Initial Catalog=FotballLeague_EfCore; Encrypt=False");
 
         // Using SQLite
-        optionsBuilder.UseSqlite("Data Source=FotballLeague_EfCore.db");
+        optionsBuilder.UseSqlite($"Data Source={_dbPath}");
     }
 }

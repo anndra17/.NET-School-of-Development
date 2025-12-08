@@ -32,7 +32,7 @@ namespace EFCore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coach");
+                    b.ToTable("Coaches");
                 });
 
             modelBuilder.Entity("EFCore.Domain.Models.Team", b =>

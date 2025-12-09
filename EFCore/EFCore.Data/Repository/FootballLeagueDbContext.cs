@@ -1,6 +1,6 @@
 ﻿using EFCore.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace EFCore.Data.Repository;
 
@@ -24,7 +24,10 @@ public class FootballLeagueDbContext : DbContext
         //      Initial Catalog=FotballLeague_EfCore; Encrypt=False");
 
         // Using SQLite
-        optionsBuilder.UseSqlite($"Data Source={_dbPath}");
+        optionsBuilder.UseSqlite($"Data Source={_dbPath}")
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

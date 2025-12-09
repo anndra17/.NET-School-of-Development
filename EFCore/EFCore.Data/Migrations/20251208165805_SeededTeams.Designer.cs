@@ -3,6 +3,7 @@ using System;
 using EFCore.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore.Data.Migrations
 {
     [DbContext(typeof(FootballLeagueDbContext))]
-    partial class FootballLeagueDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208165805_SeededTeams")]
+    partial class SeededTeams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -55,19 +58,19 @@ namespace EFCore.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2025, 12, 8, 16, 58, 4, 396, DateTimeKind.Unspecified).AddTicks(464),
                             Name = "Tivoli Gardens FC"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2025, 12, 8, 16, 58, 4, 396, DateTimeKind.Unspecified).AddTicks(965),
                             Name = "Dinamo FC"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2004, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2025, 12, 8, 16, 58, 4, 396, DateTimeKind.Unspecified).AddTicks(973),
                             Name = "FCSDB"
                         });
                 });

@@ -25,6 +25,7 @@ public class FootballLeagueDbContext : DbContext
 
         // Using SQLite
         optionsBuilder.UseSqlite($"Data Source={_dbPath}")
+            //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .LogTo(Console.WriteLine, LogLevel.Information)
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors();

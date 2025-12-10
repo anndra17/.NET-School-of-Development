@@ -29,15 +29,13 @@ using var context = new FootballLeagueDbContext();
 // await SkipAndTake();
 
 // Select and Projections - more precise queries
+await ProjectionsAndSelect();
 
-var teamNames = await context.Teams
-    .Select(t => new TeamInfo{ Name = t.Name,TeamId = t.Id })
-    .ToListAsync();
-
-foreach (var team in teamNames)
-{
-    Console.WriteLine($"{team.Name} - {team.TeamId}");
-}
+// No Tracking - EF Core tracks objects that are returned by queries.
+// This is less useful in disconnected applications like APIs and web apps
+//var teams = await context.Teams
+//    .AsNoTracking()
+//    .ToListAsync();
 
 async Task GetAllTeams()
 {
@@ -238,8 +236,20 @@ async Task SkipAndTake()
     }
 }
 
+async Task ProjectionsAndSelect()
+{
+    var teamNames = await context.Teams
+    .Select(t => new TeamInfo { Name = t.Name, TeamId = t.Id })
+    .ToListAsync();
+
+    foreach (var team in teamNames)
+    {
+        Console.WriteLine($"{team.Name} - {team.TeamId}");
+    }
+}
 class TeamInfo
 {
     public int TeamId { get; set; }
     public string Name { get; set; }
 }
+

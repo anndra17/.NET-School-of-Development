@@ -19,6 +19,9 @@ using var context = new FootballLeagueDbContext();
 // Aggregate Methods
 // await AggregateMethpds();
 
+// Grouping and Aggregating
+await GroupByMethod();
+
 async Task GetAllTeams()
 {
     // Select all teams
@@ -148,4 +151,24 @@ async Task AggregateMethpds()
 
     // Sum
     var sumTeams = await context.Teams.SumAsync(t => t.Id);
+}
+
+async Task GroupByMethod()
+{
+    var groupTeams = await context.Teams
+        //.Where(t => t.Name == '') // translate to a WHERE clause
+        .GroupBy(t => t.CreatedDate.Date)
+        //.Where(t => t.Average()) // translate to a HAVING clause
+        .ToListAsync();
+
+    foreach (var group in groupTeams)
+    {
+        Console.WriteLine(group.Key);
+        Console.WriteLine(group.Sum(t => t.Id));
+
+        foreach (var team in group)
+        {
+            Console.WriteLine(team.Name);
+        }
+    }
 }

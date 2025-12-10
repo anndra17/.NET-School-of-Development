@@ -1,5 +1,6 @@
 ﻿using EFCore.Data.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 // 1. Instance of ctx
 using var context = new FootballLeagueDbContext();
@@ -8,7 +9,10 @@ using var context = new FootballLeagueDbContext();
 // await GetAllTeams();
 
 // Select one team
-await GetOneTeam();
+//await GetOneTeam();
+
+// Select all records from the table that meets a condition
+await GetFilteredTeams();
 
 async Task GetAllTeams()
 {
@@ -79,3 +83,18 @@ async Task GetOneTeam()
     }
 }
    
+async Task GetFilteredTeams()
+{
+    Console.WriteLine("Enter Desired Team: ");
+    var desiredTeam = Console.ReadLine();
+
+    if (desiredTeam != null)
+    {
+        var teamsFiltered = await context.Teams.Where(t => t.Name == desiredTeam)
+        .ToListAsync();
+        foreach (var team in teamsFiltered)
+        {
+            Console.WriteLine(team.Name);
+        }
+    }
+}

@@ -8,13 +8,13 @@ using var context = new FootballLeagueDbContext();
 
 // Select all teams
 // await GetAllTeams();
- await GetAllTeamsQuerySyntax();
+// await GetAllTeamsQuerySyntax();
 
 // Select one team
 //await GetOneTeam();
 
 // Select all records from the table that meets a condition
-//await GetFilteredTeams();
+await GetFilteredTeams();
 
 async Task GetAllTeams()
 {
@@ -87,18 +87,25 @@ async Task GetOneTeam()
    
 async Task GetFilteredTeams()
 {
-    Console.WriteLine("Enter Desired Team: ");
-    var desiredTeam = Console.ReadLine();
+    Console.WriteLine("Enter Search Term: ");
+    var searchTerm = Console.ReadLine();
 
-    if (desiredTeam != null)
+    var teamsFiltered = await context.Teams.Where(t => t.Name == searchTerm)
+      .ToListAsync();
+
+    foreach (var team in teamsFiltered)
     {
-        var teamsFiltered = await context.Teams.Where(t => t.Name == desiredTeam)
-        .ToListAsync();
+        Console.WriteLine(team.Name);
+    }
 
-        foreach (var team in teamsFiltered)
-        {
-            Console.WriteLine(team.Name);
-        }
+    // var partialMatches = await context.Teams.Where(t => t.Name.Contains(searchTerm)).ToListAsync();
+
+    // select * from Teams WHERE Name LIKE '%FC%'
+    var partialMatches = await context.Teams.Where(t => EF.Functions.Like(t.Name, $"%{searchTerm}%")).ToListAsync();
+
+    foreach (var team in partialMatches)
+    {
+        Console.WriteLine(team.Name);
     }
 }
 
@@ -108,7 +115,7 @@ async Task GetAllTeamsQuerySyntax()
     var desiredTeam = Console.ReadLine();
 
     var teams = await (from team in context.Teams
-                       where EF.Functions.Like(team.Name, $"%{desiredTeam}")
+                       where EF.Functions.Like(team.Name, $"%{desiredTeam}%")
                        select team)
                      .ToListAsync();
 

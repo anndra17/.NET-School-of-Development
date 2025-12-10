@@ -20,7 +20,10 @@ using var context = new FootballLeagueDbContext();
 // await AggregateMethpds();
 
 // Grouping and Aggregating
-await GroupByMethod();
+// await GroupByMethod();
+
+// Ordering 
+await OrderByMethod();
 
 async Task GetAllTeams()
 {
@@ -171,4 +174,32 @@ async Task GroupByMethod()
             Console.WriteLine(team.Name);
         }
     }
+}
+
+async Task OrderByMethod()
+{
+    var orderedTeams = await context.Teams
+        .OrderBy(t => t.Name)
+        .ToListAsync();
+
+    foreach (var team in orderedTeams)
+    {
+        Console.WriteLine(team.Name);
+    }
+
+    var descOrderedTeams = await context.Teams
+        .OrderByDescending(t => t.Name)
+        .ToListAsync();
+
+    foreach (var team in descOrderedTeams)
+    {
+        Console.WriteLine(team.Name);
+    }
+
+    // Getting the record with a maximum value
+    var maxBy = context.Teams.MaxBy(t => t.Id);
+    //or
+    var maxByDescendingOrder = await context.Teams
+        .OrderByDescending(t => t.Id)
+        .FirstOrDefaultAsync();
 }

@@ -1,5 +1,6 @@
 ﻿using EFCore.Data.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Transactions;
 
 // 1. Instance of ctx
@@ -7,12 +8,13 @@ using var context = new FootballLeagueDbContext();
 
 // Select all teams
 // await GetAllTeams();
+ await GetAllTeamsQuerySyntax();
 
 // Select one team
 //await GetOneTeam();
 
 // Select all records from the table that meets a condition
-await GetFilteredTeams();
+//await GetFilteredTeams();
 
 async Task GetAllTeams()
 {
@@ -92,9 +94,26 @@ async Task GetFilteredTeams()
     {
         var teamsFiltered = await context.Teams.Where(t => t.Name == desiredTeam)
         .ToListAsync();
+
         foreach (var team in teamsFiltered)
         {
             Console.WriteLine(team.Name);
         }
+    }
+}
+
+async Task GetAllTeamsQuerySyntax()
+{
+    Console.WriteLine("Enter Desired Team: ");
+    var desiredTeam = Console.ReadLine();
+
+    var teams = await (from team in context.Teams
+                       where EF.Functions.Like(team.Name, $"%{desiredTeam}")
+                       select team)
+                     .ToListAsync();
+
+    foreach (var team in teams)
+    {
+        Console.WriteLine(team.Name);
     }
 }

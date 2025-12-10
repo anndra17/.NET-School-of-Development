@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Transactions;
 
-// 1. Instance of ctx
+// 1. Instance of context
 using var context = new FootballLeagueDbContext();
 
 // Select all teams
@@ -14,7 +14,10 @@ using var context = new FootballLeagueDbContext();
 //await GetOneTeam();
 
 // Select all records from the table that meets a condition
-await GetFilteredTeams();
+//await GetFilteredTeams();
+
+// Aggregate Methods
+// await AggregateMethpds();
 
 async Task GetAllTeams()
 {
@@ -123,4 +126,26 @@ async Task GetAllTeamsQuerySyntax()
     {
         Console.WriteLine(team.Name);
     }
+}
+
+async Task AggregateMethpds()
+{
+    // Count
+    var numberOfTeams = await context.Teams.CountAsync();
+    Console.WriteLine($"Number of Teams: {numberOfTeams}");
+
+    var numberOfTeamsWithCondition = await context.Teams.CountAsync(t => t.Id == 2);
+    Console.WriteLine($"Number of Teams with condition above: {numberOfTeamsWithCondition}");
+
+    // Max
+    var maxTeams = await context.Teams.MaxAsync(t => t.Id);
+
+    // Min
+    var minTeams = await context.Teams.MinAsync(t => t.Id);
+
+    // Average
+    var avgTeams = await context.Teams.AverageAsync(t => t.Id);
+
+    // Sum
+    var sumTeams = await context.Teams.SumAsync(t => t.Id);
 }

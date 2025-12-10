@@ -26,21 +26,17 @@ using var context = new FootballLeagueDbContext();
 // await OrderByMethod();
 
 // Skip and Take - Great for Paging
-var recordCount = 3;
-var page = 0;
-var next = true;
-while (next)
-{
-    var teams = await context.Teams.Skip(page * recordCount).Take(recordCount).ToListAsync();
-    foreach (var team in teams)
-    {
-        Console.WriteLine(team.Name);
-    }
-    Console.WriteLine("Enter 'true' for the next set of records, 'false' to exit");
-    next = Convert.ToBoolean(Console.ReadLine());
+// await SkipAndTake();
 
-    if (!next) break;
-    page++;
+// Select and Projections - more precise queries
+
+var teamNames = await context.Teams
+    .Select(t => new TeamInfo{ Name = t.Name,TeamId = t.Id })
+    .ToListAsync();
+
+foreach (var team in teamNames)
+{
+    Console.WriteLine($"{team.Name} - {team.TeamId}");
 }
 
 async Task GetAllTeams()
@@ -220,4 +216,30 @@ async Task OrderByMethod()
     var maxByDescendingOrder = await context.Teams
         .OrderByDescending(t => t.Id)
         .FirstOrDefaultAsync();
+}
+
+async Task SkipAndTake()
+{
+    var recordCount = 3;
+    var page = 0;
+    var next = true;
+    while (next)
+    {
+        var teams = await context.Teams.Skip(page * recordCount).Take(recordCount).ToListAsync();
+        foreach (var team in teams)
+        {
+            Console.WriteLine(team.Name);
+        }
+        Console.WriteLine("Enter 'true' for the next set of records, 'false' to exit");
+        next = Convert.ToBoolean(Console.ReadLine());
+
+        if (!next) break;
+        page++;
+    }
+}
+
+class TeamInfo
+{
+    public int TeamId { get; set; }
+    public string Name { get; set; }
 }

@@ -1,6 +1,8 @@
-﻿using EFCore.Domain.Models;
+﻿using EFCore.Data.Configurations;
+using EFCore.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace EFCore.Data.Repository;
 
@@ -35,24 +37,9 @@ public class FootballLeagueDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Team>().HasData(
-            new Team
-            {
-                Id = 1,
-                Name = "Tivoli Gardens FC",
-                CreatedDate = new DateTime(2024, 01, 01),
-            },
-            new Team
-            {
-                Id = 2,
-                Name = "Dinamo FC",
-                CreatedDate = new DateTime(2025, 04, 01),
-            },
-            new Team
-            {
-                Id = 3,
-                Name = "FCSDB",
-                CreatedDate = new DateTime(2004, 01, 01),
-            });
+        //modelBuilder.ApplyConfiguration(new TeamConfiguration());
+        //modelBuilder.ApplyConfiguration(new LeagueConfiguration());
+
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

@@ -44,40 +44,17 @@ using var context = new FootballLeagueDbContext();
 // INSERT INTO Coaches (cols) VALUES (values)
 
 // Simple insert
-var newCoach = new Coach
-{
-    Name = "Gigi Becali",
-    CreatedDate = DateTime.Now,
-};
-
-//await context.Coaches.AddAsync(newCoach);
-//await context.SaveChangesAsync();
+// await InsertOneRecord();
 
 // Loop insert
-var newCoach1 = new Coach
-{
-    Name = "Gigi Becali",
-    CreatedDate = DateTime.Now,
-};
+// await InsertWithLoop();
 
-List<Coach> coaches = new List<Coach>
-{
-    newCoach,
-    newCoach1
-};
+// Batch insert
+// await InsertRange();
 
-//foreach (var coach in coaches)
-//{
-//    await context.Coaches.AddAsync(coach);
-//}
-
-//Console.WriteLine(context.ChangeTracker.DebugView.LongView);
-//await context.SaveChangesAsync();
-//Console.WriteLine(context.ChangeTracker.DebugView.LongView);
-
-//Batch insert
-await context.Coaches.AddRangeAsync(coaches);
-await context.SaveChangesAsync();
+// Update operations
+//await UpdateWithTracking();
+await UpdateWithNoTracking();
 
 async Task GetAllTeams()
 {
@@ -288,6 +265,95 @@ async Task ProjectionsAndSelect()
     {
         Console.WriteLine($"{team.Name} - {team.TeamId}");
     }
+}
+async Task InsertOneRecord()
+{
+    var newCoach = new Coach
+    {
+        Name = "Gigi Becali",
+        CreatedDate = DateTime.Now,
+    };
+
+    await context.Coaches.AddAsync(newCoach);
+    await context.SaveChangesAsync();
+}
+async Task InsertWithLoop()
+{
+    var newCoach = new Coach
+    {
+        Name = "Gigi Becali",
+        CreatedDate = DateTime.Now,
+    }; 
+    var newCoach1 = new Coach
+    {
+        Name = "Gigi Becali",
+        CreatedDate = DateTime.Now,
+    };
+
+    List<Coach> coaches = new List<Coach>
+    {
+        newCoach,
+        newCoach1
+    };
+
+    foreach (var coach in coaches)
+    {
+        await context.Coaches.AddAsync(coach);
+    }
+
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+    await context.SaveChangesAsync();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+}
+async Task InsertRange()
+{
+
+    var newCoach = new Coach
+    {
+        Name = "Gigi Becali",
+        CreatedDate = DateTime.Now,
+    };
+    var newCoach1 = new Coach
+    {
+        Name = "Gigi Becali",
+        CreatedDate = DateTime.Now,
+    };
+
+    List<Coach> coaches = new List<Coach>
+    {
+        newCoach,
+        newCoach1
+    };
+
+    await context.Coaches.AddRangeAsync(coaches);
+    await context.SaveChangesAsync();
+}
+async Task UpdateWithTracking()
+{
+    var coach = await context.Coaches.FindAsync(9);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    Console.WriteLine(context.ChangeTracker.AutoDetectChangesEnabled);
+    coach.Name = "Alex Petrescu";
+    context.ChangeTracker.DetectChanges();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    await context.SaveChangesAsync();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+}
+async Task UpdateWithNoTracking()
+{
+    var coach1 = await context.Coaches
+     .AsNoTracking()
+     .FirstOrDefaultAsync(t => t.Id == 9);
+    coach1.Name = "Testing Tracking Behaviour";
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    context.Update(coach1);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    await context.SaveChangesAsync();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 }
 class TeamInfo
 {

@@ -3,6 +3,7 @@ using System;
 using EFCore.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore.Data.Migrations
 {
     [DbContext(typeof(FootballLeagueDbContext))]
-    partial class FootballLeagueDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251211153735_AddNamePropertyInLeagueEntity")]
+    partial class AddNamePropertyInLeagueEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -69,26 +72,6 @@ namespace EFCore.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Leagues");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Jamaica Premiere League"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "English Premiere League"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Romania Premiere League"
-                        });
                 });
 
             modelBuilder.Entity("EFCore.Domain.Models.Match", b =>

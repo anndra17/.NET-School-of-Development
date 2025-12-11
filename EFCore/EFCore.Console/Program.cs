@@ -6,6 +6,7 @@ using System.Transactions;
 
 // 1. Instance of context
 using var context = new FootballLeagueDbContext();
+await context.Database.MigrateAsync();
 
 #region Read Queries
 // Select all teams

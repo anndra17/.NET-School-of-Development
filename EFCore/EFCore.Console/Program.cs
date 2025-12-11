@@ -53,8 +53,11 @@ using var context = new FootballLeagueDbContext();
 // await InsertRange();
 
 // Update operations
-//await UpdateWithTracking();
-await UpdateWithNoTracking();
+// await UpdateWithTracking();
+// await UpdateWithNoTracking();
+
+// Delete operations
+await Delete();
 
 async Task GetAllTeams()
 {
@@ -350,6 +353,17 @@ async Task UpdateWithNoTracking()
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 
     context.Update(coach1);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    await context.SaveChangesAsync();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+}
+async Task Delete()
+{
+    var coach = await context.Coaches.FindAsync(9);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    context.Remove(coach);
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 
     await context.SaveChangesAsync();

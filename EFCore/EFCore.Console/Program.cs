@@ -6,6 +6,7 @@ using System.Transactions;
 // 1. Instance of context
 using var context = new FootballLeagueDbContext();
 
+#region Read Queries
 // Select all teams
 // await GetAllTeams();
 // await GetAllTeamsQuerySyntax();
@@ -36,6 +37,8 @@ await ProjectionsAndSelect();
 //var teams = await context.Teams
 //    .AsNoTracking()
 //    .ToListAsync();
+
+#endregion
 
 async Task GetAllTeams()
 {

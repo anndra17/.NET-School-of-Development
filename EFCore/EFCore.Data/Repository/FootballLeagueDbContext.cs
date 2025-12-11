@@ -9,6 +9,8 @@ public class FootballLeagueDbContext : DbContext
     private readonly string _dbPath;
     public DbSet<Team> Teams { get; set; }
     public DbSet<Coach> Coaches { get; set; }
+    public DbSet<Match> Matches { get; set; }
+    public DbSet<League> Leagues { get; set; }
 
     public FootballLeagueDbContext()
     {

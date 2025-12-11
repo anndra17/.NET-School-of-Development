@@ -57,7 +57,13 @@ using var context = new FootballLeagueDbContext();
 // await UpdateWithNoTracking();
 
 // Delete operations
-await Delete();
+// await Delete();
+
+// Execute Delete
+//await ExecuteDelete();
+
+// Execute Update
+await ExecuteUpdate();
 
 async Task GetAllTeams()
 {
@@ -269,6 +275,7 @@ async Task ProjectionsAndSelect()
         Console.WriteLine($"{team.Name} - {team.TeamId}");
     }
 }
+
 async Task InsertOneRecord()
 {
     var newCoach = new Coach
@@ -280,6 +287,7 @@ async Task InsertOneRecord()
     await context.Coaches.AddAsync(newCoach);
     await context.SaveChangesAsync();
 }
+
 async Task InsertWithLoop()
 {
     var newCoach = new Coach
@@ -308,6 +316,7 @@ async Task InsertWithLoop()
     await context.SaveChangesAsync();
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 }
+
 async Task InsertRange()
 {
 
@@ -331,6 +340,7 @@ async Task InsertRange()
     await context.Coaches.AddRangeAsync(coaches);
     await context.SaveChangesAsync();
 }
+
 async Task UpdateWithTracking()
 {
     var coach = await context.Coaches.FindAsync(9);
@@ -344,6 +354,7 @@ async Task UpdateWithTracking()
     await context.SaveChangesAsync();
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 }
+
 async Task UpdateWithNoTracking()
 {
     var coach1 = await context.Coaches
@@ -358,6 +369,7 @@ async Task UpdateWithNoTracking()
     await context.SaveChangesAsync();
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 }
+
 async Task Delete()
 {
     var coach = await context.Coaches.FindAsync(9);
@@ -369,6 +381,25 @@ async Task Delete()
     await context.SaveChangesAsync();
     Console.WriteLine(context.ChangeTracker.DebugView.LongView);
 }
+
+async Task ExecuteDelete()
+{
+    // Usual example
+    //var coaches = await context.Coaches.Where( t => t.Name == "Gigi Becali").ToListAsync();
+    //context.RemoveRange(coaches);
+    //context.SaveChangesAsync();
+
+    // Execute directly on db, isnt waiting until SaveChanges()
+    var coaches1 = await context.Coaches.Where(t => t.Name == "Gigi Becali").ExecuteDeleteAsync();
+}
+
+async Task ExecuteUpdate()
+{
+    await context.Coaches.Where(t => t.Name == "Gigi Becali").ExecuteUpdateAsync(set => set
+    .SetProperty(prop => prop.Name, "Vasile Bragadiru")
+    .SetProperty(prop => prop.CreatedDate, DateTime.Now));
+}
+
 class TeamInfo
 {
     public int TeamId { get; set; }

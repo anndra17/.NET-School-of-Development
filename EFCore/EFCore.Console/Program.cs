@@ -1,4 +1,5 @@
 ﻿using EFCore.Data.Repository;
+using EFCore.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Transactions;
@@ -30,7 +31,7 @@ using var context = new FootballLeagueDbContext();
 // await SkipAndTake();
 
 // Select and Projections - more precise queries
-await ProjectionsAndSelect();
+//await ProjectionsAndSelect();
 
 // No Tracking - EF Core tracks objects that are returned by queries.
 // This is less useful in disconnected applications like APIs and web apps
@@ -39,6 +40,44 @@ await ProjectionsAndSelect();
 //    .ToListAsync();
 
 #endregion
+
+// INSERT INTO Coaches (cols) VALUES (values)
+
+// Simple insert
+var newCoach = new Coach
+{
+    Name = "Gigi Becali",
+    CreatedDate = DateTime.Now,
+};
+
+//await context.Coaches.AddAsync(newCoach);
+//await context.SaveChangesAsync();
+
+// Loop insert
+var newCoach1 = new Coach
+{
+    Name = "Gigi Becali",
+    CreatedDate = DateTime.Now,
+};
+
+List<Coach> coaches = new List<Coach>
+{
+    newCoach,
+    newCoach1
+};
+
+//foreach (var coach in coaches)
+//{
+//    await context.Coaches.AddAsync(coach);
+//}
+
+//Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+//await context.SaveChangesAsync();
+//Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+//Batch insert
+await context.Coaches.AddRangeAsync(coaches);
+await context.SaveChangesAsync();
 
 async Task GetAllTeams()
 {

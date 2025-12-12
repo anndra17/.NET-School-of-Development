@@ -40,32 +40,6 @@ await context.Database.MigrateAsync();
 //    .AsNoTracking()
 //    .ToListAsync();
 
-#endregion
-
-// INSERT INTO Coaches (cols) VALUES (values)
-
-// Simple insert
-// await InsertOneRecord();
-
-// Loop insert
-// await InsertWithLoop();
-
-// Batch insert
-// await InsertRange();
-
-// Update operations
-// await UpdateWithTracking();
-// await UpdateWithNoTracking();
-
-// Delete operations
-// await Delete();
-
-// Execute Delete
-//await ExecuteDelete();
-
-// Execute Update
-await ExecuteUpdate();
-
 async Task GetAllTeams()
 {
     // Select all teams
@@ -134,7 +108,7 @@ async Task GetOneTeam()
         Console.WriteLine(teamBasedOnId.Name);
     }
 }
-   
+
 async Task GetFilteredTeams()
 {
     Console.WriteLine("Enter Search Term: ");
@@ -277,6 +251,35 @@ async Task ProjectionsAndSelect()
     }
 }
 
+#endregion
+
+#region Write Queries
+
+// INSERT INTO Coaches (cols) VALUES (values)
+
+// Simple insert
+// await InsertOneRecord();
+
+// Loop insert
+// await InsertWithLoop();
+
+// Batch insert
+// await InsertRange();
+
+// Update operations
+// await UpdateWithTracking();
+// await UpdateWithNoTracking();
+
+// Delete operations
+// await Delete();
+
+// Execute Delete
+//await ExecuteDelete();
+
+// Execute Update
+// await ExecuteUpdate();
+
+
 async Task InsertOneRecord()
 {
     var newCoach = new Coach
@@ -295,7 +298,7 @@ async Task InsertWithLoop()
     {
         Name = "Gigi Becali",
         CreatedDate = DateTime.Now,
-    }; 
+    };
     var newCoach1 = new Coach
     {
         Name = "Gigi Becali",
@@ -401,6 +404,89 @@ async Task ExecuteUpdate()
     .SetProperty(prop => prop.CreatedDate, DateTime.Now));
 }
 
+#endregion
+
+#region Related Data
+// Insert record with FK
+//var match = new Match
+//{
+//    AwayTeamId = 1,
+//    HomeTeamId = 2,
+//    HomeTeamScore = 0,
+//    AwayTeamScore = 0,
+//    Date = new DateTime(2025, 10, 1),
+//    TicketPrice = 20
+//};
+
+//await context.Matches.AddAsync(match);
+//await context.SaveChangesAsync();
+
+// Incorrect reference data -> wil give error
+//var match1 = new Match
+//{
+//    AwayTeamId = 10,
+//    HomeTeamId = 0,
+//    HomeTeamScore = 0,
+//    AwayTeamScore = 0,
+//    Date = new DateTime(2025, 10, 1),
+//    TicketPrice = 20
+//};
+
+//await context.Matches.AddAsync(match);
+//await context.SaveChangesAsync();
+
+// Insert Parent/Child
+//var team = new Team
+//{
+//    Name = "New Team",
+//    Coach = new Coach
+//    {
+//        Name = "Trevoir Wiilliam"
+//    }
+//};
+
+//await context.Teams.AddAsync(team);
+//await context.SaveChangesAsync();
+
+// Insert Parent with Children
+//var league = new League
+//{
+//    Name = "New League",
+//    Teams = new List<Team>
+//    {
+//        new Team
+//        {
+//            Name = "Juvents",
+//            Coach = new Coach
+//            {
+//                Name = "Ionica"
+//            },
+//        },
+//        new Team
+//        {
+//            Name = "AC Milan",
+//            Coach = new Coach
+//            {
+//                Name = "Milanica"
+//            },
+//        },
+//        new Team
+//        {
+//            Name = "Zaaaz",
+//            Coach = new Coach
+//            {
+//                Name = "Zaza"
+//            },
+//        },
+//    }
+//};
+
+//await context.Leagues.AddAsync(league);
+//await context.SaveChangesAsync();
+
+
+
+#endregion
 class TeamInfo
 {
     public int TeamId { get; set; }

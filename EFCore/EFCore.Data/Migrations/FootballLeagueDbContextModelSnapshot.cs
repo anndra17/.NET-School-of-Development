@@ -42,6 +42,26 @@ namespace EFCore.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coaches");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Alesandro Santos"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Ion Saftoiu"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Vasile Bragadiru"
+                        });
                 });
 
             modelBuilder.Entity("EFCore.Domain.Models.League", b =>
@@ -179,22 +199,25 @@ namespace EFCore.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CoachId = 0,
+                            CoachId = 1,
                             CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LeagueId = 1,
                             Name = "Tivoli Gardens FC"
                         },
                         new
                         {
                             Id = 2,
-                            CoachId = 0,
+                            CoachId = 2,
                             CreatedDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LeagueId = 1,
                             Name = "Dinamo FC"
                         },
                         new
                         {
                             Id = 3,
-                            CoachId = 0,
+                            CoachId = 3,
                             CreatedDate = new DateTime(2004, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LeagueId = 1,
                             Name = "FCSDB"
                         });
                 });

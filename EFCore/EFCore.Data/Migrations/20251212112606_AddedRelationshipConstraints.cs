@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace EFCore.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedRelationShipConstraints : Migration
+    public partial class AddedRelationshipConstraints : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,26 +39,36 @@ namespace EFCore.Data.Migrations
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.InsertData(
+                table: "Coaches",
+                columns: new[] { "Id", "CreatedBy", "CreatedDate", "ModifiedBy", "ModifiedDate", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Alesandro Santos" },
+                    { 2, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Ion Saftoiu" },
+                    { 3, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Vasile Bragadiru" }
+                });
+
             migrationBuilder.UpdateData(
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "LeagueId",
-                value: null);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 1, 1 });
 
             migrationBuilder.UpdateData(
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "LeagueId",
-                value: null);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 2, 1 });
 
             migrationBuilder.UpdateData(
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 3,
-                column: "LeagueId",
-                value: null);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 3, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teams_CoachId",
@@ -155,6 +168,21 @@ namespace EFCore.Data.Migrations
                 name: "IX_Matches_HomeTeamId",
                 table: "Matches");
 
+            migrationBuilder.DeleteData(
+                table: "Coaches",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Coaches",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Coaches",
+                keyColumn: "Id",
+                keyValue: 3);
+
             migrationBuilder.DropColumn(
                 name: "AwayTeamScore",
                 table: "Matches");
@@ -183,22 +211,22 @@ namespace EFCore.Data.Migrations
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "LeagueId",
-                value: 0);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 0, 0 });
 
             migrationBuilder.UpdateData(
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "LeagueId",
-                value: 0);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 0, 0 });
 
             migrationBuilder.UpdateData(
                 table: "Teams",
                 keyColumn: "Id",
                 keyValue: 3,
-                column: "LeagueId",
-                value: 0);
+                columns: new[] { "CoachId", "LeagueId" },
+                values: new object[] { 0, 0 });
         }
     }
 }

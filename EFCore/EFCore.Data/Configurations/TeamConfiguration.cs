@@ -28,18 +28,24 @@ internal class TeamConfiguration : IEntityTypeConfiguration<Team>
                Id = 1,
                Name = "Tivoli Gardens FC",
                CreatedDate = new DateTime(2024, 01, 01),
+               LeagueId = 1,
+               CoachId = 1,
            },
            new Team
            {
                Id = 2,
                Name = "Dinamo FC",
                CreatedDate = new DateTime(2025, 04, 01),
+               LeagueId = 1,
+               CoachId = 2,
            },
            new Team
            {
                Id = 3,
                Name = "FCSDB",
                CreatedDate = new DateTime(2004, 01, 01),
+               LeagueId = 1,
+               CoachId = 3,
            }
         );
     }

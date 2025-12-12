@@ -408,13 +408,19 @@ async Task ExecuteUpdate()
 
 #region Related Data
 // Insert record with FK
-await InsertMatch();
+// await InsertMatch();
 
 // Insert Parent/Child
-await InsertTeamWithCoach();
+// await InsertTeamWithCoach();
 
 // Insert Parent with Children
-await InserLeagueWithTeams();
+// await InserLeagueWithTeams();
+
+// Eager Loading -  Including Related Data 
+//await GetLeagueEagerLoading();
+
+// Explicit Loading - Including Related Data
+await GetLeagueExplicitLoading();
 
 async Task InsertMatch()
 {
@@ -497,6 +503,45 @@ async Task InserLeagueWithTeams()
 
     await context.Leagues.AddAsync(league);
     await context.SaveChangesAsync();
+}
+
+async Task GetLeagueRelatedData()
+{
+    var leagues = await context.Leagues
+    .Include(q => q.Teams)
+        .ThenInclude(q => q.Coach)
+    .ToListAsync();
+
+    foreach (var league in leagues)
+    {
+        Console.WriteLine("league " + league.Name);
+        foreach (var team in league.Teams)
+        {
+            Console.WriteLine("team " + team.Name + " - coach " + team.Coach.Name);
+        }
+    }
+}
+
+async Task GetLeagueExplicitLoading()
+{
+    var league = await context.FindAsync<League>(1); // Find() hasn t loaded related data
+
+    if (!league.Teams.Any())                         // Any() hasn t loaded related data
+    {
+        Console.WriteLine("Teams have not been loaded");
+    }
+
+    await context.Entry(league)
+        .Collection(q => q.Teams)
+        .LoadAsync();          // loads related data 
+
+    if (league.Teams.Any())
+    {
+        foreach (var team in league.Teams)
+        {
+            Console.WriteLine($"{team.Name}");
+        }
+    }
 }
 #endregion
 class TeamInfo

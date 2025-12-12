@@ -8,6 +8,20 @@ internal class TeamConfiguration : IEntityTypeConfiguration<Team>
 {
     public void Configure(EntityTypeBuilder<Team> builder)
     {
+        builder.HasIndex(q => q.Name).IsUnique();
+
+        builder.HasMany(m => m.HomeMatches) // tu ai mm homematches
+            .WithOne(q => q.HomeTeam)       // bazat pe prop de navigare HomeTeam
+            .HasForeignKey(q => q.HomeTeamId)  // FK - info share uita
+            .IsRequired()                      // n ar rebui sa fie nullable
+            .OnDelete(DeleteBehavior.Restrict);// o echipa nu poate fi stearsa daca are vreun HomeMatches
+
+        builder.HasMany(m => m.AwayMatches)
+            .WithOne(n => n.AwayTeam)
+            .HasForeignKey(q => q.AwayTeamId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict); 
+
         builder.HasData(
            new Team
            {

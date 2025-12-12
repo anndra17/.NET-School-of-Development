@@ -39,9 +39,6 @@ namespace EFCore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.ToTable("Coaches");
@@ -103,6 +100,9 @@ namespace EFCore.Data.Migrations
                     b.Property<int>("AwayTeamId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AwayTeamScore")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("TEXT");
 
@@ -115,6 +115,9 @@ namespace EFCore.Data.Migrations
                     b.Property<int>("HomeTeamId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("HomeTeamScore")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("TEXT");
 
@@ -125,6 +128,10 @@ namespace EFCore.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AwayTeamId");
+
+                    b.HasIndex("HomeTeamId");
 
                     b.ToTable("Matches");
                 });
@@ -144,7 +151,7 @@ namespace EFCore.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LeagueId")
+                    b.Property<int?>("LeagueId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ModifiedBy")
@@ -158,7 +165,13 @@ namespace EFCore.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CoachId")
+                        .IsUnique();
+
                     b.HasIndex("LeagueId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Teams");
 
@@ -168,7 +181,6 @@ namespace EFCore.Data.Migrations
                             Id = 1,
                             CoachId = 0,
                             CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LeagueId = 0,
                             Name = "Tivoli Gardens FC"
                         },
                         new
@@ -176,7 +188,6 @@ namespace EFCore.Data.Migrations
                             Id = 2,
                             CoachId = 0,
                             CreatedDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LeagueId = 0,
                             Name = "Dinamo FC"
                         },
                         new
@@ -184,25 +195,61 @@ namespace EFCore.Data.Migrations
                             Id = 3,
                             CoachId = 0,
                             CreatedDate = new DateTime(2004, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LeagueId = 0,
                             Name = "FCSDB"
                         });
                 });
 
+            modelBuilder.Entity("EFCore.Domain.Models.Match", b =>
+                {
+                    b.HasOne("EFCore.Domain.Models.Team", "AwayTeam")
+                        .WithMany("AwayMatches")
+                        .HasForeignKey("AwayTeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EFCore.Domain.Models.Team", "HomeTeam")
+                        .WithMany("HomeMatches")
+                        .HasForeignKey("HomeTeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AwayTeam");
+
+                    b.Navigation("HomeTeam");
+                });
+
             modelBuilder.Entity("EFCore.Domain.Models.Team", b =>
                 {
-                    b.HasOne("EFCore.Domain.Models.League", "League")
-                        .WithMany("Teams")
-                        .HasForeignKey("LeagueId")
+                    b.HasOne("EFCore.Domain.Models.Coach", "Coach")
+                        .WithOne("Team")
+                        .HasForeignKey("EFCore.Domain.Models.Team", "CoachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EFCore.Domain.Models.League", "League")
+                        .WithMany("Teams")
+                        .HasForeignKey("LeagueId");
+
+                    b.Navigation("Coach");
+
                     b.Navigation("League");
+                });
+
+            modelBuilder.Entity("EFCore.Domain.Models.Coach", b =>
+                {
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("EFCore.Domain.Models.League", b =>
                 {
                     b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("EFCore.Domain.Models.Team", b =>
+                {
+                    b.Navigation("AwayMatches");
+
+                    b.Navigation("HomeMatches");
                 });
 #pragma warning restore 612, 618
         }

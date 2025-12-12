@@ -408,84 +408,96 @@ async Task ExecuteUpdate()
 
 #region Related Data
 // Insert record with FK
-//var match = new Match
-//{
-//    AwayTeamId = 1,
-//    HomeTeamId = 2,
-//    HomeTeamScore = 0,
-//    AwayTeamScore = 0,
-//    Date = new DateTime(2025, 10, 1),
-//    TicketPrice = 20
-//};
-
-//await context.Matches.AddAsync(match);
-//await context.SaveChangesAsync();
-
-// Incorrect reference data -> wil give error
-//var match1 = new Match
-//{
-//    AwayTeamId = 10,
-//    HomeTeamId = 0,
-//    HomeTeamScore = 0,
-//    AwayTeamScore = 0,
-//    Date = new DateTime(2025, 10, 1),
-//    TicketPrice = 20
-//};
-
-//await context.Matches.AddAsync(match);
-//await context.SaveChangesAsync();
+await InsertMatch();
 
 // Insert Parent/Child
-//var team = new Team
-//{
-//    Name = "New Team",
-//    Coach = new Coach
-//    {
-//        Name = "Trevoir Wiilliam"
-//    }
-//};
-
-//await context.Teams.AddAsync(team);
-//await context.SaveChangesAsync();
+await InsertTeamWithCoach();
 
 // Insert Parent with Children
-//var league = new League
-//{
-//    Name = "New League",
-//    Teams = new List<Team>
-//    {
-//        new Team
-//        {
-//            Name = "Juvents",
-//            Coach = new Coach
-//            {
-//                Name = "Ionica"
-//            },
-//        },
-//        new Team
-//        {
-//            Name = "AC Milan",
-//            Coach = new Coach
-//            {
-//                Name = "Milanica"
-//            },
-//        },
-//        new Team
-//        {
-//            Name = "Zaaaz",
-//            Coach = new Coach
-//            {
-//                Name = "Zaza"
-//            },
-//        },
-//    }
-//};
+await InserLeagueWithTeams();
 
-//await context.Leagues.AddAsync(league);
-//await context.SaveChangesAsync();
+async Task InsertMatch()
+{
+    var match = new Match
+    {
+        AwayTeamId = 1,
+        HomeTeamId = 2,
+        HomeTeamScore = 0,
+        AwayTeamScore = 0,
+        Date = new DateTime(2025, 10, 1),
+        TicketPrice = 20
+    };
 
+    await context.Matches.AddAsync(match);
+    await context.SaveChangesAsync();
 
+    // Incorrect reference data -> wil give error
+    //var match1 = new Match
+    //{
+    //    AwayTeamId = 10,
+    //    HomeTeamId = 0,
+    //    HomeTeamScore = 0,
+    //    AwayTeamScore = 0,
+    //    Date = new DateTime(2025, 10, 1),
+    //    TicketPrice = 20
+    //};
 
+    //await context.Matches.AddAsync(match);
+    //await context.SaveChangesAsync();
+}
+
+async Task InsertTeamWithCoach()
+{
+    var team = new Team
+    {
+        Name = "New Team",
+        Coach = new Coach
+        {
+            Name = "Trevoir Wiilliam"
+        }
+    };
+
+    await context.Teams.AddAsync(team);
+    await context.SaveChangesAsync();
+}
+
+async Task InserLeagueWithTeams()
+{
+    var league = new League
+    {
+        Name = "New League",
+        Teams = new List<Team>
+        {
+            new Team
+            {
+                Name = "Juvents",
+                Coach = new Coach
+                {
+                    Name = "Ionica"
+                },
+            },
+            new Team
+            {
+                Name = "AC Milan",
+                Coach = new Coach
+                {
+                    Name = "Milanica"
+                },
+            },
+            new Team
+            {
+                Name = "Zaaaz",
+                Coach = new Coach
+                {
+                    Name = "Zaza"
+                },
+            },
+        }
+    };
+
+    await context.Leagues.AddAsync(league);
+    await context.SaveChangesAsync();
+}
 #endregion
 class TeamInfo
 {

@@ -423,7 +423,12 @@ async Task ExecuteUpdate()
 // await GetLeagueExplicitLoading();
 
 // Lazy Loading - Including Related Data
-await GetLeagueLazyLoading();
+// await GetLeagueLazyLoading();
+
+// Filtering Includes
+// Get all teams and only home matches they have scored
+//await InsertMoreMatches();
+await FilteringIncludes();
 
 async Task InsertMatch()
 {
@@ -563,6 +568,71 @@ async Task GetLeagueLazyLoading()
             Console.WriteLine($"{team.Name} - {team.Coach.Name}"); 
         }
     } 
+}
+
+async Task InsertMoreMatches()
+{
+    var match1 = new Match
+    {
+        AwayTeamId = 2,
+        HomeTeamId = 3,
+        HomeTeamScore = 1,
+        AwayTeamScore = 0,
+        Date = new DateTime(2023, 01, 01),
+        TicketPrice = 20,
+    };
+
+    var match2 = new Match
+    {
+        AwayTeamId = 2,
+        HomeTeamId = 1,
+        HomeTeamScore = 1,
+        AwayTeamScore = 0,
+        Date = new DateTime(2023, 01, 01),
+        TicketPrice = 20,
+    };
+
+    var match3 = new Match
+    {
+        AwayTeamId = 1,
+        HomeTeamId = 3,
+        HomeTeamScore = 1,
+        AwayTeamScore = 0,
+        Date = new DateTime(2023, 01, 01),
+        TicketPrice = 20,
+    };
+
+    var match4 = new Match
+    {
+        AwayTeamId = 4,
+        HomeTeamId = 3,
+        HomeTeamScore = 0,
+        AwayTeamScore = 1,
+        Date = new DateTime(2023, 01, 01),
+        TicketPrice = 20,
+    };
+
+    await context.AddRangeAsync(match1, match2, match3, match4);
+    await context.SaveChangesAsync();
+}
+
+async Task FilteringIncludes()
+{
+
+    var teams = await context.Teams
+    .Include("Coach")
+    .Include(q => q.HomeMatches.Where(q => q.HomeTeamScore > 0))
+    .ToListAsync();
+
+    foreach (var team in teams)
+    {
+        Console.WriteLine($"{team.Name} - {team.Coach.Name}");
+        foreach (var match in team.HomeMatches)
+        {
+            Console.WriteLine($"Score = {match.HomeTeamScore}");
+        }
+    }
+
 }
 #endregion
 class TeamInfo

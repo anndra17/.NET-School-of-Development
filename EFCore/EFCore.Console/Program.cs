@@ -420,7 +420,10 @@ async Task ExecuteUpdate()
 //await GetLeagueEagerLoading();
 
 // Explicit Loading - Including Related Data
-await GetLeagueExplicitLoading();
+// await GetLeagueExplicitLoading();
+
+// Lazy Loading - Including Related Data
+await GetLeagueLazyLoading();
 
 async Task InsertMatch()
 {
@@ -542,6 +545,24 @@ async Task GetLeagueExplicitLoading()
             Console.WriteLine($"{team.Name}");
         }
     }
+}
+
+async Task GetLeagueLazyLoading()
+{
+    //var league = await context.FindAsync<League>(1);
+
+    //foreach (var team in league.Teams)
+    //{
+    //        Console.WriteLine(team.Name);
+    //}
+
+    foreach (var league in context.Leagues) 
+    {
+        foreach (var team in league.Teams) 
+        {
+            Console.WriteLine($"{team.Name} - {team.Coach.Name}"); 
+        }
+    } 
 }
 #endregion
 class TeamInfo

@@ -428,7 +428,24 @@ async Task ExecuteUpdate()
 // Filtering Includes
 // Get all teams and only home matches they have scored
 //await InsertMoreMatches();
-await FilteringIncludes();
+// await FilteringIncludes();
+
+// Projections and Annonymous types
+var teams = await context.Teams
+    .Select( q => new TeamDetails
+    {
+        TeamId = q.Id,
+        TeamName = q.Name,
+        CoachName = q.Coach.Name,
+        TotalHomeGoals = q.HomeMatches.Sum(q => q.HomeTeamScore),
+        TotalAwayGoals = q.HomeMatches.Sum(q => q.AwayTeamScore),
+    })
+    .ToListAsync();
+
+foreach (var team in teams)
+{
+    Console.WriteLine($"{team.TeamName} - {team.CoachName} | Home Goals: {team.TotalHomeGoals}  Away Goals: {team.TotalAwayGoals}");
+}
 
 async Task InsertMatch()
 {
@@ -632,12 +649,21 @@ async Task FilteringIncludes()
             Console.WriteLine($"Score = {match.HomeTeamScore}");
         }
     }
-
 }
 #endregion
 class TeamInfo
 {
     public int TeamId { get; set; }
     public string Name { get; set; }
+}
+
+class TeamDetails
+{
+    public int TeamId { get; set; }
+    public string TeamName { get; set; }
+    public string CoachName { get; set; }
+
+    public int TotalHomeGoals { get; set; }
+    public int TotalAwayGoals {  get; set; }
 }
 

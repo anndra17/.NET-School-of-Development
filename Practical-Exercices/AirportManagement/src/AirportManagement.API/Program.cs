@@ -1,4 +1,6 @@
+using AirportManagement.Application.Abstractions;
 using AirportManagement.Infrastructure.Persistence;
+using AirportManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AirportManagementDbContext>(options => {
     options.UseSqlServer(connectionString);
 });
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 

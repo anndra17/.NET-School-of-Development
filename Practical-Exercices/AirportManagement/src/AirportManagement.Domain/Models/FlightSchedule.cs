@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AirportManagement.Domain.Models;
 
-namespace AirportManagement.Domain.Models
+public class FlightSchedule
 {
-    internal class FlightSchedule
-    {
-    }
+    public int Id { get; set; }
+
+    public int FlightId { get; set; }
+
+    public DateTime ScheduledDepartureUtc { get; set; }
+
+    public DateTime ScheduledArrivalUtc { get; set; }
+
+    public int? GateId { get; set; }
+
+    public int? AssignedAircraftId { get; set; }
+
+    public byte Status { get; set; }
 }

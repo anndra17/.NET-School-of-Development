@@ -7,13 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Configurations\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\AirportManagement.Domain\AirportManagement.Application.csproj" />
+    <ProjectReference Include="..\AirportManagement.Application\AirportManagement.Application.csproj" />
   </ItemGroup>
 
 </Project>

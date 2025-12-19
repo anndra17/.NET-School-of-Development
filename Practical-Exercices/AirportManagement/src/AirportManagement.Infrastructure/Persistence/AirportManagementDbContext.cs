@@ -12,27 +12,27 @@ public partial class AirportManagementDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Aircraft> Aircrafts { get; set; }
+    public virtual DbSet<AircraftEntity> Aircrafts { get; set; }
 
-    public virtual DbSet<Airline> Airlines { get; set; }
+    public virtual DbSet<AirlineEntity> Airlines { get; set; }
 
-    public virtual DbSet<Airport> Airports { get; set; }
+    public virtual DbSet<AirportEntity> Airports { get; set; }
 
-    public virtual DbSet<Booking> Bookings { get; set; }
+    public virtual DbSet<BookingEntity> Bookings { get; set; }
 
-    public virtual DbSet<Flight> Flights { get; set; }
+    public virtual DbSet<FlightEntity> Flights { get; set; }
 
-    public virtual DbSet<FlightSchedule> FlightSchedules { get; set; }
+    public virtual DbSet<FlightScheduleEntity> FlightSchedules { get; set; }
 
-    public virtual DbSet<Gate> Gates { get; set; }
+    public virtual DbSet<GateEntity> Gates { get; set; }
 
-    public virtual DbSet<Ticket> Tickets { get; set; }
+    public virtual DbSet<TicketEntity> Tickets { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Aircraft>(entity =>
+        modelBuilder.Entity<AircraftEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Aircraft__3214EC072737F6AB");
 
@@ -42,7 +42,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.TailNumber).HasMaxLength(10);
         });
 
-        modelBuilder.Entity<Airline>(entity =>
+        modelBuilder.Entity<AirlineEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC0741BF4E31");
 
@@ -56,7 +56,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Airport>(entity =>
+        modelBuilder.Entity<AirportEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Airports__3214EC070E3A52D7");
 
@@ -73,7 +73,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.TimeZone).HasMaxLength(64);
         });
 
-        modelBuilder.Entity<Booking>(entity =>
+        modelBuilder.Entity<BookingEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Bookings__3214EC07A513937C");
 
@@ -90,7 +90,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Booking_User");
         });
 
-        modelBuilder.Entity<Flight>(entity =>
+        modelBuilder.Entity<FlightEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Flights__3214EC07EF17F4F0");
 
@@ -123,7 +123,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Flight_OriginAirport");
         });
 
-        modelBuilder.Entity<FlightSchedule>(entity =>
+        modelBuilder.Entity<FlightScheduleEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FlightSc__3214EC07AE643BAB");
 
@@ -147,7 +147,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_FlightSchedule_Gate");
         });
 
-        modelBuilder.Entity<Gate>(entity =>
+        modelBuilder.Entity<GateEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Gates__3214EC07E8BE8E8C");
 
@@ -163,7 +163,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Gate_Airport");
         });
 
-        modelBuilder.Entity<Ticket>(entity =>
+        modelBuilder.Entity<TicketEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Tickets__3214EC07EB9B57D4");
 
@@ -193,7 +193,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Ticket_FlightSchedule");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07E5F9FC72");
 

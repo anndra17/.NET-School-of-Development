@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-namespace AirportManagement.Infrastructure.Persistence.Entities;
-
-public partial class Ticket
+public partial class TicketEntity
 {
     public long Id { get; set; }
 
@@ -31,7 +28,7 @@ public partial class Ticket
 
     public string PassengerPhoneNumber { get; set; } = null!;
 
-    public virtual Booking Booking { get; set; } = null!;
+    public virtual BookingEntity Booking { get; set; } = null!;
 
-    public virtual FlightSchedule FlightSchedule { get; set; } = null!;
+    public virtual FlightScheduleEntity FlightSchedule { get; set; } = null!;
 }

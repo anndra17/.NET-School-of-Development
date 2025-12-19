@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AirportManagement.Domain.Models;
 
-namespace AirportManagement.Domain.Models
+public class Gate
 {
-    internal class Gate
-    {
-    }
+    public int Id { get; set; }
+
+    public int AirportId { get; set; }
+
+    public string Code { get; set; } = null!;
 }

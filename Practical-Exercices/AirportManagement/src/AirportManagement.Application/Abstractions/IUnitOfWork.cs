@@ -12,5 +12,7 @@ public interface IUnitOfWork
     ITicketRepository Tickets { get; }
     IUserRepository Users { get; }
 
-    Task SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken ct = default);
+
+    Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken ct = default);
 }

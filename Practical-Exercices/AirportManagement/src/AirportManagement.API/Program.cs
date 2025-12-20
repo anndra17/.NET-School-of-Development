@@ -16,6 +16,17 @@ builder.Services.AddDbContext<AirportManagementDbContext>(options => {
 });
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
+builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+builder.Services.AddScoped<IGateRepository, GateRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
 
 var app = builder.Build();
 

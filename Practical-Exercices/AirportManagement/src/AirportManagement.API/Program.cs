@@ -25,8 +25,7 @@ builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>(
 builder.Services.AddScoped<IGateRepository, GateRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

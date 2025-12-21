@@ -1,10 +1,10 @@
 ﻿namespace AirportManagement.Application.Abstractions.Repositories;
 
-public interface IRepository<TEntity> where TEntity : class
+public interface IRepository<TDomain> where TDomain : class
 {
-    Task<TEntity?> GetByIdAsync(object Id);
-    Task<IEnumerable<TEntity>> GetAllAsync();
-    Task InsertAsync(TEntity entity);
-    Task UpdateAsync(TEntity entity);
-    Task DeleteAsync(object Id);
+    Task<TDomain?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<IEnumerable<TDomain>> GetAllAsync(CancellationToken ct = default);
+    Task InsertAsync(TDomain entity, CancellationToken ct = default);
+    Task UpdateAsync(TDomain entity, CancellationToken ct = default);
+    Task DeleteAsync(int Id, CancellationToken ct = default);
 }

@@ -1,4 +1,4 @@
-﻿using AirportManagement.Application.Abstractions;
+﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Domain.Models;
 using AirportManagement.Infrastructure.Persistence;
 

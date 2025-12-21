@@ -1,4 +1,4 @@
-﻿using AirportManagement.Application.Abstractions;
+﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

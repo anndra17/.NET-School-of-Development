@@ -1,4 +1,6 @@
-﻿namespace AirportManagement.Domain.Models;
+﻿using AirportManagement.Domain.Enums;
+
+namespace AirportManagement.Domain.Models;
 
 public class Booking
 {
@@ -10,7 +12,7 @@ public class Booking
 
     public int Quantity { get; set; }
 
-    public byte Status { get; set; }
+    public BookingStatus Status { get; set; }
 
     public DateTime? CreatedUtc { get; set; }
 }

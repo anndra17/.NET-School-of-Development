@@ -1,4 +1,6 @@
-﻿namespace AirportManagement.Domain.Models;
+﻿using AirportManagement.Domain.Enums;
+
+namespace AirportManagement.Domain.Models;
 
 public class Ticket
 {
@@ -6,7 +8,7 @@ public class Ticket
 
     public int FlightScheduleId { get; set; }
 
-    public string FareClass { get; set; } = null!;
+    public FareClass FareClass { get; set; }
 
     public decimal BasePrice { get; set; }
 

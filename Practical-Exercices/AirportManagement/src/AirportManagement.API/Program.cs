@@ -1,4 +1,4 @@
-using AirportManagement.Application.Abstractions;
+using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
 using AirportManagement.Infrastructure.Repositories;
@@ -18,7 +18,6 @@ builder.Services.AddDbContext<AirportManagementDbContext>(options => {
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();

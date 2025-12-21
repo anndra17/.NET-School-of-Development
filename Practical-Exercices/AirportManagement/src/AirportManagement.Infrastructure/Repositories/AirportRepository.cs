@@ -4,9 +4,9 @@ using AirportManagement.Infrastructure.Persistence;
 
 namespace AirportManagement.Infrastructure.Repositories;
 
-public class AirportRepository : GenericRepository<Airport>, IAirportRepository
+public class AirportRepository : IAirportRepository
 {
-    public AirportRepository(AirportManagementDbContext context) : base(context)
+    public AirportRepository(AirportManagementDbContext context) 
     {
     }
 }

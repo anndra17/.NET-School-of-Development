@@ -14,5 +14,5 @@ public class FlightSchedule
 
     public int? AssignedAircraftId { get; set; }
 
-    public byte Status { get; set; }
+    public FlightScheduleStatus Status { get; set; }
 }

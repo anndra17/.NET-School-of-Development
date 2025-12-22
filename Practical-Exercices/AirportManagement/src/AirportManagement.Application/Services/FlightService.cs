@@ -121,19 +121,10 @@ public class FlightService : IFlightService
         };
 
         await _unitOfWork.Flights.InsertAsync(entity);
-        try
-        {
-            await _unitOfWork.SaveChangesAsync(ct);
-        }
-        catch (DbException ex)
-        {
-            return Result<FlightResponseDto>.Fail(
-                ErrorType.Conflict, 
-                "Could not create flight due to a database constraint conflict."
-            );
-        }
+        await _unitOfWork.SaveChangesAsync(ct);
+        
 
-        var created = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
+        var created = await _unitOfWork.Flights.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
         return Result<FlightResponseDto>.Ok(created?.MapToFlightResponse() ?? entity.MapToFlightResponse());
     }
 
@@ -169,7 +160,7 @@ public class FlightService : IFlightService
         await _unitOfWork.Flights.UpdateAsync(entity, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var updated = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
+        var updated = await _unitOfWork.Flights.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
         return Result<FlightResponseDto>.Ok(updated?.MapToFlightResponse()?? entity.MapToFlightResponse());
     }
 

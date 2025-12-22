@@ -15,4 +15,6 @@ public interface IFlightService
     Task<Result<FlightResponseDto>> CreateAsync(CreateFlightRequest request, CancellationToken ct);
 
     Task<Result<FlightResponseDto>> UpdateAsync(int id, UpdateFlightRequest request, CancellationToken ct);
+
+    Task<Result> DeleteAsync(int id, CancellationToken ct);
 }

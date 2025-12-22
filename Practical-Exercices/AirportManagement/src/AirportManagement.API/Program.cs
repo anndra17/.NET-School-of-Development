@@ -37,6 +37,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IFlightService, FlightService>();
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();

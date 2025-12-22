@@ -1,5 +1,7 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
+using AirportManagement.Application.Exceptions;
 using AirportManagement.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirportManagement.Infrastructure.Repositories;
 
@@ -41,10 +43,18 @@ public class UnitOfWork : IUnitOfWork
         Users = users;
     }
 
-    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+    public async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
-        return _context.SaveChangesAsync(ct);
+        try
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new ConflictException("Database update conflict (constraint violation).", ex);
+        }
     }
+
 
     public async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken ct = default)
     {

@@ -1,5 +1,4 @@
 using AirportManagement.Application.Abstractions.Repositories;
-using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
 using AirportManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +14,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AirportManagementDbContext>(options => {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddAutoMapper(typeof(MapperConfig));
-
 
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();

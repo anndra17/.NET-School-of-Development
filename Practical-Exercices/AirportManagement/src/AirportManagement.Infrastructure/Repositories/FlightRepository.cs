@@ -121,6 +121,13 @@ public class FlightRepository : IFlightRepository
             _context.Set<FlightEntity>().Remove(tracked);
     }
 
+    public Task<bool> HasSchedulesAsync(int flightId, CancellationToken ct = default)
+    {
+        return _context.Set<FlightScheduleEntity>()
+            .AsNoTracking()
+            .AnyAsync(fs => fs.FlightId == flightId, ct);
+    }
+
     public Task<bool> ExistsByAirlineAndNumberAsync(int airlineId, string flightNumber, CancellationToken ct = default)
     {
         return _context.Set<FlightEntity>()

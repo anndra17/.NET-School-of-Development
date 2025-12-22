@@ -1,6 +1,6 @@
 ﻿namespace AirportManagement.Application.Enums;
 
-public enum FlightErrorType
+public enum ErrorType
 {
     Validation,
     NotFound,

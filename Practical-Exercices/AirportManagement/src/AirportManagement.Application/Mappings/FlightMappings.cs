@@ -3,7 +3,7 @@ using AirportManagement.Domain.Models;
 
 namespace AirportManagement.Application.Mappings;
 
-internal static class FlightDtoMapper
+internal static class FlightMappings
 {
     public static FlightResponseDto MapToFlightResponse(this Flight e)
        => new()

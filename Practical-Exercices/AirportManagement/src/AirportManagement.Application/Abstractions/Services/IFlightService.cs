@@ -13,4 +13,6 @@ public interface IFlightService
     Task<PagedResponse<FlightListItemResponse>> SearchAsync(FlightSearchQuery query, CancellationToken ct);
 
     Task<Result<FlightResponseDto>> CreateAsync(CreateFlightRequest request, CancellationToken ct);
+
+    Task<Result<FlightResponseDto>> UpdateAsync(int id, UpdateFlightRequest request, CancellationToken ct);
 }

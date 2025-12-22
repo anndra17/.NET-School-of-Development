@@ -1,3 +1,4 @@
+using AirportManagement.API.Middleware;
 using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Application.Abstractions.Services;
 using AirportManagement.Application.Services;
@@ -38,7 +39,8 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

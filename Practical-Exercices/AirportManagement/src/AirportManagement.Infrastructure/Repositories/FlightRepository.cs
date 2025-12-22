@@ -1,4 +1,5 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
+using AirportManagement.Application.Dtos.Flight;
 using AirportManagement.Domain.Models;
 using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
@@ -25,6 +26,15 @@ public class FlightRepository : IFlightRepository
         return flightEntity?.ToDomain();
     }
 
+    public async Task<FlightResponseWithRelatedData?> GetByIdWithRelatedDataAsync(int id, CancellationToken ct = default)
+    {
+        return await _context.Set<FlightEntity>()
+            .AsNoTracking()
+            .Where(f => f.Id == id)
+            .Select(FlightProjections.ToResponseWithRelatedData)
+            .FirstOrDefaultAsync(ct);
+    }
+
     public async Task<IEnumerable<Flight>> GetAllAsync(CancellationToken ct = default)
     {
         var flightsEntities = await _context.Flights
@@ -36,6 +46,47 @@ public class FlightRepository : IFlightRepository
             .ToList();
 
         return flights;
+    }
+
+    public async Task<(IReadOnlyList<FlightListItemResponse> Items, int TotalCount)> SearchAsync(
+        int? airlineId,
+        int? originAirportId,
+        int? destinationAirportId,
+        string? flightNumber,
+        bool? isActive,
+        int page,
+        int pageSize,
+        CancellationToken ct = default)
+    {
+        var query = _context.Set<FlightEntity>().AsNoTracking().AsQueryable();
+
+        if (airlineId is not null)
+            query = query.Where(f => f.AirlineId == airlineId.Value);
+
+        if (originAirportId is not null)
+            query = query.Where(f => f.OriginAirportId == originAirportId.Value);
+
+        if (destinationAirportId is not null)
+            query = query.Where(f => f.DestinationAirportId == destinationAirportId.Value);
+
+        if (!string.IsNullOrWhiteSpace(flightNumber))
+            query = query.Where(f => f.FlightNumber == flightNumber);
+
+        if (isActive is not null)
+            query = query.Where(f => f.IsActive == isActive.Value);
+
+        var total = await query.CountAsync(ct);
+
+        // Paging
+        var skip = (page - 1) * pageSize;
+        var items = await query
+            .OrderBy(f => f.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .Select(FlightProjections.ToListItem)
+            .ToListAsync(ct);
+
+        return (items, total);
     }
 
     public async Task InsertAsync(Flight entity, CancellationToken ct = default)
@@ -91,45 +142,5 @@ public class FlightRepository : IFlightRepository
                 f.Id != excludeFlightId,
                 ct
             );
-    }
-
-    public async Task<(IReadOnlyList<Flight> Items, int TotalCount)> SearchAsync(
-        int? airlineId,
-        int? originAirportId,
-        int? destinationAirportId,
-        string? flightNumber,
-        bool? isActive,
-        int page,
-        int pageSize,
-        CancellationToken ct = default)
-    {
-        var query = _context.Set<FlightEntity>().AsNoTracking().AsQueryable();
-
-        if (airlineId is not null)
-            query = query.Where(f => f.AirlineId == airlineId.Value);
-
-        if (originAirportId is not null)
-            query = query.Where(f => f.OriginAirportId == originAirportId.Value);
-
-        if (destinationAirportId is not null)
-            query = query.Where(f => f.DestinationAirportId == destinationAirportId.Value);
-
-        if (!string.IsNullOrWhiteSpace(flightNumber))
-            query = query.Where(f => f.FlightNumber == flightNumber);
-
-        if (isActive is not null)
-            query = query.Where(f => f.IsActive == isActive.Value);
-
-        var total = await query.CountAsync(ct);
-
-        // Paging
-        var skip = (page - 1) * pageSize;
-        var items = await query
-            .OrderBy(f => f.Id)
-            .Skip(skip)
-            .Take(pageSize)
-            .ToListAsync(ct);
-
-        return (items.Select(x => x.ToDomain()).ToList(), total);
     }
 }

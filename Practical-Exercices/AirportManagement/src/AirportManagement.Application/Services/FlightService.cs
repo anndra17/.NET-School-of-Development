@@ -110,15 +110,7 @@ public class FlightService : IFlightService
                 "A flight with the same AirlineId and FlightNumber already exists."
             );
 
-        var entity = new Flight
-        {
-            AirlineId = request.AirlineId,
-            FlightNumber = request.FlightNumber,
-            OriginAirportId = request.OriginAirportId,
-            DestinationAirportId = request.DestinationAirportId,
-            DefaultAircraftId = request.DefaultAircraftId,
-            IsActive = request.IsActive ?? true
-        };
+        var entity = request.MapToDomain();
 
         await _unitOfWork.Flights.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync(ct);
@@ -156,6 +148,8 @@ public class FlightService : IFlightService
         var conflict = await _unitOfWork.Flights.ExistsByAirlineAndNumberExceptAsync(request.AirlineId, request.FlightNumber, id, ct);
         if (conflict)
             return Result<FlightResponseDto>.Fail(ErrorType.Conflict, "Another flight with the same AirlineId and FlightNumber already exists.");
+
+        request.ApplyToDomain(entity);
 
         await _unitOfWork.Flights.UpdateAsync(entity, ct);
         await _unitOfWork.SaveChangesAsync(ct);

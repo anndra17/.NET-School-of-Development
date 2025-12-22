@@ -136,4 +136,40 @@ public class FlightService : IFlightService
         var created = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
         return Result<FlightResponseDto>.Ok(created?.MapToFlightResponse() ?? entity.MapToFlightResponse());
     }
+
+    public async Task<Result<FlightResponseDto>> UpdateAsync(int id, UpdateFlightRequest request, CancellationToken ct)
+    {
+        if (request.OriginAirportId == request.DestinationAirportId)
+            return Result<FlightResponseDto>.Fail(ErrorType.Validation, "Origin and Destination cannot be the same airport.");
+
+        if (!request.FlightNumber.IsValidFlightNumber())
+            return Result<FlightResponseDto>.Fail(ErrorType.Validation, "FlightNumber must be 2 uppercase letters followed by 4 digits (e.g. RO1234).");
+
+        var entity = await _unitOfWork.Flights.GetByIdAsync(id, ct);
+        if (entity is null)
+            return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Flight {id} not found.");
+
+        if (!await _unitOfWork.Airlines.ExistsAsync(request.AirlineId, ct))
+            return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Airline {request.AirlineId} not found.");
+
+        if (!await _unitOfWork.Airports.ExistsAsync(request.OriginAirportId, ct))
+            return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Origin airport {request.OriginAirportId} not found.");
+
+        if (!await _unitOfWork.Airports.ExistsAsync(request.DestinationAirportId, ct))
+            return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Destination airport {request.DestinationAirportId} not found.");
+
+        if (request.DefaultAircraftId is not null &&
+            !await _unitOfWork.Aircrafts.ExistsAsync(request.DefaultAircraftId.Value, ct))
+            return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Aircraft {request.DefaultAircraftId.Value} not found.");
+
+        var conflict = await _unitOfWork.Flights.ExistsByAirlineAndNumberExceptAsync(request.AirlineId, request.FlightNumber, id, ct);
+        if (conflict)
+            return Result<FlightResponseDto>.Fail(ErrorType.Conflict, "Another flight with the same AirlineId and FlightNumber already exists.");
+
+        await _unitOfWork.Flights.UpdateAsync(entity, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        var updated = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
+        return Result<FlightResponseDto>.Ok(updated?.MapToFlightResponse()?? entity.MapToFlightResponse());
+    }
 }

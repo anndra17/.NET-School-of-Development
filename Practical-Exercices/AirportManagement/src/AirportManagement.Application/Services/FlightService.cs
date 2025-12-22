@@ -134,6 +134,6 @@ public class FlightService : IFlightService
         }
 
         var created = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
-        return Result<FlightResponseDto>.Ok(created.MapToFlightResponse() ?? entity.MapToFlightResponse());
+        return Result<FlightResponseDto>.Ok(created?.MapToFlightResponse() ?? entity.MapToFlightResponse());
     }
 }

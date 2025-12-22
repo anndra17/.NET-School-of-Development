@@ -59,6 +59,10 @@ public class FlightsController : ControllerBase
         return Ok(flights);
     }
 
+    [HttpPost]
+    [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<FlightResponseDto>> Create(
         [FromBody] CreateFlightRequest request,
         CancellationToken ct)

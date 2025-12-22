@@ -96,6 +96,15 @@ public class FlightRepository : IFlightRepository
         await _context.Set<FlightEntity>().AddAsync(flightEntity, ct);
     }
 
+    public async Task<Flight?> GetByAirlineAndNumberAsync(int airlineId, string flightNumber, CancellationToken ct = default)
+    {
+        var flightEntity = await _context.Set<FlightEntity>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(f => f.AirlineId == airlineId && f.FlightNumber == flightNumber, ct);
+
+        return flightEntity?.ToDomain();
+    }
+
     public Task UpdateAsync(Flight entity, CancellationToken ct = default)
     {
         return UpdateInternalAsync(entity, ct);

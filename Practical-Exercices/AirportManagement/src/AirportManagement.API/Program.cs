@@ -1,4 +1,6 @@
 using AirportManagement.Application.Abstractions.Repositories;
+using AirportManagement.Application.Abstractions.Services;
+using AirportManagement.Application.Services;
 using AirportManagement.Infrastructure.Persistence;
 using AirportManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +8,17 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AirportManagementDbConnectionString");
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        b => b.AllowAnyHeader()
+              .AllowAnyOrigin()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddDbContext<AirportManagementDbContext>(options => {
     options.UseSqlServer(connectionString);
 });
@@ -26,15 +34,20 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddScoped<IFlightService, FlightService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

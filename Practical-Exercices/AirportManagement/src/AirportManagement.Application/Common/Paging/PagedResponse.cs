@@ -1,4 +1,4 @@
-﻿namespace AirportManagement.Application.Dtos;
+﻿namespace AirportManagement.Application.Common.Paging;
 
 public sealed class PagedResponse<T>
 {

@@ -143,4 +143,9 @@ public class FlightRepository : IFlightRepository
                 ct
             );
     }
+
+    public async Task<bool> ExistsAsync(int id, CancellationToken ct = default)
+    {
+        return await _context.Flights.AnyAsync(f => f.Id == id, ct);
+    }
 }

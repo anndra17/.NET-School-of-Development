@@ -7,4 +7,5 @@ public interface IRepository<TDomain> where TDomain : class
     Task InsertAsync(TDomain entity, CancellationToken ct = default);
     Task UpdateAsync(TDomain entity, CancellationToken ct = default);
     Task DeleteAsync(int Id, CancellationToken ct = default);
+    Task<bool> ExistsAsync(int id, CancellationToken ct = default);
 }

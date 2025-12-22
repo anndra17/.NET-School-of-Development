@@ -19,4 +19,6 @@ public interface IFlightRepository : IRepository<Flight>
         int page,
         int pageSize,
         CancellationToken ct = default);
+
+    Task<bool> HasSchedulesAsync(int flightId, CancellationToken ct = default);
 }

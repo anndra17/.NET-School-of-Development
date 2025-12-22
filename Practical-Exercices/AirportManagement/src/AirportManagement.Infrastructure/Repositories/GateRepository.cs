@@ -4,33 +4,33 @@ using AirportManagement.Infrastructure.Persistence;
 
 namespace AirportManagement.Infrastructure.Repositories;
 
-public class GateRepository :  IGateRepository
+public class GateRepository : IGateRepository
 {
     public GateRepository(AirportManagementDbContext context) 
     {
     }
 
-    public Task DeleteAsync(object Id)
+    public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Gate>> GetAllAsync()
+    public Task<IEnumerable<Gate>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Gate?> GetByIdAsync(object Id)
+    public Task<Gate?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(Gate entity)
+    public Task InsertAsync(Gate entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Gate entity)
+    public Task UpdateAsync(Gate entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

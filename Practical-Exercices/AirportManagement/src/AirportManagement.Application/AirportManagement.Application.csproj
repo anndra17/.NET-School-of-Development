@@ -10,9 +10,4 @@
     <ProjectReference Include="..\AirportManagement.Domain\AirportManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstractions\Services\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

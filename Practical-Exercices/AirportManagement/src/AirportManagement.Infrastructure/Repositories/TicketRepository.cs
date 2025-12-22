@@ -10,27 +10,27 @@ public class TicketRepository : ITicketRepository
     {
     }
 
-    public Task DeleteAsync(object Id)
+    public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Ticket>> GetAllAsync()
+    public Task<IEnumerable<Ticket>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Ticket?> GetByIdAsync(object Id)
+    public Task<Ticket?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(Ticket entity)
+    public Task InsertAsync(Ticket entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Ticket entity)
+    public Task UpdateAsync(Ticket entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

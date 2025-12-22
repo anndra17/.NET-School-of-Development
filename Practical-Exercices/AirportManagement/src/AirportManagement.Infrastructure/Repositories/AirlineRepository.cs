@@ -10,27 +10,27 @@ public class AirlineRepository : IAirlineRepository
     {
     }
 
-    public Task DeleteAsync(object Id)
+    public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Airline>> GetAllAsync()
+    public Task<IEnumerable<Airline>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Airline?> GetByIdAsync(object Id)
+    public Task<Airline?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(Airline entity)
+    public Task InsertAsync(Airline entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Airline entity)
+    public Task UpdateAsync(Airline entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

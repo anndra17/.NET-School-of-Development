@@ -7,31 +7,31 @@ namespace AirportManagement.Infrastructure.Repositories
 {
     public class BookingRepository : IBookingRepository
     {
-        public BookingRepository(AirportManagementDbContext context) 
+        public BookingRepository(AirportManagementDbContext context)
         {
         }
 
-        public Task DeleteAsync(object Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Booking>> GetAllAsync()
+        public Task DeleteAsync(int Id, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Booking?> GetByIdAsync(object Id)
+        public Task<IEnumerable<Booking>> GetAllAsync(CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task InsertAsync(Booking entity)
+        public Task<Booking?> GetByIdAsync(int id, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Booking entity)
+        public Task InsertAsync(Booking entity, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Booking entity, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

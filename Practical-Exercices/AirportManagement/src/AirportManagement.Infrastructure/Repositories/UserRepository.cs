@@ -4,33 +4,33 @@ using AirportManagement.Infrastructure.Persistence;
 
 namespace AirportManagement.Infrastructure.Repositories;
 
-public class UserRepository :  IUserRepository
+public class UserRepository : IUserRepository
 {
-    public UserRepository(AirportManagementDbContext context) 
+    public UserRepository(AirportManagementDbContext context)
     {
     }
 
-    public Task DeleteAsync(object Id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<User>> GetAllAsync()
+    public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User?> GetByIdAsync(object Id)
+    public Task<IEnumerable<User>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(User entity)
+    public Task<User?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(User entity)
+    public Task InsertAsync(User entity, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(User entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

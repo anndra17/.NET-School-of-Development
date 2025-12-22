@@ -10,27 +10,27 @@ public class FlightScheduleRepository : IFlightScheduleRepository
     {
     }
 
-    public Task DeleteAsync(object Id)
+    public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<FlightSchedule>> GetAllAsync()
+    public Task<IEnumerable<FlightSchedule>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<FlightSchedule?> GetByIdAsync(object Id)
+    public Task<FlightSchedule?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(FlightSchedule entity)
+    public Task InsertAsync(FlightSchedule entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(FlightSchedule entity)
+    public Task UpdateAsync(FlightSchedule entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

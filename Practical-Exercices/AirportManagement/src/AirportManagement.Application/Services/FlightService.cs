@@ -172,4 +172,20 @@ public class FlightService : IFlightService
         var updated = await _unitOfWork.Flights.GetByIdAsync(entity.Id, ct);
         return Result<FlightResponseDto>.Ok(updated?.MapToFlightResponse()?? entity.MapToFlightResponse());
     }
+
+    public async Task<Result> DeleteAsync(int id, CancellationToken ct)
+    {
+        var entity = await _unitOfWork.Flights.GetByIdAsync(id, ct);
+        if (entity is null)
+            return Result.Fail(ErrorType.NotFound, $"Flight {id} not found.");
+
+        var hasDependencies = await _unitOfWork.Flights.HasSchedulesAsync(id, ct); 
+        if (hasDependencies)
+            return Result.Fail(ErrorType.Conflict, "Cannot delete flight because schedules exists. Deactivate it instead.");
+
+        await _unitOfWork.Flights.DeleteAsync(id);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        return Result.Ok();
+    }
 }

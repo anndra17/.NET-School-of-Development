@@ -17,7 +17,6 @@ public class FlightsController : ControllerBase
         _flightService = flightService;
     }
 
-    // GET /api/flights/{id}
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,5 +85,36 @@ public class FlightsController : ControllerBase
         }
 
         return CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value);
+    }
+
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<FlightResponseDto>> Update(
+        int id,
+        [FromBody] UpdateFlightRequest request,
+        CancellationToken ct)
+    {
+        if (request.OriginAirportId == request.DestinationAirportId)
+        {
+            ModelState.AddModelError(nameof(request.DestinationAirportId), "Origin and Destination cannot be the same airport.");
+            return ValidationProblem(ModelState);
+        }
+
+        var result = await _flightService.UpdateAsync(id, request, ct);
+
+        if (!result.Success)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(new { message = result.ErrorMessage }),
+                ErrorType.Conflict => Conflict(new { message = result.ErrorMessage }),
+                _ => BadRequest(new { message = result.ErrorMessage })
+            };
+        }
+
+        return Ok(result.Value);
     }
 }

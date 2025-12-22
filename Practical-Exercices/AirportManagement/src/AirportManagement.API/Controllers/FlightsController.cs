@@ -117,4 +117,25 @@ public class FlightsController : ControllerBase
 
         return Ok(result.Value);
     }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        var result = await _flightService.DeleteAsync(id, ct);
+
+        if (!result.Success)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(new { message = result.ErrorMessage }),
+                ErrorType.Conflict => Conflict(new { message = result.ErrorMessage }),
+                _ => BadRequest(new { message = result.ErrorMessage })
+            };
+        }
+
+        return NoContent();
+    }
 }

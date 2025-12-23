@@ -1,4 +1,5 @@
 ﻿using AirportManagement.Application.Abstractions.Services;
+using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Dtos.Schedule;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,5 +49,15 @@ public class SchedulesController : ControllerBase
             return BadRequest(new { message = result.ErrorMessage });
 
         return Ok(result.Value);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(PagedResponse<ScheduleListItemResponse>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<PagedResponse<ScheduleListItemResponse>>> Search(
+    [FromQuery] ScheduleSearchQuery query,
+    CancellationToken ct)
+    {
+        var result = await _scheduleService.SearchAsync(query, ct);
+        return Ok(result);
     }
 }

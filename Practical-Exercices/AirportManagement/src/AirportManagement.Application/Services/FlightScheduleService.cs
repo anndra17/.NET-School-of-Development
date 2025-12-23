@@ -1,5 +1,6 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Application.Abstractions.Services;
+using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Common.Results;
 using AirportManagement.Application.Dtos.Schedule;
 using AirportManagement.Application.Enums;
@@ -192,5 +193,29 @@ public class FlightScheduleService : IFlightScheduleService
 
         await _unitOfWork.SaveChangesAsync(ct);
         return Result<ImportSchedulesResponseDto>.Ok(response);
+    }
+
+    public async Task<PagedResponse<ScheduleListItemResponse>> SearchAsync(ScheduleSearchQuery query, CancellationToken ct)
+    {
+        var page = query.Page < 1 ? 1 : query.Page;
+        var pageSize = query.PageSize < 1 ? 20 : query.PageSize;
+        if (pageSize > 100) pageSize = 100;
+
+        var (items, total) = await _unitOfWork.FlightSchedules.SearchAsync(
+            query.Origin,
+            query.Destination,
+            query.Date,
+            page,
+            pageSize,
+            ct);
+
+        return new PagedResponse<ScheduleListItemResponse> 
+        {
+            Items = items, 
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = total,
+            TotalPages = (int)Math.Ceiling(total / (double)pageSize)
+        };
     }
 }

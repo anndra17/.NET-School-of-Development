@@ -2,12 +2,10 @@
 using AirportManagement.Application.Abstractions.Services;
 using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Common.Results;
-using AirportManagement.Application.Dtos.Flight;
-using AirportManagement.Application.Mappings;
-using AirportManagement.Application.Enums;
 using AirportManagement.Application.Common.Validators;
-using AirportManagement.Domain.Models;
-using System.Data.Common;
+using AirportManagement.Application.Dtos.Flight;
+using AirportManagement.Application.Enums;
+using AirportManagement.Application.Mappings;
 
 
 namespace AirportManagement.Application.Services;

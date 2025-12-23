@@ -1,8 +1,10 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
+using AirportManagement.Application.Dtos.Schedule;
 using AirportManagement.Domain.Models;
 using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
 using AirportManagement.Infrastructure.Persistence.Entities;
+using AirportManagement.Infrastructure.Projections;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirportManagement.Infrastructure.Repositories;
@@ -57,7 +59,7 @@ public class FlightScheduleRepository : IFlightScheduleRepository
         return UpdateInternalAsync(entity, ct);
     }
 
-    private async Task UpdateInternalAsync(FlightSchedule domain, CancellationToken ct)
+    private async Task UpdateInternalAsync(FlightSchedule domain, CancellationToken ct = default)
     {
         var tracked = await _context.Set<FlightScheduleEntity>()
             .FirstOrDefaultAsync(s => s.Id == domain.Id, ct);
@@ -85,5 +87,60 @@ public class FlightScheduleRepository : IFlightScheduleRepository
         return q.AnyAsync(s =>
             s.ScheduledDepartureUtc < arrivalUtc &&
             departureUtc < s.ScheduledArrivalUtc, ct);
+    }
+
+    public async Task<(IReadOnlyList<ScheduleListItemResponse> Items, int TotalCount)> SearchAsync(
+        string? originIata, 
+        string? destinationIata, 
+        DateOnly? date,
+        int page,
+        int pageSize, 
+        CancellationToken ct = default)
+    {
+        var query = _context.Set<FlightScheduleEntity>()
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(originIata))
+        {
+            var o = originIata.Trim().ToUpperInvariant();
+            query = query.Where(s => s.Flight != null &&
+                                     s.Flight.OriginAirport != null &&
+                                     s.Flight.OriginAirport.IATACode == o);
+        }
+
+        if (!string.IsNullOrWhiteSpace(destinationIata))
+        {
+            var d = destinationIata.Trim().ToUpperInvariant();
+            query = query.Where(s => s.Flight != null &&
+                                     s.Flight.DestinationAirport != null &&
+                                     s.Flight.DestinationAirport.IATACode == d);
+        }
+
+        if (date is not null)
+        {
+            var dayStartUtc = date.Value.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+            var dayEndUtc = dayStartUtc.AddDays(1);
+
+            query = query.Where(s => s.ScheduledDepartureUtc >= dayStartUtc &&
+                                     s.ScheduledDepartureUtc < dayEndUtc);
+        }
+
+        var total = await query.CountAsync(ct);
+
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 20;
+        if (pageSize > 100) pageSize = 100;
+
+        var skip = (page - 1) * pageSize;
+
+        var items = await query
+            .OrderBy(s => s.ScheduledDepartureUtc)
+            .Skip(skip)
+            .Take(pageSize)
+            .Select(ScheduleProjections.ToListItem)
+            .ToListAsync(ct);
+
+        return (items, total);
     }
 }

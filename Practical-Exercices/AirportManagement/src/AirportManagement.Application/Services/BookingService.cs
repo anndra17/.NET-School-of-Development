@@ -21,7 +21,6 @@ public sealed class BookingService : IBookingService
 
     public async Task<Result<CreateBookingResponseDto>> CreateAsync(CreateBookingRequest request, CancellationToken ct)
     {
-        // Passengers
         if (request.Passengers is null || request.Passengers.Count == 0)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passengers list is required.");
 
@@ -37,7 +36,6 @@ public sealed class BookingService : IBookingService
                 return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passenger phone number is required.");
         }
 
-        // Tarif validations
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
@@ -48,12 +46,10 @@ public sealed class BookingService : IBookingService
         if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Currency must be a 3-letter code (e.g. EUR).");
 
-        // Schedule exists?
         var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(request.FlightScheduleId, ct);
         if (schedule is null)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");
 
-        // Capacity rule
         var alreadyTaken = await _unitOfWork.Tickets.CountByScheduleAsync(request.FlightScheduleId, ct);
 
         var capacityResult = await GetCapacityAsync(schedule, ct);
@@ -64,7 +60,6 @@ public sealed class BookingService : IBookingService
         if (alreadyTaken + quantity > capacity)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Conflict, "Not enough seats available.");
 
-        // confirmation code
         string code;
         do { code = ConfirmationCodeGenerator.Generate(6); }
         while (await _unitOfWork.Bookings.ExistsByCodeAsync(code, ct));

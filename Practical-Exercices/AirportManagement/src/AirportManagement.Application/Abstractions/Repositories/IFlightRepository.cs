@@ -6,19 +6,10 @@ namespace AirportManagement.Application.Abstractions.Repositories;
 public interface IFlightRepository : IRepository<Flight>
 {
     Task<FlightResponseWithRelatedData?> GetByIdWithRelatedDataAsync(int id, CancellationToken ct = default);
+
     Task<bool> ExistsByAirlineAndNumberAsync(int airlineId, string flightNumber, CancellationToken ct = default);
 
     Task<bool> ExistsByAirlineAndNumberExceptAsync(int airlineId, string flightNumber, int excludeFlightId, CancellationToken ct = default);
-
-    Task<(IReadOnlyList<FlightListItemResponse> Items, int TotalCount)> SearchAsync(
-        int? airlineId,
-        int? originAirportId,
-        int? destinationAirportId,
-        string? flightNumber,
-        bool? isActive,
-        int page,
-        int pageSize,
-        CancellationToken ct = default);
 
     Task<bool> HasSchedulesAsync(int flightId, CancellationToken ct = default);
 

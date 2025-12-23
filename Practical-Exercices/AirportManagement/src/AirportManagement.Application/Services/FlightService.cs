@@ -36,26 +36,6 @@ public class FlightService : IFlightService
         return await _unitOfWork.Flights.GetByIdWithRelatedDataAsync(id, ct);
     }
 
-    public async Task<PagedResponse<FlightListItemResponse>> SearchAsync(FlightSearchQuery query, CancellationToken ct)
-    {
-        var page = query.Page < 1 ? 1 : query.Page;
-        var pageSize = query.PageSize is < 1 ? 20 : query.PageSize;
-        if (pageSize > 100) pageSize = 100;
-
-        var (items, total) = await _unitOfWork.Flights.SearchAsync(
-            query.AirlineId, query.OriginAirportId, query.DestinationAirportId,
-            query.FlightNumber, query.IsActive, page, pageSize, ct);
-
-        return new PagedResponse<FlightListItemResponse>
-        {
-            Items = items, // deja DTO
-            Page = page,
-            PageSize = pageSize,
-            TotalItems = total,
-            TotalPages = (int)Math.Ceiling(total / (double)pageSize)
-        };
-    }
-
     public async Task<Result<FlightResponseDto>> CreateAsync(CreateFlightRequest request, CancellationToken ct)
     {
         if (request.OriginAirportId == request.DestinationAirportId)

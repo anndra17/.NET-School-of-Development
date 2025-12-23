@@ -47,17 +47,6 @@ public class FlightsController : ControllerBase
         return Ok(flight);
     }
 
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResponse<FlightListItemResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResponse<FlightListItemResponse>>> Search(
-        [FromQuery] FlightSearchQuery query,
-        CancellationToken ct)
-    {
-        var flights = await _flightService.SearchAsync(query, ct);
-
-        return Ok(flights);
-    }
-
     [HttpPost]
     [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

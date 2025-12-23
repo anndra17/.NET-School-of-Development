@@ -36,6 +36,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IFlightScheduleService, FlightScheduleService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

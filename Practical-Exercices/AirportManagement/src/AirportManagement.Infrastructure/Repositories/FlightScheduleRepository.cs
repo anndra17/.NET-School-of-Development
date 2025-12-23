@@ -20,10 +20,20 @@ public class FlightScheduleRepository : IFlightScheduleRepository
     {
         var entity = await _context.Set<FlightScheduleEntity>()
              .AsNoTracking()
-             .FirstOrDefaultAsync(x => x.Id == id, ct);
+             .FirstOrDefaultAsync(fs => fs.Id == id, ct);
 
         return entity?.ToDomain();
     }
+
+    public async Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(int flightId, DateTime departureUtc, CancellationToken ct = default)
+    {
+        var entity = await  _context.Set<FlightScheduleEntity>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(fs => fs.FlightId == flightId && fs.ScheduledDepartureUtc == departureUtc, ct);
+
+        return entity?.ToDomain();
+    }
+
 
     public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
@@ -35,18 +45,45 @@ public class FlightScheduleRepository : IFlightScheduleRepository
         throw new NotImplementedException();
     }
 
-    public Task InsertAsync(FlightSchedule entity, CancellationToken ct = default)
+    public async Task InsertAsync(FlightSchedule entity, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var schedule = entity.ToNewEntity();
+
+        await _context.Set<FlightScheduleEntity>().AddAsync(schedule, ct);
     }
 
     public Task UpdateAsync(FlightSchedule entity, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return UpdateInternalAsync(entity, ct);
+    }
+
+    private async Task UpdateInternalAsync(FlightSchedule domain, CancellationToken ct)
+    {
+        var tracked = await _context.Set<FlightScheduleEntity>()
+            .FirstOrDefaultAsync(s => s.Id == domain.Id, ct);
+
+        if (tracked is null)
+            return;
+
+        domain.ApplyToEntity(tracked);
     }
 
     public async Task<bool> ExistsAsync(int id, CancellationToken ct = default)
     {
         return await _context.FlightSchedules.AnyAsync(f => f.Id == id, ct);
+    }
+
+    public Task<bool> ExistsGateOverlapAsync(int gateId, DateTime departureUtc, DateTime arrivalUtc, int? excludeScheduleId, CancellationToken ct = default)
+    {
+        var q = _context.Set<FlightScheduleEntity>().AsNoTracking().AsQueryable();
+
+        q = q.Where(fs => fs.GateId == gateId);
+
+        if (excludeScheduleId is not null)
+            q = q.Where(s => s.Id != excludeScheduleId.Value);
+
+        return q.AnyAsync(s =>
+            s.ScheduledDepartureUtc < arrivalUtc &&
+            departureUtc < s.ScheduledArrivalUtc, ct);
     }
 }

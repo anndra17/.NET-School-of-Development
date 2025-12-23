@@ -4,4 +4,5 @@ namespace AirportManagement.Application.Abstractions.Repositories;
 
 public interface IAircraftRepository : IRepository<Aircraft>
 {
+    Task<Aircraft?> GetByTailNumberAsync(string tailNumber, CancellationToken ct = default);
 }

@@ -29,4 +29,24 @@ public class SchedulesController : ControllerBase
 
         return Ok(scheduleDto);
     }
+
+    [HttpPost("import")]
+    [ProducesResponseType(typeof(ImportSchedulesResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ImportSchedulesResponseDto>> Import(IFormFile file, CancellationToken ct)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "File is required." });
+
+        if (!file.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            return BadRequest(new { message = "Only .json files are supported." });
+
+        await using var stream = file.OpenReadStream();
+        var result = await _scheduleService.ImportAsync(stream, ct);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.ErrorMessage });
+
+        return Ok(result.Value);
+    }
 }

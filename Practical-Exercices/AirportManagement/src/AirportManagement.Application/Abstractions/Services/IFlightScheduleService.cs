@@ -1,5 +1,4 @@
-﻿using AirportManagement.Application.Dtos.Flight;
-using AirportManagement.Application.Dtos.Schedule;
+﻿using AirportManagement.Application.Dtos.Schedule;
 
 namespace AirportManagement.Application.Abstractions.Services;
 

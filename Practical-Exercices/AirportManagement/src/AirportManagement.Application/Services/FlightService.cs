@@ -1,6 +1,5 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Application.Abstractions.Services;
-using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Common.Results;
 using AirportManagement.Application.Common.Validators;
 using AirportManagement.Application.Dtos.Flight;

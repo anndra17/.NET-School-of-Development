@@ -1,6 +1,7 @@
 ﻿using AirportManagement.Application.Abstractions.Services;
 using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Dtos.Schedule;
+using AirportManagement.Application.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirportManagement.API.Controllers;
@@ -59,5 +60,26 @@ public class SchedulesController : ControllerBase
     {
         var result = await _scheduleService.SearchAsync(query, ct);
         return Ok(result);
+    }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        var result = await _scheduleService.DeleteAsync(id, ct);
+
+        if (!result.Success)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(new { message = result.ErrorMessage }),
+                ErrorType.Conflict => Conflict(new { message = result.ErrorMessage }),
+                _ => BadRequest(new { message = result.ErrorMessage })
+            };
+        }
+
+        return NoContent();
     }
 }

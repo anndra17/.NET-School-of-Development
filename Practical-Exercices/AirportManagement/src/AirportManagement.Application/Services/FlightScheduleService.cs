@@ -218,4 +218,20 @@ public class FlightScheduleService : IFlightScheduleService
             TotalPages = (int)Math.Ceiling(total / (double)pageSize)
         };
     }
+
+    public async Task<Result> DeleteAsync(int id, CancellationToken ct)
+    {
+        var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(id, ct);
+        if (schedule is null)
+            return Result.Fail(ErrorType.NotFound, $"Schedule {id} not found.");
+
+        var hasTickets = await _unitOfWork.FlightSchedules.HasTicketsAsync(id, ct);
+        if (hasTickets)
+            return Result.Fail(ErrorType.Conflict, "Cannot delete schedule because tickets exist.");
+
+        await _unitOfWork.FlightSchedules.DeleteAsync(id, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        return Result.Ok();
+    }
 }

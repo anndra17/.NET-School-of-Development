@@ -36,12 +36,6 @@ public class FlightScheduleRepository : IFlightScheduleRepository
         return entity?.ToDomain();
     }
 
-
-    public Task DeleteAsync(int Id, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<IEnumerable<FlightSchedule>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
@@ -142,5 +136,21 @@ public class FlightScheduleRepository : IFlightScheduleRepository
             .ToListAsync(ct);
 
         return (items, total);
+    }
+
+    public async Task DeleteAsync(int id, CancellationToken ct = default)
+    {
+        var tracked = await _context.Set<FlightScheduleEntity>()
+        .FirstOrDefaultAsync(s => s.Id == id, ct);
+
+        if (tracked is not null)
+            _context.Set<FlightScheduleEntity>().Remove(tracked);
+    }
+
+    public Task<bool> HasTicketsAsync(int scheduleId, CancellationToken ct = default)
+    {
+        return _context.Set<TicketEntity>()
+       .AsNoTracking()
+       .AnyAsync(t => t.FlightScheduleId == scheduleId, ct);
     }
 }

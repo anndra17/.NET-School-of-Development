@@ -15,4 +15,5 @@ public interface IFlightScheduleRepository : IRepository<FlightSchedule>
         int page,
         int pageSize,
         CancellationToken ct = default);
+    Task<bool> HasTicketsAsync(int scheduleId, CancellationToken ct = default);
 }

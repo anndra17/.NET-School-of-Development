@@ -3,7 +3,7 @@ using AirportManagement.Domain.Models;
 
 namespace AirportManagement.Application.Abstractions.Repositories;
 
-public interface IFlightScheduleRepository : IRepository<FlightSchedule>
+public interface IFlightScheduleRepository : IRepository<FlightSchedule, int>
 {
     Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(int flightId, DateTime departureUtc, CancellationToken ct = default);
 

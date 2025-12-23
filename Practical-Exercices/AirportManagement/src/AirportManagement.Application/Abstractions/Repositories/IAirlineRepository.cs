@@ -2,6 +2,6 @@
 
 namespace AirportManagement.Application.Abstractions.Repositories;
 
-public interface IAirlineRepository : IRepository<Airline>
+public interface IAirlineRepository : IRepository<Airline, int>
 {
 }

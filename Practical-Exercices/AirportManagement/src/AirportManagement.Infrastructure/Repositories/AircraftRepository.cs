@@ -26,9 +26,13 @@ public class AircraftRepository : IAircraftRepository
         throw new NotImplementedException();
     }
 
-    public Task<Aircraft?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<Aircraft?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Set<AircraftEntity>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == id, ct);
+
+        return entity?.ToDomain();
     }
 
     public Task InsertAsync(Aircraft entity, CancellationToken ct = default)

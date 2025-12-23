@@ -3,7 +3,7 @@ using AirportManagement.Domain.Models;
 
 namespace AirportManagement.Application.Abstractions.Repositories;
 
-public interface IFlightRepository : IRepository<Flight>
+public interface IFlightRepository : IRepository<Flight, int>
 {
     Task<FlightResponseWithRelatedData?> GetByIdWithRelatedDataAsync(int id, CancellationToken ct = default);
 

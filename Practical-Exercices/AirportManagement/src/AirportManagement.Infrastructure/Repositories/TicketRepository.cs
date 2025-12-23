@@ -1,5 +1,7 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
+using AirportManagement.Application.Dtos.Booking;
 using AirportManagement.Application.Dtos.Ticket;
+using AirportManagement.Domain.Enums;
 using AirportManagement.Domain.Models;
 using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
@@ -103,5 +105,39 @@ public class TicketRepository : ITicketRepository
             return;
 
         tracked.SeatInventory = seatInventory;
+    }
+
+    public async Task CreateTicketsForBookingAsync(
+     int bookingId,
+     int flightScheduleId,
+     FareClass fareClass,
+     decimal basePrice,
+     decimal taxes,
+     string currency,
+     bool isRefundable,
+     IReadOnlyList<PassengerDto> passengers,
+     CancellationToken ct = default)
+    {
+        var totalPrice = basePrice + taxes;
+
+        var entities = passengers.Select(p => new TicketEntity
+        {
+            FlightScheduleId = flightScheduleId,
+            BookingId = bookingId,
+
+            FareClass = FareClassMappings.ToEntity(fareClass), // "Y/M/J/F"
+            BasePrice = basePrice,
+            Taxes = taxes,
+            TotalPrice = totalPrice,
+            Currency = currency,
+            IsRefundable = isRefundable,
+
+            SeatInventory = 1, 
+            PassengerFullName = p.FullName.Trim(),
+            PassengerEmail = p.Email.Trim(),
+            PassengerPhoneNumber = p.PhoneNumber.Trim()
+        }).ToList();
+
+        await _context.Set<TicketEntity>().AddRangeAsync(entities, ct);
     }
 }

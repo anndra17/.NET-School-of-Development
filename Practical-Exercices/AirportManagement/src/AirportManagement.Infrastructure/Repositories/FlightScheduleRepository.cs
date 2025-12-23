@@ -1,6 +1,8 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Domain.Models;
+using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
+using AirportManagement.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirportManagement.Infrastructure.Repositories;
@@ -14,17 +16,21 @@ public class FlightScheduleRepository : IFlightScheduleRepository
         _context = context;
     }
 
+    public async Task<FlightSchedule?> GetByIdAsync(int id, CancellationToken ct = default)
+    {
+        var entity = await _context.Set<FlightScheduleEntity>()
+             .AsNoTracking()
+             .FirstOrDefaultAsync(x => x.Id == id, ct);
+
+        return entity?.ToDomain();
+    }
+
     public Task DeleteAsync(int Id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
     public Task<IEnumerable<FlightSchedule>> GetAllAsync(CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<FlightSchedule?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

@@ -119,7 +119,7 @@ public sealed class BookingService : IBookingService
             return Result.Fail(ErrorType.NotFound, $"Booking '{code}' not found.");
 
         if (booking.Status == BookingStatus.Cancelled)
-            return Result.Ok(); 
+            return Result.Fail(ErrorType.Conflict, $"Booking '{code}' is already cancelled.");
 
         await _unitOfWork.BookingsRepository.CancelByCodeAsync(code, ct);
         await _unitOfWork.SaveChangesAsync(ct);

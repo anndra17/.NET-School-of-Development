@@ -26,16 +26,6 @@ public sealed class BookingService : IBookingService
 
         var quantity = request.Passengers.Count;
 
-        foreach (var p in request.Passengers)
-        {
-            if (string.IsNullOrWhiteSpace(p.FullName))
-                return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passenger full name is required.");
-            if (string.IsNullOrWhiteSpace(p.Email))
-                return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passenger email is required.");
-            if (string.IsNullOrWhiteSpace(p.PhoneNumber))
-                return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passenger phone number is required.");
-        }
-
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 

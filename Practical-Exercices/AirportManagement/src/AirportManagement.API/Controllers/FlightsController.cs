@@ -55,11 +55,6 @@ public class FlightsController : ControllerBase
         [FromBody] CreateFlightRequest request,
         CancellationToken ct)
     {
-        if (request.OriginAirportId == request.DestinationAirportId)
-        {
-            ModelState.AddModelError(nameof(request.DestinationAirportId), "Origin and Destination cannot be the same airport.");
-            return ValidationProblem(ModelState);
-        }
 
         var result = await _flightService.CreateAsync(request, ct);
 
@@ -86,11 +81,6 @@ public class FlightsController : ControllerBase
         [FromBody] UpdateFlightRequest request,
         CancellationToken ct)
     {
-        if (request.OriginAirportId == request.DestinationAirportId)
-        {
-            ModelState.AddModelError(nameof(request.DestinationAirportId), "Origin and Destination cannot be the same airport.");
-            return ValidationProblem(ModelState);
-        }
 
         var result = await _flightService.UpdateAsync(id, request, ct);
 

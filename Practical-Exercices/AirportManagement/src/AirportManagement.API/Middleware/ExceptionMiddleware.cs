@@ -35,10 +35,15 @@ public class ExceptionMiddleware
     {
         var traceId = context.TraceIdentifier;
 
-        _logger.LogError(ex, "Unhandled exception. TraceId={TraceId}", traceId);
+
+        if (ex is OperationCanceledException)
+            _logger.LogInformation("Request was cancelled. TraceId={TraceId}", traceId);
+        else 
+            _logger.LogError(ex, "Unhandled exception. TraceId={TraceId}", traceId);
 
         var (statusCode, title) = ex switch
         {
+            OperationCanceledException => (StatusCodes.Status499ClientClosedRequest, "Request cancelled by client"),
             ValidationException => (StatusCodes.Status400BadRequest, "Validation error"),
             NotFoundException => (StatusCodes.Status404NotFound, "Not found"),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
@@ -49,7 +54,9 @@ public class ExceptionMiddleware
         {
             Status = statusCode,
             Title = title,
-            Detail = _env.IsDevelopment() ? ex.Message : "An unexpected error occurred.",
+            Detail = ex is OperationCanceledException
+                ? "The request was cancelled."
+                : _env.IsDevelopment() ? ex.Message : "An unexpected error occurred.",
             Instance = context.Request.Path
         };
 

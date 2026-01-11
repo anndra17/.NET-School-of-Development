@@ -1,5 +1,6 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Application.Dtos.Schedule;
+using AirportManagement.Application.Exceptions;
 using AirportManagement.Domain.Models;
 using AirportManagement.Infrastructure.Mappings;
 using AirportManagement.Infrastructure.Persistence;
@@ -59,7 +60,7 @@ public class FlightScheduleRepository : IFlightScheduleRepository
             .FirstOrDefaultAsync(s => s.Id == domain.Id, ct);
 
         if (tracked is null)
-            return;
+            throw new NotFoundException($"FlightSchedule {domain.Id} not found.");
 
         domain.ApplyToEntity(tracked);
     }

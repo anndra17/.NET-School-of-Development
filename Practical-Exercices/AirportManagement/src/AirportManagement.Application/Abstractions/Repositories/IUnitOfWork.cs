@@ -2,15 +2,15 @@
 
 public interface IUnitOfWork
 {
-    IAircraftRepository Aircrafts { get; }
-    IAirlineRepository Airlines { get; }
-    IAirportRepository Airports { get; }
-    IBookingRepository Bookings { get; }
-    IFlightRepository Flights { get; }
-    IFlightScheduleRepository FlightSchedules { get; }
-    IGateRepository Gates { get; }
-    ITicketRepository Tickets { get; }
-    IUserRepository Users { get; }
+    IAircraftRepository AircraftsRepository { get; }
+    IAirlineRepository AirlinesRepository { get; }
+    IAirportRepository AirportsRepository { get; }
+    IBookingRepository BookingsRepository { get; }
+    IFlightRepository FlightsRepository { get; }
+    IFlightScheduleRepository FlightSchedulesRepository { get; }
+    IGateRepository GatesRepository { get; }
+    ITicketRepository TicketsRepository { get; }
+    IUserRepository UsersRepository { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 

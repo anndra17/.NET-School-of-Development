@@ -21,7 +21,7 @@ public class FlightScheduleService : IFlightScheduleService
     }
     public async Task<ScheduleResponseDto?> GetByIdAsync(int id, CancellationToken ct)
     {
-        var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(id, ct);
+        var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(id, ct);
 
         if (schedule is null)
         {
@@ -81,7 +81,7 @@ public class FlightScheduleService : IFlightScheduleService
 
             if (!flightCache.TryGetValue(row.FlightId, out var flight))
             {
-                var found = await _unitOfWork.Flights.GetByIdAsync(row.FlightId, ct);
+                var found = await _unitOfWork.FlightsRepository.GetByIdAsync(row.FlightId, ct);
                 if (found is null)
                 {
                     response.Errors.Add(new ImportRowErrorDto { Row = rowNumber, Message = $"Flight with id {row.FlightId} not found." });
@@ -100,7 +100,7 @@ public class FlightScheduleService : IFlightScheduleService
 
                 if (!gateCache.TryGetValue(key, out var gate))
                 {
-                    var foundGate = await _unitOfWork.Gates.GetByAirportAndCodeAsync(key.airportId, key.code, ct);
+                    var foundGate = await _unitOfWork.GatesRepository.GetByAirportAndCodeAsync(key.airportId, key.code, ct);
                     if (foundGate is null)
                     {
                         response.Errors.Add(new ImportRowErrorDto
@@ -125,7 +125,7 @@ public class FlightScheduleService : IFlightScheduleService
 
                 if (!aircraftCache.TryGetValue(tail, out var aircraft))
                 {
-                    var foundAircraft = await _unitOfWork.Aircrafts.GetByTailNumberAsync(tail, ct);
+                    var foundAircraft = await _unitOfWork.AircraftsRepository.GetByTailNumberAsync(tail, ct);
                     if (foundAircraft is null)
                     {
                         response.Errors.Add(new ImportRowErrorDto { Row = rowNumber, Message = $"Aircraft not found: Tail={tail}." });
@@ -139,12 +139,12 @@ public class FlightScheduleService : IFlightScheduleService
                 aircraftId = aircraft.Id;
             }
 
-            var existing = await _unitOfWork.FlightSchedules
+            var existing = await _unitOfWork.FlightSchedulesRepository
                 .GetByFlightIdAndDepartureAsync(row.FlightId, row.ScheduledDepartureUtc, ct);
 
             if (gateId is not null)
             {
-                var overlap = await _unitOfWork.FlightSchedules.ExistsGateOverlapAsync(
+                var overlap = await _unitOfWork.FlightSchedulesRepository.ExistsGateOverlapAsync(
                     gateId.Value,
                     row.ScheduledDepartureUtc,
                     row.ScheduledArrivalUtc,
@@ -176,7 +176,7 @@ public class FlightScheduleService : IFlightScheduleService
                     Status = statusEnum
                 };
 
-                await _unitOfWork.FlightSchedules.InsertAsync(schedule, ct);
+                await _unitOfWork.FlightSchedulesRepository.InsertAsync(schedule, ct);
                 response.Created++;
             }
             else
@@ -186,7 +186,7 @@ public class FlightScheduleService : IFlightScheduleService
                 existing.AssignedAircraftId = aircraftId;
                 existing.Status = statusEnum;
 
-                await _unitOfWork.FlightSchedules.UpdateAsync(existing, ct);
+                await _unitOfWork.FlightSchedulesRepository.UpdateAsync(existing, ct);
                 response.Updated++;
             }
         }
@@ -207,7 +207,7 @@ public class FlightScheduleService : IFlightScheduleService
         if (statusValue < 0 || statusValue > 4)
             return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, $"Invalid status value: {statusValue}.");
 
-        var flight = await _unitOfWork.Flights.GetByIdAsync(dto.FlightId, ct);
+        var flight = await _unitOfWork.FlightsRepository.GetByIdAsync(dto.FlightId, ct);
         if (flight is null)
             return Result<ScheduleResponseDto>.Fail(ErrorType.NotFound, $"Flight with id {dto.FlightId} not found.");
 
@@ -215,7 +215,7 @@ public class FlightScheduleService : IFlightScheduleService
         if (!string.IsNullOrWhiteSpace(dto.GateCode))
         {
             var gateCode = dto.GateCode.Trim();
-            var foundGate = await _unitOfWork.Gates.GetByAirportAndCodeAsync(flight.OriginAirportId, gateCode, ct);
+            var foundGate = await _unitOfWork.GatesRepository.GetByAirportAndCodeAsync(flight.OriginAirportId, gateCode, ct);
 
             if (foundGate is null)
             {
@@ -231,7 +231,7 @@ public class FlightScheduleService : IFlightScheduleService
         if (!string.IsNullOrWhiteSpace(dto.AssignedAircraftTail))
         {
             var tail = dto.AssignedAircraftTail.Trim();
-            var foundAircraft = await _unitOfWork.Aircrafts.GetByTailNumberAsync(tail, ct);
+            var foundAircraft = await _unitOfWork.AircraftsRepository.GetByTailNumberAsync(tail, ct);
 
             if (foundAircraft is null)
                 return Result<ScheduleResponseDto>.Fail(ErrorType.NotFound, $"Aircraft not found: Tail={tail}.");
@@ -241,7 +241,7 @@ public class FlightScheduleService : IFlightScheduleService
 
         if (gateId is not null)
         {
-            var overlap = await _unitOfWork.FlightSchedules.ExistsGateOverlapAsync(
+            var overlap = await _unitOfWork.FlightSchedulesRepository.ExistsGateOverlapAsync(
                 gateId.Value,
                 dto.ScheduledDepartureUtc,
                 dto.ScheduledArrivalUtc,
@@ -266,10 +266,10 @@ public class FlightScheduleService : IFlightScheduleService
             Status = (FlightScheduleStatus)statusValue
         };
 
-        await _unitOfWork.FlightSchedules.InsertAsync(schedule, ct);
+        await _unitOfWork.FlightSchedulesRepository.InsertAsync(schedule, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var created = await _unitOfWork.FlightSchedules
+        var created = await _unitOfWork.FlightSchedulesRepository
             .GetByFlightIdAndDepartureAsync(dto.FlightId, dto.ScheduledDepartureUtc, ct);
 
         if (created is null)
@@ -284,7 +284,7 @@ public class FlightScheduleService : IFlightScheduleService
         var pageSize = query.PageSize < 1 ? 20 : query.PageSize;
         if (pageSize > 100) pageSize = 100;
 
-        var (items, total) = await _unitOfWork.FlightSchedules.SearchAsync(
+        var (items, total) = await _unitOfWork.FlightSchedulesRepository.SearchAsync(
             query.Origin,
             query.Destination,
             query.Date,
@@ -304,15 +304,15 @@ public class FlightScheduleService : IFlightScheduleService
 
     public async Task<Result> DeleteAsync(int id, CancellationToken ct)
     {
-        var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(id, ct);
+        var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(id, ct);
         if (schedule is null)
             return Result.Fail(ErrorType.NotFound, $"Schedule {id} not found.");
 
-        var hasTickets = await _unitOfWork.FlightSchedules.HasTicketsAsync(id, ct);
+        var hasTickets = await _unitOfWork.FlightSchedulesRepository.HasTicketsAsync(id, ct);
         if (hasTickets)
             return Result.Fail(ErrorType.Conflict, "Cannot delete schedule because tickets exist.");
 
-        await _unitOfWork.FlightSchedules.DeleteAsync(id, ct);
+        await _unitOfWork.FlightSchedulesRepository.DeleteAsync(id, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

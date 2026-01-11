@@ -46,11 +46,11 @@ public sealed class BookingService : IBookingService
         if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Currency must be a 3-letter code (e.g. EUR).");
 
-        var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(request.FlightScheduleId, ct);
+        var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(request.FlightScheduleId, ct);
         if (schedule is null)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");
 
-        var alreadyTaken = await _unitOfWork.Tickets.CountByScheduleAsync(request.FlightScheduleId, ct);
+        var alreadyTaken = await _unitOfWork.TicketsRepository.CountByScheduleAsync(request.FlightScheduleId, ct);
 
         var capacityResult = await GetCapacityAsync(schedule, ct);
         if (!capacityResult.Success)
@@ -62,7 +62,7 @@ public sealed class BookingService : IBookingService
 
         string code;
         do { code = ConfirmationCodeGenerator.Generate(6); }
-        while (await _unitOfWork.Bookings.ExistsByCodeAsync(code, ct));
+        while (await _unitOfWork.BookingsRepository.ExistsByCodeAsync(code, ct));
 
         var unitPrice = request.BasePrice + request.Taxes;
         var total = unitPrice * quantity;
@@ -78,14 +78,14 @@ public sealed class BookingService : IBookingService
                 CreatedUtc = DateTime.UtcNow
             };
 
-            await _unitOfWork.Bookings.InsertAsync(booking, txCt);
+            await _unitOfWork.BookingsRepository.InsertAsync(booking, txCt);
             await _unitOfWork.SaveChangesAsync(txCt);
 
-            var saved = await _unitOfWork.Bookings.GetByCodeAsync(code, txCt);
+            var saved = await _unitOfWork.BookingsRepository.GetByCodeAsync(code, txCt);
             if (saved is null)
                 throw new InvalidOperationException("Failed to create booking.");
 
-            await _unitOfWork.Tickets.CreateTicketsForBookingAsync(
+            await _unitOfWork.TicketsRepository.CreateTicketsForBookingAsync(
                 bookingId: saved.Id,
                 flightScheduleId: request.FlightScheduleId,
                 fareClass: fareClass,
@@ -110,7 +110,7 @@ public sealed class BookingService : IBookingService
 
     public async Task<BookingResponseDto?> GetByCodeAsync(string code, CancellationToken ct)
     {
-        var booking = await _unitOfWork.Bookings.GetByCodeAsync(code, ct);
+        var booking = await _unitOfWork.BookingsRepository.GetByCodeAsync(code, ct);
         if (booking is null) return null;
 
         return new BookingResponseDto
@@ -124,14 +124,14 @@ public sealed class BookingService : IBookingService
 
     public async Task<Result> CancelAsync(string code, CancellationToken ct)
     {
-        var booking = await _unitOfWork.Bookings.GetByCodeAsync(code, ct);
+        var booking = await _unitOfWork.BookingsRepository.GetByCodeAsync(code, ct);
         if (booking is null)
             return Result.Fail(ErrorType.NotFound, $"Booking '{code}' not found.");
 
         if (booking.Status == BookingStatus.Cancelled)
             return Result.Ok(); 
 
-        await _unitOfWork.Bookings.CancelByCodeAsync(code, ct);
+        await _unitOfWork.BookingsRepository.CancelByCodeAsync(code, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();
@@ -143,7 +143,7 @@ public sealed class BookingService : IBookingService
 
         if (aircraftId is null)
         {
-            var flight = await _unitOfWork.Flights.GetByIdAsync(schedule.FlightId, ct);
+            var flight = await _unitOfWork.FlightsRepository.GetByIdAsync(schedule.FlightId, ct);
             if (flight?.DefaultAircraftId is not null)
                 aircraftId = flight.DefaultAircraftId;
         }
@@ -152,7 +152,7 @@ public sealed class BookingService : IBookingService
             return Result<int>.Fail(ErrorType.Validation,
                 "Capacity unknown: schedule has no AssignedAircraftId and flight has no DefaultAircraftId.");
 
-        var aircraft = await _unitOfWork.Aircrafts.GetByIdAsync(aircraftId.Value, ct);
+        var aircraft = await _unitOfWork.AircraftsRepository.GetByIdAsync(aircraftId.Value, ct);
         if (aircraft is null)
             return Result<int>.Fail(ErrorType.NotFound, $"Aircraft {aircraftId.Value} not found.");
 

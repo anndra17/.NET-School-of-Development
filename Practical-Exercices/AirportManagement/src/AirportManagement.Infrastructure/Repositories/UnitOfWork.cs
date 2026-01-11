@@ -9,38 +9,38 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AirportManagementDbContext _context;
 
-    public IAircraftRepository Aircrafts { get; }
-    public IAirlineRepository Airlines { get; }
-    public IAirportRepository Airports { get; }
-    public IBookingRepository Bookings { get; }
-    public IFlightRepository Flights { get; }
-    public IFlightScheduleRepository FlightSchedules { get; }
-    public IGateRepository Gates { get; }
-    public ITicketRepository Tickets { get; }
-    public IUserRepository Users { get; }
+    public IAircraftRepository AircraftsRepository { get; } 
+    public IAirlineRepository AirlinesRepository { get; }
+    public IAirportRepository AirportsRepository { get; }
+    public IBookingRepository BookingsRepository { get; }
+    public IFlightRepository FlightsRepository { get; }
+    public IFlightScheduleRepository FlightSchedulesRepository { get; }
+    public IGateRepository GatesRepository { get; }
+    public ITicketRepository TicketsRepository { get; }
+    public IUserRepository UsersRepository { get; }
 
     public UnitOfWork(
        AirportManagementDbContext context,
-       IAircraftRepository aircrafts,
-       IAirlineRepository airlines,
-       IAirportRepository airports,
-       IBookingRepository bookings,
-       IFlightRepository flights,
-       IFlightScheduleRepository flightSchedules,
-       IGateRepository gates,
-       ITicketRepository tickets,
-       IUserRepository users)
+       IAircraftRepository aircraftsRepository,
+       IAirlineRepository airlinesRepository,
+       IAirportRepository airportsRepository,
+       IBookingRepository bookingsRepository,
+       IFlightRepository flightsRepository,
+       IFlightScheduleRepository flightSchedulesRepository,
+       IGateRepository gatesRepository,
+       ITicketRepository ticketsRepository,
+       IUserRepository usersRepository)
     {
         _context = context;
-        Aircrafts = aircrafts;
-        Airlines = airlines;
-        Airports = airports;
-        Bookings = bookings;
-        Flights = flights;
-        FlightSchedules = flightSchedules;
-        Gates = gates;
-        Tickets = tickets;
-        Users = users;
+        AircraftsRepository = aircraftsRepository;
+        AirlinesRepository = airlinesRepository;
+        AirportsRepository = airportsRepository;
+        BookingsRepository = bookingsRepository;
+        FlightsRepository = flightsRepository;
+        FlightSchedulesRepository = flightSchedulesRepository;
+        GatesRepository = gatesRepository;
+        TicketsRepository = ticketsRepository;
+        UsersRepository = usersRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken ct = default)

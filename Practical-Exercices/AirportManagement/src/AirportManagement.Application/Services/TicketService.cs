@@ -20,10 +20,10 @@ public class TicketService : ITicketService
 
     public async Task<Result<TicketResponseDto>> CreateAsync(CreateTicketRequest request, CancellationToken ct)
     {
-        if (!await _unitOfWork.FlightSchedules.ExistsAsync(request.FlightScheduleId, ct))
+        if (!await _unitOfWork.FlightSchedulesRepository.ExistsAsync(request.FlightScheduleId, ct))
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");
 
-        if (!await _unitOfWork.Bookings.ExistsAsync(request.BookingId, ct))
+        if (!await _unitOfWork.BookingsRepository.ExistsAsync(request.BookingId, ct))
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Booking {request.BookingId} not found.");
 
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
@@ -54,20 +54,20 @@ public class TicketService : ITicketService
             PassengerPhoneNumber = request.PassengerPhoneNumber
         };
 
-        await _unitOfWork.Tickets.InsertAsync(ticket, ct);
+        await _unitOfWork.TicketsRepository.InsertAsync(ticket, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var created = await _unitOfWork.Tickets.GetByIdAsync(ticket.Id, ct);
+        var created = await _unitOfWork.TicketsRepository.GetByIdAsync(ticket.Id, ct);
         return Result<TicketResponseDto>.Ok((created ?? ticket).MapToTicketResponse());
     }
 
     public async Task<Result> DeleteAsync(long id, CancellationToken ct)
     {
-        var exists = await _unitOfWork.Tickets.ExistsAsync(id, ct);
+        var exists = await _unitOfWork.TicketsRepository.ExistsAsync(id, ct);
         if (!exists)
             return Result.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
 
-        await _unitOfWork.Tickets.DeleteAsync(id, ct);
+        await _unitOfWork.TicketsRepository.DeleteAsync(id, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();
@@ -75,14 +75,14 @@ public class TicketService : ITicketService
 
     public async Task<Result<TicketAvailabilityResponseDto>> GetAvailabilityAsync(int flightScheduleId, CancellationToken ct)
     {
-        var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(flightScheduleId, ct);
+        var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(flightScheduleId, ct);
         if (schedule is null)
             return Result<TicketAvailabilityResponseDto>.Fail(ErrorType.NotFound, $"Schedule {flightScheduleId} not found.");
         
         int? aircraftId = schedule.AssignedAircraftId;
         if (aircraftId is null)
         {
-            var flight = await _unitOfWork.Flights.GetByIdAsync(schedule.FlightId, ct);
+            var flight = await _unitOfWork.FlightsRepository.GetByIdAsync(schedule.FlightId, ct);
             if (flight?.DefaultAircraftId is not null)
                 aircraftId = flight.DefaultAircraftId;
         }
@@ -93,7 +93,7 @@ public class TicketService : ITicketService
                 "Capacity unknown: schedule has no AssignedAircraftId and flight has no DefaultAircraftId."
             );
 
-        var aircraft = await _unitOfWork.Aircrafts.GetByIdAsync(aircraftId.Value, ct);
+        var aircraft = await _unitOfWork.AircraftsRepository.GetByIdAsync(aircraftId.Value, ct);
         if (aircraft is null)
             return Result<TicketAvailabilityResponseDto>.Fail(
                 ErrorType.NotFound,
@@ -102,10 +102,10 @@ public class TicketService : ITicketService
 
         var capacity = aircraft.SeatCapacity;
 
-        var ticketsCount = await _unitOfWork.Tickets.CountByScheduleAsync(flightScheduleId, ct);
+        var ticketsCount = await _unitOfWork.TicketsRepository.CountByScheduleAsync(flightScheduleId, ct);
         var remaining = Math.Max(0, capacity - ticketsCount);
 
-        var prices = await _unitOfWork.Tickets.GetMinPricesByFareClassAsync(flightScheduleId, ct);
+        var prices = await _unitOfWork.TicketsRepository.GetMinPricesByFareClassAsync(flightScheduleId, ct);
 
         return Result<TicketAvailabilityResponseDto>.Ok(new TicketAvailabilityResponseDto
         {
@@ -119,14 +119,14 @@ public class TicketService : ITicketService
 
     public async Task<TicketResponseDto?> GetByIdAsync(long id, CancellationToken ct)
     {
-        var ticket = await _unitOfWork.Tickets.GetByIdAsync(id, ct);
+        var ticket = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
 
         return ticket?.MapToTicketResponse();
     }
 
     public async Task<IReadOnlyList<TicketResponseDto>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct)
     {
-        var tickets = await _unitOfWork.Tickets.GetByScheduleAsync(flightScheduleId, ct);
+        var tickets = await _unitOfWork.TicketsRepository.GetByScheduleAsync(flightScheduleId, ct);
 
         return tickets.Select(t => t.MapToTicketResponse()).ToList();
     }
@@ -136,14 +136,14 @@ public class TicketService : ITicketService
         if (request.SeatInventory < 0)
             return Result<TicketResponseDto>.Fail(ErrorType.Validation, "SeatInventory must be >= 0.");
 
-        var ticket = await _unitOfWork.Tickets.GetByIdAsync(id, ct);
+        var ticket = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
         if (ticket is null)
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
 
-        await _unitOfWork.Tickets.UpdateSeatInventoryAsync(id, request.SeatInventory, ct);
+        await _unitOfWork.TicketsRepository.UpdateSeatInventoryAsync(id, request.SeatInventory, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var updated = await _unitOfWork.Tickets.GetByIdAsync(id, ct);
+        var updated = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
         return Result<TicketResponseDto>.Ok((updated ?? ticket).MapToTicketResponse());
     }
 }

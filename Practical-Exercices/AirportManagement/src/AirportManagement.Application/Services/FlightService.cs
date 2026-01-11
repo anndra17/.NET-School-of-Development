@@ -20,7 +20,7 @@ public class FlightService : IFlightService
 
     public async Task<FlightResponseDto?> GetByIdAsync(int id, CancellationToken ct)
     {
-        var entity = await _unitOfWork.Flights.GetByIdAsync(id, ct);
+        var entity = await _unitOfWork.FlightsRepository.GetByIdAsync(id, ct);
         
         if (entity is null)
         {
@@ -32,7 +32,7 @@ public class FlightService : IFlightService
 
     public async Task<FlightResponseDto?> GetByIdWithRelatedDataAsync(int id, CancellationToken ct)
     {
-        return await _unitOfWork.Flights.GetByIdWithRelatedDataAsync(id, ct);
+        return await _unitOfWork.FlightsRepository.GetByIdWithRelatedDataAsync(id, ct);
     }
 
     public async Task<Result<FlightResponseDto>> CreateAsync(CreateFlightRequest request, CancellationToken ct)
@@ -49,21 +49,21 @@ public class FlightService : IFlightService
                 "FlightNumber must be 2 uppercase letters followed by 4 digits (e.g. RO1234)."
             );
 
-        var airlineExists = await _unitOfWork.Airlines.ExistsAsync(request.AirlineId, ct);
+        var airlineExists = await _unitOfWork.AirlinesRepository.ExistsAsync(request.AirlineId, ct);
         if (!airlineExists)
             return Result<FlightResponseDto>.Fail(
                 ErrorType.NotFound, 
                 $"Airline {request.AirlineId} not found."
             );
 
-        var originExists = await _unitOfWork.Airports.ExistsAsync(request.OriginAirportId, ct);
+        var originExists = await _unitOfWork.AirportsRepository.ExistsAsync(request.OriginAirportId, ct);
         if (!originExists)
             return Result<FlightResponseDto>.Fail(
                 ErrorType.NotFound, 
                 $"Origin airport {request.OriginAirportId} not found."
             );
 
-        var destExists = await _unitOfWork.Airports.ExistsAsync(request.DestinationAirportId, ct);
+        var destExists = await _unitOfWork.AirportsRepository.ExistsAsync(request.DestinationAirportId, ct);
         if (!destExists)
             return Result<FlightResponseDto>.Fail(
                 ErrorType.NotFound, 
@@ -72,7 +72,7 @@ public class FlightService : IFlightService
 
         if (request.DefaultAircraftId is not null)
         {
-            var aircraftExists = await _unitOfWork.Aircrafts.ExistsAsync(request.DefaultAircraftId.Value, ct);
+            var aircraftExists = await _unitOfWork.AircraftsRepository.ExistsAsync(request.DefaultAircraftId.Value, ct);
             if (!aircraftExists)
                 return Result<FlightResponseDto>.Fail(
                     ErrorType.NotFound, 
@@ -80,7 +80,7 @@ public class FlightService : IFlightService
                 );
         }
 
-        var conflict = await _unitOfWork.Flights.ExistsByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
+        var conflict = await _unitOfWork.FlightsRepository.ExistsByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
         if (conflict)
             return Result<FlightResponseDto>.Fail(
                 ErrorType.Conflict, 
@@ -89,11 +89,11 @@ public class FlightService : IFlightService
 
         var entity = request.MapToDomain();
 
-        await _unitOfWork.Flights.InsertAsync(entity);
+        await _unitOfWork.FlightsRepository.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync(ct);
         
 
-        var created = await _unitOfWork.Flights.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
+        var created = await _unitOfWork.FlightsRepository.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
         return Result<FlightResponseDto>.Ok(created?.MapToFlightResponse() ?? entity.MapToFlightResponse());
     }
 
@@ -105,47 +105,47 @@ public class FlightService : IFlightService
         if (!request.FlightNumber.IsValidFlightNumber())
             return Result<FlightResponseDto>.Fail(ErrorType.Validation, "FlightNumber must be 2 uppercase letters followed by 4 digits (e.g. RO1234).");
 
-        var entity = await _unitOfWork.Flights.GetByIdAsync(id, ct);
+        var entity = await _unitOfWork.FlightsRepository.GetByIdAsync(id, ct);
         if (entity is null)
             return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Flight {id} not found.");
 
-        if (!await _unitOfWork.Airlines.ExistsAsync(request.AirlineId, ct))
+        if (!await _unitOfWork.AirlinesRepository.ExistsAsync(request.AirlineId, ct))
             return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Airline {request.AirlineId} not found.");
 
-        if (!await _unitOfWork.Airports.ExistsAsync(request.OriginAirportId, ct))
+        if (!await _unitOfWork.AirportsRepository.ExistsAsync(request.OriginAirportId, ct))
             return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Origin airport {request.OriginAirportId} not found.");
 
-        if (!await _unitOfWork.Airports.ExistsAsync(request.DestinationAirportId, ct))
+        if (!await _unitOfWork.AirportsRepository.ExistsAsync(request.DestinationAirportId, ct))
             return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Destination airport {request.DestinationAirportId} not found.");
 
         if (request.DefaultAircraftId is not null &&
-            !await _unitOfWork.Aircrafts.ExistsAsync(request.DefaultAircraftId.Value, ct))
+            !await _unitOfWork.AircraftsRepository.ExistsAsync(request.DefaultAircraftId.Value, ct))
             return Result<FlightResponseDto>.Fail(ErrorType.NotFound, $"Aircraft {request.DefaultAircraftId.Value} not found.");
 
-        var conflict = await _unitOfWork.Flights.ExistsByAirlineAndNumberExceptAsync(request.AirlineId, request.FlightNumber, id, ct);
+        var conflict = await _unitOfWork.FlightsRepository.ExistsByAirlineAndNumberExceptAsync(request.AirlineId, request.FlightNumber, id, ct);
         if (conflict)
             return Result<FlightResponseDto>.Fail(ErrorType.Conflict, "Another flight with the same AirlineId and FlightNumber already exists.");
 
         request.ApplyToDomain(entity);
 
-        await _unitOfWork.Flights.UpdateAsync(entity, ct);
+        await _unitOfWork.FlightsRepository.UpdateAsync(entity, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var updated = await _unitOfWork.Flights.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
+        var updated = await _unitOfWork.FlightsRepository.GetByAirlineAndNumberAsync(request.AirlineId, request.FlightNumber, ct);
         return Result<FlightResponseDto>.Ok(updated?.MapToFlightResponse()?? entity.MapToFlightResponse());
     }
 
     public async Task<Result> DeleteAsync(int id, CancellationToken ct)
     {
-        var entity = await _unitOfWork.Flights.GetByIdAsync(id, ct);
+        var entity = await _unitOfWork.FlightsRepository.GetByIdAsync(id, ct);
         if (entity is null)
             return Result.Fail(ErrorType.NotFound, $"Flight {id} not found.");
 
-        var hasDependencies = await _unitOfWork.Flights.HasSchedulesAsync(id, ct); 
+        var hasDependencies = await _unitOfWork.FlightsRepository.HasSchedulesAsync(id, ct); 
         if (hasDependencies)
             return Result.Fail(ErrorType.Conflict, "Cannot delete flight because schedules exists. Deactivate it instead.");
 
-        await _unitOfWork.Flights.DeleteAsync(id);
+        await _unitOfWork.FlightsRepository.DeleteAsync(id);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

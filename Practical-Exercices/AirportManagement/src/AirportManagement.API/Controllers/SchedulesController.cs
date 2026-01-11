@@ -52,6 +52,36 @@ public class SchedulesController : ControllerBase
         return Ok(result.Value);
     }
 
+
+    [HttpPost]
+    [ProducesResponseType(typeof(ScheduleResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ScheduleResponseDto>> Create(
+        [FromBody] CreateScheduleRequestDto dto,
+        CancellationToken ct)
+    {
+        var result = await _scheduleService.CreateAsync(dto, ct);
+
+        if (!result.Success)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(new { message = result.ErrorMessage }),
+                ErrorType.Conflict => Conflict(new { message = result.ErrorMessage }),
+                _ => BadRequest(new { message = result.ErrorMessage })
+            };
+        }
+
+        var created = result.Value;
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = created.Id },
+            created);
+    }
+
     [HttpGet]
     [ProducesResponseType(typeof(PagedResponse<ScheduleListItemResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PagedResponse<ScheduleListItemResponse>>> Search(

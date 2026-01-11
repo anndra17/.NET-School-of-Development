@@ -195,6 +195,89 @@ public class FlightScheduleService : IFlightScheduleService
         return Result<ImportSchedulesResponseDto>.Ok(response);
     }
 
+    public async Task<Result<ScheduleResponseDto>> CreateAsync(CreateScheduleRequestDto dto, CancellationToken ct)
+    {
+        if (dto.FlightId <= 0)
+            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, "flightId is required.");
+
+        if (dto.ScheduledDepartureUtc >= dto.ScheduledArrivalUtc)
+            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, "Departure must be earlier than arrival.");
+
+        var statusValue = dto.Status ?? (int)FlightScheduleStatus.Planned;
+        if (statusValue < 0 || statusValue > 4)
+            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, $"Invalid status value: {statusValue}.");
+
+        var flight = await _unitOfWork.Flights.GetByIdAsync(dto.FlightId, ct);
+        if (flight is null)
+            return Result<ScheduleResponseDto>.Fail(ErrorType.NotFound, $"Flight with id {dto.FlightId} not found.");
+
+        int? gateId = null;
+        if (!string.IsNullOrWhiteSpace(dto.GateCode))
+        {
+            var gateCode = dto.GateCode.Trim();
+            var foundGate = await _unitOfWork.Gates.GetByAirportAndCodeAsync(flight.OriginAirportId, gateCode, ct);
+
+            if (foundGate is null)
+            {
+                return Result<ScheduleResponseDto>.Fail(
+                    ErrorType.NotFound,
+                    $"Gate not found: AirportId={flight.OriginAirportId}, Code={gateCode}.");
+            }
+
+            gateId = foundGate.Id;
+        }
+
+        int? aircraftId = null;
+        if (!string.IsNullOrWhiteSpace(dto.AssignedAircraftTail))
+        {
+            var tail = dto.AssignedAircraftTail.Trim();
+            var foundAircraft = await _unitOfWork.Aircrafts.GetByTailNumberAsync(tail, ct);
+
+            if (foundAircraft is null)
+                return Result<ScheduleResponseDto>.Fail(ErrorType.NotFound, $"Aircraft not found: Tail={tail}.");
+
+            aircraftId = foundAircraft.Id;
+        }
+
+        if (gateId is not null)
+        {
+            var overlap = await _unitOfWork.FlightSchedules.ExistsGateOverlapAsync(
+                gateId.Value,
+                dto.ScheduledDepartureUtc,
+                dto.ScheduledArrivalUtc,
+                excludeScheduleId: null,
+                ct);
+
+            if (overlap)
+            {
+                return Result<ScheduleResponseDto>.Fail(
+                    ErrorType.Conflict,
+                    $"Gate overlap at AirportId={flight.OriginAirportId}:{dto.GateCode?.Trim()} {dto.ScheduledDepartureUtc:O}–{dto.ScheduledArrivalUtc:O}");
+            }
+        }
+
+        var schedule = new FlightSchedule
+        {
+            FlightId = dto.FlightId,
+            ScheduledDepartureUtc = dto.ScheduledDepartureUtc,
+            ScheduledArrivalUtc = dto.ScheduledArrivalUtc,
+            GateId = gateId,
+            AssignedAircraftId = aircraftId,
+            Status = (FlightScheduleStatus)statusValue
+        };
+
+        await _unitOfWork.FlightSchedules.InsertAsync(schedule, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        var created = await _unitOfWork.FlightSchedules
+            .GetByFlightIdAndDepartureAsync(dto.FlightId, dto.ScheduledDepartureUtc, ct);
+
+        if (created is null)
+            return Result<ScheduleResponseDto>.Fail(ErrorType.Conflict, "Schedule was created but could not be reloaded.");
+
+        return Result<ScheduleResponseDto>.Ok(created.MapToScheduleResponse());
+    }
+
     public async Task<PagedResponse<ScheduleListItemResponse>> SearchAsync(ScheduleSearchQuery query, CancellationToken ct)
     {
         var page = query.Page < 1 ? 1 : query.Page;

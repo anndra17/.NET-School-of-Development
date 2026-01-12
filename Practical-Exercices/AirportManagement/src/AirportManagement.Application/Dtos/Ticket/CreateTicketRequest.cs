@@ -4,7 +4,7 @@ namespace AirportManagement.Application.Dtos.Ticket;
 
 public sealed class CreateTicketRequest
 {
-    [Range(1, int.MaxValue, ErrorMessage = "FlightScheduleId must be a positive integer.")]]
+    [Range(1, int.MaxValue, ErrorMessage = "FlightScheduleId must be a positive integer.")]
     public int FlightScheduleId { get; init; }
 
     [Required]

@@ -197,15 +197,7 @@ public class FlightScheduleService : IFlightScheduleService
 
     public async Task<Result<ScheduleResponseDto>> CreateAsync(CreateScheduleRequestDto dto, CancellationToken ct)
     {
-        if (dto.FlightId <= 0)
-            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, "flightId is required.");
-
-        if (dto.ScheduledDepartureUtc >= dto.ScheduledArrivalUtc)
-            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, "Departure must be earlier than arrival.");
-
         var statusValue = dto.Status ?? (int)FlightScheduleStatus.Planned;
-        if (statusValue < 0 || statusValue > 4)
-            return Result<ScheduleResponseDto>.Fail(ErrorType.Validation, $"Invalid status value: {statusValue}.");
 
         var flight = await _unitOfWork.FlightsRepository.GetByIdAsync(dto.FlightId, ct);
         if (flight is null)

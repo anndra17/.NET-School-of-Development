@@ -43,12 +43,6 @@ public class FlightService : IFlightService
                 "Origin and Destination cannot be the same airport."
             );
 
-        if (!request.FlightNumber.IsValidFlightNumber())
-            return Result<FlightResponseDto>.Fail(
-                ErrorType.Validation, 
-                "FlightNumber must be 2 uppercase letters followed by 4 digits (e.g. RO1234)."
-            );
-
         var airlineExists = await _unitOfWork.AirlinesRepository.ExistsAsync(request.AirlineId, ct);
         if (!airlineExists)
             return Result<FlightResponseDto>.Fail(
@@ -101,9 +95,6 @@ public class FlightService : IFlightService
     {
         if (request.OriginAirportId == request.DestinationAirportId)
             return Result<FlightResponseDto>.Fail(ErrorType.Validation, "Origin and Destination cannot be the same airport.");
-
-        if (!request.FlightNumber.IsValidFlightNumber())
-            return Result<FlightResponseDto>.Fail(ErrorType.Validation, "FlightNumber must be 2 uppercase letters followed by 4 digits (e.g. RO1234).");
 
         var entity = await _unitOfWork.FlightsRepository.GetByIdAsync(id, ct);
         if (entity is null)

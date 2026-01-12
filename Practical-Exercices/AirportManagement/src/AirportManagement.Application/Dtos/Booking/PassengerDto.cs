@@ -5,6 +5,7 @@ namespace AirportManagement.Application.Dtos.Booking;
 public sealed class PassengerDto
 {
     [Required]
+    [StringLength(120, MinimumLength = 2)]
     public string FullName { get; init; } = null!;
 
     [Required]
@@ -12,5 +13,7 @@ public sealed class PassengerDto
     public string Email { get; init; } = null!;
 
     [Required]
+    [Phone(ErrorMessage = "Passenger phone number is invalid.")]
+    [StringLength(30)]
     public string PhoneNumber { get; init; } = null!;
 }

@@ -22,20 +22,15 @@ public sealed class BookingService : IBookingService
     public async Task<Result<CreateBookingResponseDto>> CreateAsync(CreateBookingRequest request, CancellationToken ct)
     {
         if (request.Passengers is null || request.Passengers.Count == 0)
-            return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passengers list is required.");
+            return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Passengers list must contain at least one passenger.");
 
         var quantity = request.Passengers.Count;
 
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
-        if (request.BasePrice < 0 || request.Taxes < 0)
-            return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "BasePrice/Taxes must be >= 0.");
-
         var currency = request.Currency?.Trim().ToUpperInvariant();
-        if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
-            return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "Currency must be a 3-letter code (e.g. EUR).");
-
+   
         var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(request.FlightScheduleId, ct);
         if (schedule is null)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");

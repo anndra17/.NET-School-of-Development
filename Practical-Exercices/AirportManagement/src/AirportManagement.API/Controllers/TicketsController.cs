@@ -73,7 +73,14 @@ public class TicketsController : ControllerBase
         var result = await _tickets.DeleteAsync(id, ct);
 
         if (!result.Success)
-            return NotFound(new { message = result.ErrorMessage });
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(new { message = result.ErrorMessage }),
+                ErrorType.Conflict => Conflict(new { message = result.ErrorMessage }),
+                _ => BadRequest(new { message = result.ErrorMessage })
+            };
+        }
 
         return NoContent();
     }

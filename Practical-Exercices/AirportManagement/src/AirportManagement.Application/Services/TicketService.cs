@@ -29,15 +29,7 @@ public class TicketService : ITicketService
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<TicketResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
-        if (request.BasePrice < 0 || request.Taxes < 0)
-            return Result<TicketResponseDto>.Fail(ErrorType.Validation, "BasePrice/Taxes must be >= 0.");
-
-        if (request.SeatInventory < 0)
-            return Result<TicketResponseDto>.Fail(ErrorType.Validation, "SeatInventory must be >= 0.");
-
         var currency = request.Currency?.Trim().ToUpperInvariant();
-        if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
-            return Result<TicketResponseDto>.Fail(ErrorType.Validation, "Currency must be a 3-letter code (e.g. EUR).");
 
         var ticket = new Ticket
         {
@@ -133,9 +125,6 @@ public class TicketService : ITicketService
 
     public async Task<Result<TicketResponseDto>> UpdateInventoryAsync(long id, UpdateTicketInventoryRequest request, CancellationToken ct)
     {
-        if (request.SeatInventory < 0)
-            return Result<TicketResponseDto>.Fail(ErrorType.Validation, "SeatInventory must be >= 0.");
-
         var ticket = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
         if (ticket is null)
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Ticket {id} not found.");

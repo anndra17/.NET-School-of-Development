@@ -1,12 +1,12 @@
 ﻿using AirportManagement.API.Controllers;
 using AirportManagement.Application.Abstractions.Services;
+using AirportManagement.Application.Common.Paging;
 using AirportManagement.Application.Common.Results;
 using AirportManagement.Application.Dtos.Schedule;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.IO;
 using System.Text;
 
 namespace AirportManagement.Tests.Controllers;
@@ -88,5 +88,54 @@ public class SchedulesControllerTests
             Headers = new HeaderDictionary(),
             ContentType = "application/json"
         };
+    }
+
+    [Fact]
+    public async Task Search_WhenFiltersProvided_Returns200OkWithPagedResult_AndCallsServiceWithSameQuery()
+    {
+        var ct = CancellationToken.None;
+
+        var query = new ScheduleSearchQuery
+        {
+            Origin = "OTP",
+            Destination = "LHR",
+            Date = new DateOnly(2026, 01, 12),
+            Page = 2,
+            PageSize = 10
+        };
+
+        var paged = new PagedResponse<ScheduleListItemResponse>
+        {
+            Page = 2,
+            PageSize = 10,
+            TotalItems = 25,
+            TotalPages = 3,
+            Items = new List<ScheduleListItemResponse>
+        {
+            new ScheduleListItemResponse(), 
+            new ScheduleListItemResponse()
+        }
+        };
+
+        _service
+            .Setup(s => s.SearchAsync(
+                It.Is<ScheduleSearchQuery>(q =>
+                    q.Origin == "OTP" &&
+                    q.Destination == "LHR" &&
+                    q.Date == new DateOnly(2026, 01, 12) &&
+                    q.Page == 2 &&
+                    q.PageSize == 10
+                ),
+                ct))
+            .ReturnsAsync(paged);
+
+        var actionResult = await _controller.Search(query, ct);
+
+        var ok = actionResult.Result as OkObjectResult;
+        ok.Should().NotBeNull();
+        ok!.StatusCode.Should().Be(StatusCodes.Status200OK);
+        ok.Value.Should().BeSameAs(paged);
+
+        _service.Verify(s => s.SearchAsync(It.IsAny<ScheduleSearchQuery>(), ct), Times.Once);
     }
 }

@@ -49,7 +49,10 @@ public class SchedulesController : ControllerBase
         if (!result.Success)
             return BadRequest(new { message = result.ErrorMessage });
 
-        return Ok(result.Value);
+        if (result.Value is not null && result.Value.Errors.Count > 0)
+            return StatusCode(StatusCodes.Status207MultiStatus, result.Value);
+
+        return StatusCode(StatusCodes.Status201Created, result.Value);
     }
 
 

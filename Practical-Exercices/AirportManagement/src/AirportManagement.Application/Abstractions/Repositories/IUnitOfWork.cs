@@ -9,6 +9,7 @@ public interface IUnitOfWork
     IFlightRepository FlightsRepository { get; }
     IFlightScheduleRepository FlightSchedulesRepository { get; }
     IGateRepository GatesRepository { get; }
+    IFareOfferRepository FareOffersRepository { get; }
     ITicketRepository TicketsRepository { get; }
     IUserRepository UsersRepository { get; }
 

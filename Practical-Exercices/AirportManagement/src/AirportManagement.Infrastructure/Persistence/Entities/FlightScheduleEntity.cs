@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AirportManagement.Infrastructure.Persistence.Entities;
+﻿namespace AirportManagement.Infrastructure.Persistence.Entities;
 
 public partial class FlightScheduleEntity
 {

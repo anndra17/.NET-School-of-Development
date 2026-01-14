@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-public partial class FlightSchedule
+public partial class FlightScheduleEntity
 {
     public int Id { get; set; }
 
@@ -19,11 +19,11 @@ public partial class FlightSchedule
 
     public byte Status { get; set; }
 
-    public virtual Aircraft? AssignedAircraft { get; set; }
+    public virtual AircraftEntity? AssignedAircraft { get; set; }
 
-    public virtual ICollection<FareOffer> FareOffers { get; set; } = new List<FareOffer>();
+    public virtual ICollection<FareOfferEntity> FareOffers { get; set; } = new List<FareOfferEntity>();
 
-    public virtual Flight Flight { get; set; } = null!;
+    public virtual FlightEntity Flight { get; set; } = null!;
 
-    public virtual Gate? Gate { get; set; }
+    public virtual GateEntity? Gate { get; set; }
 }

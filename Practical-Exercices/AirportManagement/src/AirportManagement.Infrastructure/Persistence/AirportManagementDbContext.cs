@@ -12,29 +12,29 @@ public partial class AirportManagementDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Aircraft> Aircrafts { get; set; }
+    public virtual DbSet<AircraftEntity> Aircrafts { get; set; }
 
-    public virtual DbSet<Airline> Airlines { get; set; }
+    public virtual DbSet<AirlineEntity> Airlines { get; set; }
 
-    public virtual DbSet<Airport> Airports { get; set; }
+    public virtual DbSet<AirportEntity> Airports { get; set; }
 
-    public virtual DbSet<Booking> Bookings { get; set; }
+    public virtual DbSet<BookingEntity> Bookings { get; set; }
 
-    public virtual DbSet<FareOffer> FareOffers { get; set; }
+    public virtual DbSet<FareOfferEntity> FareOffers { get; set; }
 
-    public virtual DbSet<Flight> Flights { get; set; }
+    public virtual DbSet<FlightEntity> Flights { get; set; }
 
-    public virtual DbSet<FlightSchedule> FlightSchedules { get; set; }
+    public virtual DbSet<FlightScheduleEntity> FlightSchedules { get; set; }
 
-    public virtual DbSet<Gate> Gates { get; set; }
+    public virtual DbSet<GateEntity> Gates { get; set; }
 
-    public virtual DbSet<Ticket> Tickets { get; set; }
+    public virtual DbSet<TicketEntity> Tickets { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Aircraft>(entity =>
+        modelBuilder.Entity<AircraftEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Aircraft__3214EC0780DA1EB6");
 
@@ -44,7 +44,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.TailNumber).HasMaxLength(10);
         });
 
-        modelBuilder.Entity<Airline>(entity =>
+        modelBuilder.Entity<AirlineEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC0734929F01");
 
@@ -58,7 +58,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Airport>(entity =>
+        modelBuilder.Entity<AirportEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Airports__3214EC0708B8A672");
 
@@ -75,7 +75,7 @@ public partial class AirportManagementDbContext : DbContext
             entity.Property(e => e.TimeZone).HasMaxLength(64);
         });
 
-        modelBuilder.Entity<Booking>(entity =>
+        modelBuilder.Entity<BookingEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Bookings__3214EC072660FC0B");
 
@@ -92,7 +92,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Booking_User");
         });
 
-        modelBuilder.Entity<FareOffer>(entity =>
+        modelBuilder.Entity<FareOfferEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FareOffe__3214EC075AC9512E");
 
@@ -116,7 +116,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_FareOffer_FlightSchedule");
         });
 
-        modelBuilder.Entity<Flight>(entity =>
+        modelBuilder.Entity<FlightEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Flights__3214EC076EA29E2B");
 
@@ -149,7 +149,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Flight_OriginAirport");
         });
 
-        modelBuilder.Entity<FlightSchedule>(entity =>
+        modelBuilder.Entity<FlightScheduleEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FlightSc__3214EC075A2ACF2B");
 
@@ -173,7 +173,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_FlightSchedule_Gate");
         });
 
-        modelBuilder.Entity<Gate>(entity =>
+        modelBuilder.Entity<GateEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Gates__3214EC071502E543");
 
@@ -189,7 +189,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Gate_Airport");
         });
 
-        modelBuilder.Entity<Ticket>(entity =>
+        modelBuilder.Entity<TicketEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Tickets__3214EC074FA6D07A");
 
@@ -216,7 +216,7 @@ public partial class AirportManagementDbContext : DbContext
                 .HasConstraintName("FK_Ticket_FareOffer");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07667FEE7D");
 

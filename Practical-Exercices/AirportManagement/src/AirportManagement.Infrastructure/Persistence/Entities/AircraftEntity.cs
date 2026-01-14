@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-public partial class Aircraft
+public partial class AircraftEntity
 {
     public int Id { get; set; }
 
@@ -13,7 +13,7 @@ public partial class Aircraft
 
     public int SeatCapacity { get; set; }
 
-    public virtual ICollection<FlightSchedule> FlightSchedules { get; set; } = new List<FlightSchedule>();
+    public virtual ICollection<FlightScheduleEntity> FlightSchedules { get; set; } = new List<FlightScheduleEntity>();
 
-    public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
+    public virtual ICollection<FlightEntity> Flights { get; set; } = new List<FlightEntity>();
 }

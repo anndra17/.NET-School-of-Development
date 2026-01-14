@@ -21,26 +21,26 @@ public class AircraftRepository : IAircraftRepository
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Aircraft>> GetAllAsync(CancellationToken ct = default)
+    public Task<IEnumerable<Domain.Models.Aircraft>> GetAllAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Aircraft?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<Domain.Models.Aircraft?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var entity = await _context.Set<AircraftEntity>()
+        var entity = await _context.Set<Aircraft>()
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == id, ct);
 
         return entity?.ToDomain();
     }
 
-    public Task InsertAsync(Aircraft entity, CancellationToken ct = default)
+    public Task InsertAsync(Domain.Models.Aircraft entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Aircraft entity, CancellationToken ct = default)
+    public Task UpdateAsync(Domain.Models.Aircraft entity, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
@@ -49,9 +49,9 @@ public class AircraftRepository : IAircraftRepository
         return await _context.Aircrafts.AnyAsync(f => f.Id == id, ct);
     }
 
-    public async Task<Aircraft?> GetByTailNumberAsync(string tailNumber, CancellationToken ct = default)
+    public async Task<Domain.Models.Aircraft?> GetByTailNumberAsync(string tailNumber, CancellationToken ct = default)
     {
-        var entity = await _context.Set<AircraftEntity>()
+        var entity = await _context.Set<Aircraft>()
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.TailNumber == tailNumber, ct);
 

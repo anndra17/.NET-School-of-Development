@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-public partial class User
+public partial class UserEntity
 {
     public int Id { get; set; }
 
@@ -13,5 +13,5 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public virtual ICollection<BookingEntity> Bookings { get; set; } = new List<BookingEntity>();
 }

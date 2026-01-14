@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-public partial class Booking
+public partial class BookingEntity
 {
     public int Id { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Booking
 
     public DateTime CreatedUtc { get; set; }
 
-    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public virtual ICollection<TicketEntity> Tickets { get; set; } = new List<TicketEntity>();
 
-    public virtual User User { get; set; } = null!;
+    public virtual UserEntity User { get; set; } = null!;
 }

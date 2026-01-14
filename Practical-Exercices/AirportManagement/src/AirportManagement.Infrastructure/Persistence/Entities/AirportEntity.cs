@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirportManagement.Infrastructure.Persistence.Entities;
 
-public partial class Airport
+public partial class AirportEntity
 {
     public int Id { get; set; }
 
@@ -17,9 +17,9 @@ public partial class Airport
 
     public string TimeZone { get; set; } = null!;
 
-    public virtual ICollection<Flight> FlightDestinationAirports { get; set; } = new List<Flight>();
+    public virtual ICollection<FlightEntity> FlightDestinationAirports { get; set; } = new List<FlightEntity>();
 
-    public virtual ICollection<Flight> FlightOriginAirports { get; set; } = new List<Flight>();
+    public virtual ICollection<FlightEntity> FlightOriginAirports { get; set; } = new List<FlightEntity>();
 
-    public virtual ICollection<Gate> Gates { get; set; } = new List<Gate>();
+    public virtual ICollection<GateEntity> Gates { get; set; } = new List<GateEntity>();
 }

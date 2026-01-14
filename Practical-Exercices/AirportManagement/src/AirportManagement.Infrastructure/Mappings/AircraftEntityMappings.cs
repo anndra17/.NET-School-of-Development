@@ -5,8 +5,8 @@ namespace AirportManagement.Infrastructure.Mappings;
 
 internal static class AircraftEntityMappings
 {
-    public static Aircraft ToDomain(this AircraftEntity entity)
-        => new Aircraft
+    public static Domain.Models.Aircraft ToDomain(this Persistence.Entities.AircraftEntity entity)
+        => new Domain.Models.Aircraft
         {
             Id = entity.Id,
             TailNumber = entity.TailNumber,

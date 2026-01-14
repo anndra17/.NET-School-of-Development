@@ -59,33 +59,6 @@ public class TicketRepository : ITicketRepository
         throw new NotImplementedException();
     }
 
-    public async Task<int> CountByScheduleAsync(int flightScheduleId, CancellationToken ct = default)
-    {
-        return await _context.Set<TicketEntity>()
-       .AsNoTracking()
-       .Where(t => t.FlightScheduleId == flightScheduleId &&
-                   t.Booking.Status == 0) 
-       .CountAsync(ct);
-    }
-
-    public async Task<IReadOnlyList<FareClassPriceDto>> GetMinPricesByFareClassAsync(int flightScheduleId, CancellationToken ct = default)
-    {
-        var rows = await _context.Set<TicketEntity>()
-            .AsNoTracking()
-            .Where(t => t.FlightScheduleId == flightScheduleId &&
-                        t.Booking.Status == 0)
-            .GroupBy(t => t.FareClass)
-            .Select(g => new FareClassPriceDto
-            {
-                FareClass = g.Key,
-                MinTotalPrice = g.Min(x => x.TotalPrice),
-                Currency = g.Select(x => x.Currency).FirstOrDefault()
-            })
-            .ToListAsync(ct);
-
-        return rows;
-    }
-
     public async Task<IReadOnlyList<Ticket>> GetByBookingAsync(int bookingId, CancellationToken ct = default)
     {
         var entities = await _context.Set<TicketEntity>()
@@ -100,19 +73,16 @@ public class TicketRepository : ITicketRepository
     {
         return await _context.Set<TicketEntity>()
             .AsNoTracking()
-            .Where(t => t.FareOfferId == fareOfferId && t.Booking.Status == 0) // Active bookings only
+            .Where(t => t.FareOfferId == fareOfferId && t.Booking.Status == 0) 
             .CountAsync(ct);
     }
 
-    public async Task UpdateSeatInventoryAsync(long id, int seatInventory, CancellationToken ct = default)
+    public Task<int> CountByScheduleAsync(int flightScheduleId, CancellationToken ct = default)
     {
-        var tracked = await _context.Set<TicketEntity>()
-            .FirstOrDefaultAsync(t => t.Id == id, ct);
-
-        if (tracked is null)
-            return;
-
-        tracked.SeatInventory = seatInventory;
+        return _context.Set<TicketEntity>()
+            .AsNoTracking()
+            .Where(t => t.FareOffer.FlightScheduleId == flightScheduleId && t.Booking.Status == 0)
+            .CountAsync(ct);
     }
 
     public async Task CreateTicketsForBookingAsync(

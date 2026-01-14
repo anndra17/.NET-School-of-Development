@@ -10,15 +10,11 @@ internal static class TicketEntityMappings
         => new Ticket
         {
             Id = e.Id,
-            FlightScheduleId = e.FlightScheduleId,
-            FareClass = FareClassMappings.ToDomain(e.FareClass),
-            BasePrice = e.BasePrice,
-            Taxes = e.Taxes,
+            BookingId = e.BookingId,
+            FareOfferId = e.FareOfferId,
             TotalPrice = e.TotalPrice,
             Currency = e.Currency,
             IsRefundable = e.IsRefundable,
-            SeatInventory = e.SeatInventory,
-            BookingId = e.BookingId,
             PassengerFullName = e.PassengerFullName,
             PassengerEmail = e.PassengerEmail,
             PassengerPhoneNumber = e.PassengerPhoneNumber
@@ -27,14 +23,11 @@ internal static class TicketEntityMappings
     public static TicketEntity ToNewEntity(this Ticket d)
         => new TicketEntity
         {
-            FlightScheduleId = d.FlightScheduleId,
-            FareClass = FareClassMappings.ToEntity(d.FareClass),
-            BasePrice = d.BasePrice,
-            Taxes = d.Taxes,
+            BookingId = d.BookingId,
+            FareOfferId = d.FareOfferId,
+            TotalPrice = d.TotalPrice,
             Currency = d.Currency,
             IsRefundable = d.IsRefundable,
-            SeatInventory = d.SeatInventory,
-            BookingId = d.BookingId,
             PassengerFullName = d.PassengerFullName,
             PassengerEmail = d.PassengerEmail,
             PassengerPhoneNumber = d.PassengerPhoneNumber

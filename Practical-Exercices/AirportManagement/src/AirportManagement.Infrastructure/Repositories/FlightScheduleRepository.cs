@@ -152,6 +152,6 @@ public class FlightScheduleRepository : IFlightScheduleRepository
     {
         return _context.Set<TicketEntity>()
        .AsNoTracking()
-       .AnyAsync(t => t.FlightScheduleId == scheduleId, ct);
+       .AnyAsync(t => t.FareOffer.FlightScheduleId == scheduleId, ct);
     }
 }

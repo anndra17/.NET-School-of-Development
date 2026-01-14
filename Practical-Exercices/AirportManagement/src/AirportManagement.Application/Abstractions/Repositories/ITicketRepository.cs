@@ -7,20 +7,14 @@ namespace AirportManagement.Application.Abstractions.Repositories;
 
 public interface ITicketRepository : IRepository<Ticket, long>
 {
-    Task<int> CountByScheduleAsync(int flightScheduleId, CancellationToken ct = default);
+    Task<IReadOnlyList<Ticket>> GetByBookingAsync(int bookingId, CancellationToken ct = default);
 
-    Task<IReadOnlyList<FareClassPriceDto>> GetMinPricesByFareClassAsync(int flightScheduleId, CancellationToken ct = default);
-
-    Task<IReadOnlyList<Ticket>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct = default);
-
-    Task UpdateSeatInventoryAsync(long id, int seatInventory, CancellationToken ct = default);
+    Task<int> CountByFareOfferAsync(int fareOfferId, CancellationToken ct = default);
 
     Task CreateTicketsForBookingAsync(
-        int bookingId,
-        int flightScheduleId,
-        FareClass fareClass,
-        decimal basePrice,
-        decimal taxes,
+       int bookingId,
+        int fareOfferId,
+        decimal totalPrice,
         string currency,
         bool isRefundable,
         IReadOnlyList<PassengerDto> passengers,

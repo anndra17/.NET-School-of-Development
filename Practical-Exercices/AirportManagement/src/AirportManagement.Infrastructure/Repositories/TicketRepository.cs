@@ -86,14 +86,22 @@ public class TicketRepository : ITicketRepository
         return rows;
     }
 
-    public async Task<IReadOnlyList<Ticket>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Ticket>> GetByBookingAsync(int bookingId, CancellationToken ct = default)
     {
         var entities = await _context.Set<TicketEntity>()
             .AsNoTracking()
-            .Where(t => t.FlightScheduleId == flightScheduleId)
+            .Where(t => t.BookingId == bookingId)
             .ToListAsync(ct);
 
         return entities.Select(e => e.ToDomain()).ToList();
+    }
+
+    public async Task<int> CountByFareOfferAsync(int fareOfferId, CancellationToken ct = default)
+    {
+        return await _context.Set<TicketEntity>()
+            .AsNoTracking()
+            .Where(t => t.FareOfferId == fareOfferId && t.Booking.Status == 0) // Active bookings only
+            .CountAsync(ct);
     }
 
     public async Task UpdateSeatInventoryAsync(long id, int seatInventory, CancellationToken ct = default)
@@ -109,30 +117,20 @@ public class TicketRepository : ITicketRepository
 
     public async Task CreateTicketsForBookingAsync(
      int bookingId,
-     int flightScheduleId,
-     FareClass fareClass,
-     decimal basePrice,
-     decimal taxes,
+     int fareOfferId,
+     decimal totalPrice,
      string currency,
      bool isRefundable,
      IReadOnlyList<PassengerDto> passengers,
      CancellationToken ct = default)
     {
-        var totalPrice = basePrice + taxes;
-
         var entities = passengers.Select(p => new TicketEntity
         {
-            FlightScheduleId = flightScheduleId,
             BookingId = bookingId,
-
-            FareClass = FareClassMappings.ToEntity(fareClass), // "Y/M/J/F"
-            BasePrice = basePrice,
-            Taxes = taxes,
+            FareOfferId = fareOfferId,
             TotalPrice = totalPrice,
             Currency = currency,
             IsRefundable = isRefundable,
-
-            SeatInventory = 1, 
             PassengerFullName = p.FullName.Trim(),
             PassengerEmail = p.Email.Trim(),
             PassengerPhoneNumber = p.PhoneNumber.Trim()

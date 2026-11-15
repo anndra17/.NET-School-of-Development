@@ -72,10 +72,6 @@ public sealed class BookingService : IBookingService
 
             await _unitOfWork.TicketsRepository.CreateTicketsForBookingAsync(
                 bookingId: saved.Id,
-                flightScheduleId: request.FlightScheduleId,
-                fareClass: fareClass,
-                basePrice: request.BasePrice,
-                taxes: request.Taxes,
                 currency: currency!,
                 isRefundable: request.IsRefundable,
                 passengers: request.Passengers,

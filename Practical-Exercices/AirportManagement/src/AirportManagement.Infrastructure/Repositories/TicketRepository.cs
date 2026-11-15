@@ -68,6 +68,16 @@ public class TicketRepository : ITicketRepository
 
         return entities.Select(e => e.ToDomain()).ToList();
     }
+    public async Task<IReadOnlyList<Ticket>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct = default)
+    {
+        var entities = await _context.Set<TicketEntity>()
+            .AsNoTracking()
+            .Where(t => t.FareOffer.FlightScheduleId == flightScheduleId)
+            .ToListAsync(ct);
+
+        return entities.Select(e => e.ToDomain()).ToList();
+    }
+
 
     public async Task<int> CountByFareOfferAsync(int fareOfferId, CancellationToken ct = default)
     {

@@ -16,6 +16,7 @@ public class UnitOfWork : IUnitOfWork
     public IFlightRepository FlightsRepository { get; }
     public IFlightScheduleRepository FlightSchedulesRepository { get; }
     public IGateRepository GatesRepository { get; }
+    public IFareOfferRepository FareOffersRepository { get; }
     public ITicketRepository TicketsRepository { get; }
     public IUserRepository UsersRepository { get; }
 
@@ -28,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
        IFlightRepository flightsRepository,
        IFlightScheduleRepository flightSchedulesRepository,
        IGateRepository gatesRepository,
+       IFareOfferRepository fareOffersRepository,
        ITicketRepository ticketsRepository,
        IUserRepository usersRepository)
     {
@@ -39,6 +41,7 @@ public class UnitOfWork : IUnitOfWork
         FlightsRepository = flightsRepository;
         FlightSchedulesRepository = flightSchedulesRepository;
         GatesRepository = gatesRepository;
+        FareOffersRepository = fareOffersRepository;
         TicketsRepository = ticketsRepository;
         UsersRepository = usersRepository;
     }

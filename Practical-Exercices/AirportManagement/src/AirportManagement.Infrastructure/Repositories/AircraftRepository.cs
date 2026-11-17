@@ -28,7 +28,7 @@ public class AircraftRepository : IAircraftRepository
 
     public async Task<Domain.Models.Aircraft?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var entity = await _context.Set<Aircraft>()
+        var entity = await _context.Set<AircraftEntity>()
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == id, ct);
 
@@ -51,7 +51,7 @@ public class AircraftRepository : IAircraftRepository
 
     public async Task<Domain.Models.Aircraft?> GetByTailNumberAsync(string tailNumber, CancellationToken ct = default)
     {
-        var entity = await _context.Set<Aircraft>()
+        var entity = await _context.Set<AircraftEntity>()
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.TailNumber == tailNumber, ct);
 

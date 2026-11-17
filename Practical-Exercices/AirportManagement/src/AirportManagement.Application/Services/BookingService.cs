@@ -29,11 +29,16 @@ public sealed class BookingService : IBookingService
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<CreateBookingResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
-        var currency = request.Currency?.Trim().ToUpperInvariant();
-   
         var schedule = await _unitOfWork.FlightSchedulesRepository.GetByIdAsync(request.FlightScheduleId, ct);
         if (schedule is null)
             return Result<CreateBookingResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");
+
+        var fareOffer = await _unitOfWork.FareOffersRepository.GetByScheduleAndClassAsync(
+            request.FlightScheduleId, fareClass, ct);
+        if (fareOffer is null)
+            return Result<CreateBookingResponseDto>.Fail(
+                ErrorType.NotFound,
+                $"No {request.FareClass} fare offer exists for schedule {request.FlightScheduleId}.");
 
         var alreadyTaken = await _unitOfWork.TicketsRepository.CountByScheduleAsync(request.FlightScheduleId, ct);
 
@@ -49,11 +54,17 @@ public sealed class BookingService : IBookingService
         do { code = ConfirmationCodeGenerator.Generate(6); }
         while (await _unitOfWork.BookingsRepository.ExistsByCodeAsync(code, ct));
 
-        var unitPrice = request.BasePrice + request.Taxes;
+        var unitPrice = fareOffer.BasePrice + fareOffer.Taxes;
         var total = unitPrice * quantity;
+        var seatsReserved = false;
 
         await _unitOfWork.ExecuteInTransactionAsync(async txCt =>
         {
+            seatsReserved = await _unitOfWork.FareOffersRepository.TryReserveSeatsAsync(
+                fareOffer.Id, quantity, txCt);
+            if (!seatsReserved)
+                return;
+
             var booking = new Booking
             {
                 UserId = 1,
@@ -72,24 +83,25 @@ public sealed class BookingService : IBookingService
 
             await _unitOfWork.TicketsRepository.CreateTicketsForBookingAsync(
                 bookingId: saved.Id,
-                flightScheduleId: request.FlightScheduleId,
-                fareClass: fareClass,
-                basePrice: request.BasePrice,
-                taxes: request.Taxes,
-                currency: currency!,
-                isRefundable: request.IsRefundable,
+                fareOfferId: fareOffer.Id,
+                totalPrice: unitPrice,
+                currency: fareOffer.Currency,
+                isRefundable: fareOffer.IsRefundable,
                 passengers: request.Passengers,
                 ct: txCt);
 
             await _unitOfWork.SaveChangesAsync(txCt);
         }, ct);
 
+        if (!seatsReserved)
+            return Result<CreateBookingResponseDto>.Fail(ErrorType.Conflict, "Not enough seats available for this fare offer.");
+
         return Result<CreateBookingResponseDto>.Ok(new CreateBookingResponseDto
         {
             ConfirmationCode = code,
             Status = BookingStatus.Active.ToString(),
             TotalAmount = total,
-            Currency = currency!
+            Currency = fareOffer.Currency
         });
     }
 
@@ -116,8 +128,14 @@ public sealed class BookingService : IBookingService
         if (booking.Status == BookingStatus.Cancelled)
             return Result.Fail(ErrorType.Conflict, $"Booking '{code}' is already cancelled.");
 
-        await _unitOfWork.BookingsRepository.CancelByCodeAsync(code, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.ExecuteInTransactionAsync(async txCt =>
+        {
+            var tickets = await _unitOfWork.TicketsRepository.GetByBookingAsync(booking.Id, txCt);
+            await _unitOfWork.BookingsRepository.CancelByCodeAsync(code, txCt);
+
+            foreach (var group in tickets.GroupBy(ticket => ticket.FareOfferId))
+                await _unitOfWork.FareOffersRepository.RestoreSeatsAsync(group.Key, group.Count(), txCt);
+        }, ct);
 
         return Result.Ok();
     }

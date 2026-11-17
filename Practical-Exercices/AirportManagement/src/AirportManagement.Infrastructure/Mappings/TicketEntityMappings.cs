@@ -12,6 +12,7 @@ internal static class TicketEntityMappings
             Id = e.Id,
             BookingId = e.BookingId,
             FareOfferId = e.FareOfferId,
+            FareOffer = e.FareOffer is null ? null : e.FareOffer.ToDomain(),
             TotalPrice = e.TotalPrice,
             Currency = e.Currency,
             IsRefundable = e.IsRefundable,

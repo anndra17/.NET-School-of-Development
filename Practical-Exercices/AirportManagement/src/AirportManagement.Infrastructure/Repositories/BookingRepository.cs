@@ -40,7 +40,7 @@ namespace AirportManagement.Infrastructure.Repositories
                 ConfirmationCode = booking.ConfirmationCode,
                 Quantity = booking.Quantity,
                 Status = (byte)booking.Status,
-                CreatedUtc = booking.CreatedUtc
+                CreatedUtc = booking.CreatedUtc ?? DateTime.UtcNow
             };
 
             await _context.Set<BookingEntity>().AddAsync(entity, ct);

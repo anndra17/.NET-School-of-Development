@@ -23,6 +23,7 @@ public class TicketRepository : ITicketRepository
     {
         var entity = await _context.Set<TicketEntity>()
             .AsNoTracking()
+            .Include(t => t.FareOffer)
             .FirstOrDefaultAsync(t => t.Id == id, ct);
 
         return entity?.ToDomain();
@@ -63,7 +64,19 @@ public class TicketRepository : ITicketRepository
     {
         var entities = await _context.Set<TicketEntity>()
             .AsNoTracking()
+            .Include(t => t.FareOffer)
             .Where(t => t.BookingId == bookingId)
+            .ToListAsync(ct);
+
+        return entities.Select(e => e.ToDomain()).ToList();
+    }
+
+    public async Task<IReadOnlyList<Ticket>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct = default)
+    {
+        var entities = await _context.Set<TicketEntity>()
+            .AsNoTracking()
+            .Include(t => t.FareOffer)
+            .Where(t => t.FareOffer.FlightScheduleId == flightScheduleId)
             .ToListAsync(ct);
 
         return entities.Select(e => e.ToDomain()).ToList();

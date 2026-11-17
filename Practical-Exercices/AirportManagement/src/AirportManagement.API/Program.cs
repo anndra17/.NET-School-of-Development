@@ -31,6 +31,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
 builder.Services.AddScoped<IGateRepository, GateRepository>();
+builder.Services.AddScoped<IFareOfferRepository, FareOfferRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

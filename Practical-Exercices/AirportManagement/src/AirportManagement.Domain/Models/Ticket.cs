@@ -8,6 +8,8 @@ public class Ticket
 
     public int FareOfferId { get; set; }
 
+    public FareOffer? FareOffer { get; set; }
+
     public decimal TotalPrice { get; set; }
 
     public string Currency { get; set; } = null!;

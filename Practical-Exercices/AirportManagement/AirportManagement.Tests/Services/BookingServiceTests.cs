@@ -16,6 +16,7 @@ public class BookingServiceTests
     private readonly Mock<IBookingRepository> _bookingsRepo = new();
     private readonly Mock<IFlightScheduleRepository> _schedulesRepo = new();
     private readonly Mock<ITicketRepository> _ticketsRepo = new();
+    private readonly Mock<IFareOfferRepository> _fareOffersRepo = new();
     private readonly Mock<IFlightRepository> _flightsRepo = new();
     private readonly Mock<IAircraftRepository> _aircraftsRepo = new();
 
@@ -26,8 +27,28 @@ public class BookingServiceTests
         _uow.SetupGet(x => x.BookingsRepository).Returns(_bookingsRepo.Object);
         _uow.SetupGet(x => x.FlightSchedulesRepository).Returns(_schedulesRepo.Object);
         _uow.SetupGet(x => x.TicketsRepository).Returns(_ticketsRepo.Object);
+        _uow.SetupGet(x => x.FareOffersRepository).Returns(_fareOffersRepo.Object);
         _uow.SetupGet(x => x.FlightsRepository).Returns(_flightsRepo.Object);
         _uow.SetupGet(x => x.AircraftsRepository).Returns(_aircraftsRepo.Object);
+
+        _fareOffersRepo
+            .Setup(r => r.GetByScheduleAndClassAsync(
+                It.IsAny<int>(), It.IsAny<FareClass>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((int scheduleId, FareClass fareClass, CancellationToken _) => new FareOffer
+            {
+                Id = 22,
+                FlightScheduleId = scheduleId,
+                FareClass = fareClass,
+                BasePrice = 100m,
+                Taxes = 20m,
+                Currency = "EUR",
+                IsRefundable = false,
+                SeatsAvailable = 100
+            });
+        _fareOffersRepo
+            .Setup(r => r.TryReserveSeatsAsync(
+                It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
 
         _uow
@@ -256,8 +277,6 @@ public class BookingServiceTests
             .Setup(r => r.CreateTicketsForBookingAsync(
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<FareClass>(),
-                It.IsAny<decimal>(),
                 It.IsAny<decimal>(),
                 It.IsAny<string>(),
                 It.IsAny<bool>(),
@@ -285,10 +304,8 @@ public class BookingServiceTests
 
         _ticketsRepo.Verify(r => r.CreateTicketsForBookingAsync(
             1,
-            req.FlightScheduleId,
-            It.IsAny<FareClass>(),
-            req.BasePrice,
-            req.Taxes,
+            22,
+            req.BasePrice + req.Taxes,
             "EUR",
             req.IsRefundable,
             It.Is<IReadOnlyList<PassengerDto>>(p => p.Count == req.Passengers.Count),
@@ -349,8 +366,6 @@ public class BookingServiceTests
             .Setup(r => r.CreateTicketsForBookingAsync(
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<FareClass>(),
-                It.IsAny<decimal>(),
                 It.IsAny<decimal>(),
                 It.IsAny<string>(),
                 It.IsAny<bool>(),

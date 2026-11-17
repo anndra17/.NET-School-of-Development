@@ -14,4 +14,6 @@ public interface IFareOfferRepository
     Task<bool> TryReserveSeatsAsync(int fareOfferId, int quantity, CancellationToken ct = default);
 
     Task RestoreSeatsAsync(int fareOfferId, int quantity, CancellationToken ct = default);
+
+    Task SetSeatsAvailableAsync(int fareOfferId, int seatsAvailable, CancellationToken ct = default);
 }

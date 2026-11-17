@@ -73,4 +73,16 @@ public class FareOfferRepository : IFareOfferRepository
                 .SetProperty(x => x.SeatsAvailable, x => x.SeatsAvailable + quantity),
                 ct);
     }
+
+    public async Task SetSeatsAvailableAsync(int fareOfferId, int seatsAvailable, CancellationToken ct = default)
+    {
+        if (seatsAvailable < 0)
+            throw new ArgumentOutOfRangeException(nameof(seatsAvailable), "Seats available cannot be negative.");
+
+        await _context.Set<FareOfferEntity>()
+            .Where(x => x.Id == fareOfferId)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(x => x.SeatsAvailable, seatsAvailable),
+                ct);
+    }
 }

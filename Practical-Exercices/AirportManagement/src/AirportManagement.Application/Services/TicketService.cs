@@ -29,28 +29,47 @@ public class TicketService : ITicketService
         if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
             return Result<TicketResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
-        var currency = request.Currency?.Trim().ToUpperInvariant();
+        var offer = await _unitOfWork.FareOffersRepository.GetByScheduleAndClassAsync(
+            request.FlightScheduleId, fareClass, ct);
+        if (offer is null)
+            return Result<TicketResponseDto>.Fail(ErrorType.NotFound,
+                $"No {request.FareClass} fare offer exists for schedule {request.FlightScheduleId}.");
 
-        var ticket = new Ticket
+        var seatsReserved = false;
+        await _unitOfWork.ExecuteInTransactionAsync(async txCt =>
         {
-            FlightScheduleId = request.FlightScheduleId,
-            FareClass = fareClass,
-            BasePrice = request.BasePrice,
-            Taxes = request.Taxes,
-            Currency = currency!,
-            IsRefundable = request.IsRefundable,
-            SeatInventory = request.SeatInventory,
-            BookingId = request.BookingId,
-            PassengerFullName = request.PassengerFullName,
-            PassengerEmail = request.PassengerEmail,
-            PassengerPhoneNumber = request.PassengerPhoneNumber
-        };
+            seatsReserved = await _unitOfWork.FareOffersRepository.TryReserveSeatsAsync(offer.Id, 1, txCt);
+            if (!seatsReserved)
+                return;
 
-        await _unitOfWork.TicketsRepository.InsertAsync(ticket, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+            var ticket = new Ticket
+            {
+                FareOfferId = offer.Id,
+                FareOffer = offer,
+                TotalPrice = offer.BasePrice + offer.Taxes,
+                Currency = offer.Currency,
+                IsRefundable = offer.IsRefundable,
+                BookingId = request.BookingId,
+                PassengerFullName = request.PassengerFullName.Trim(),
+                PassengerEmail = request.PassengerEmail.Trim(),
+                PassengerPhoneNumber = request.PassengerPhoneNumber.Trim()
+            };
 
-        var created = await _unitOfWork.TicketsRepository.GetByIdAsync(ticket.Id, ct);
-        return Result<TicketResponseDto>.Ok((created ?? ticket).MapToTicketResponse());
+            await _unitOfWork.TicketsRepository.InsertAsync(ticket, txCt);
+        }, ct);
+
+        if (!seatsReserved)
+            return Result<TicketResponseDto>.Fail(ErrorType.Conflict, "No seats available for this fare offer.");
+
+        var created = (await _unitOfWork.TicketsRepository.GetByBookingAsync(request.BookingId, ct))
+            .Where(t => t.FareOfferId == offer.Id &&
+                        t.PassengerEmail.Equals(request.PassengerEmail.Trim(), StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(t => t.Id)
+            .FirstOrDefault();
+
+        return created is null
+            ? Result<TicketResponseDto>.Fail(ErrorType.Conflict, "Ticket was saved but could not be reloaded.")
+            : Result<TicketResponseDto>.Ok(created.MapToTicketResponse());
     }
 
     public async Task<Result> DeleteAsync(long id, CancellationToken ct)
@@ -59,8 +78,15 @@ public class TicketService : ITicketService
         if (!exists)
             return Result.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
 
-        await _unitOfWork.TicketsRepository.DeleteAsync(id, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        var ticket = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
+        if (ticket is null)
+            return Result.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
+
+        await _unitOfWork.ExecuteInTransactionAsync(async txCt =>
+        {
+            await _unitOfWork.TicketsRepository.DeleteAsync(id, txCt);
+            await _unitOfWork.FareOffersRepository.RestoreSeatsAsync(ticket.FareOfferId, 1, txCt);
+        }, ct);
 
         return Result.Ok();
     }
@@ -95,9 +121,18 @@ public class TicketService : ITicketService
         var capacity = aircraft.SeatCapacity;
 
         var ticketsCount = await _unitOfWork.TicketsRepository.CountByScheduleAsync(flightScheduleId, ct);
-        var remaining = Math.Max(0, capacity - ticketsCount);
-
-        var prices = await _unitOfWork.TicketsRepository.GetMinPricesByFareClassAsync(flightScheduleId, ct);
+        var offers = await _unitOfWork.FareOffersRepository.GetByScheduleAsync(flightScheduleId, ct);
+        var remaining = Math.Min(Math.Max(0, capacity - ticketsCount),
+            offers.Sum(offer => offer.SeatsAvailable));
+        var prices = offers
+            .OrderBy(offer => offer.FareClass)
+            .Select(offer => new FareClassPriceDto
+            {
+                FareClass = offer.FareClass.ToString(),
+                MinTotalPrice = offer.BasePrice + offer.Taxes,
+                Currency = offer.Currency
+            })
+            .ToList();
 
         return Result<TicketAvailabilityResponseDto>.Ok(new TicketAvailabilityResponseDto
         {
@@ -129,8 +164,8 @@ public class TicketService : ITicketService
         if (ticket is null)
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
 
-        await _unitOfWork.TicketsRepository.UpdateSeatInventoryAsync(id, request.SeatInventory, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.FareOffersRepository.SetSeatsAvailableAsync(
+            ticket.FareOfferId, request.SeatInventory, ct);
 
         var updated = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
         return Result<TicketResponseDto>.Ok((updated ?? ticket).MapToTicketResponse());

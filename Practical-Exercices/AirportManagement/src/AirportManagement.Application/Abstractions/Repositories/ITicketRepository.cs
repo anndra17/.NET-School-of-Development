@@ -8,10 +8,8 @@ namespace AirportManagement.Application.Abstractions.Repositories;
 public interface ITicketRepository : IRepository<Ticket, long>
 {
     Task<IReadOnlyList<Ticket>> GetByBookingAsync(int bookingId, CancellationToken ct = default);
-    Task<IReadOnlyList<Ticket>> GetByScheduleAsync(int flightScheduleId, CancellationToken ct = default);
 
     Task<int> CountByFareOfferAsync(int fareOfferId, CancellationToken ct = default);
-    Task<int> CountByScheduleAsync(int flightScheduleId, CancellationToken ct = default);
 
     Task CreateTicketsForBookingAsync(
        int bookingId,

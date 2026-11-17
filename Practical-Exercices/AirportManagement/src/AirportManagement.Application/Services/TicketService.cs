@@ -1,5 +1,6 @@
 ﻿using AirportManagement.Application.Abstractions.Repositories;
 using AirportManagement.Application.Abstractions.Services;
+using AirportManagement.Application.Common.Converters;
 using AirportManagement.Application.Common.Results;
 using AirportManagement.Application.Dtos.Ticket;
 using AirportManagement.Application.Enums;
@@ -19,24 +20,27 @@ public class TicketService : ITicketService
 
     public async Task<Result<TicketResponseDto>> CreateAsync(CreateTicketRequest request, CancellationToken ct)
     {
+        if (!await _unitOfWork.FlightSchedulesRepository.ExistsAsync(request.FlightScheduleId, ct))
+            return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Schedule {request.FlightScheduleId} not found.");
+
         if (!await _unitOfWork.BookingsRepository.ExistsAsync(request.BookingId, ct))
             return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Booking {request.BookingId} not found.");
 
-        var offer = await _unitOfWork.FareOffersRepository.GetByIdAsync(request.FareOfferId, ct);
-        if (offer is null)
-            return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"FareOffer {request.FareOfferId} not found.");
+        if (!FareClassConverter.TryParse(request.FareClass, out var fareClass))
+            return Result<TicketResponseDto>.Fail(ErrorType.Validation, "FareClass must be one of: Y, M, J, F.");
 
-        var reserved = await _unitOfWork.FareOffersRepository.TryReserveSeatsAsync(request.FareOfferId, 1, ct);
-        if (!reserved)
-            return Result<TicketResponseDto>.Fail(ErrorType.Conflict, "No seats available for this fare offer.");
+        var currency = request.Currency?.Trim().ToUpperInvariant();
 
         var ticket = new Ticket
         {
+            FlightScheduleId = request.FlightScheduleId,
+            FareClass = fareClass,
+            BasePrice = request.BasePrice,
+            Taxes = request.Taxes,
+            Currency = currency!,
+            IsRefundable = request.IsRefundable,
+            SeatInventory = request.SeatInventory,
             BookingId = request.BookingId,
-            FareOfferId = request.FareOfferId,
-            TotalPrice = offer.BasePrice + offer.Taxes,
-            Currency = offer.Currency,
-            IsRefundable = offer.IsRefundable,
             PassengerFullName = request.PassengerFullName,
             PassengerEmail = request.PassengerEmail,
             PassengerPhoneNumber = request.PassengerPhoneNumber
@@ -91,18 +95,9 @@ public class TicketService : ITicketService
         var capacity = aircraft.SeatCapacity;
 
         var ticketsCount = await _unitOfWork.TicketsRepository.CountByScheduleAsync(flightScheduleId, ct);
-        var offers = await _unitOfWork.FareOffersRepository.GetByScheduleAsync(flightScheduleId, ct);
-        var remaining = offers.Sum(o => o.SeatsAvailable);
+        var remaining = Math.Max(0, capacity - ticketsCount);
 
-        var prices = offers
-               .OrderBy(o => o.FareClass)
-               .Select(o => new FareClassPriceDto
-               {
-                   FareClass = o.FareClass.ToString(), // "Y/M/J/F"
-                   MinTotalPrice = o.BasePrice + o.Taxes,
-                   Currency = o.Currency
-               })
-               .ToList();
+        var prices = await _unitOfWork.TicketsRepository.GetMinPricesByFareClassAsync(flightScheduleId, ct);
 
         return Result<TicketAvailabilityResponseDto>.Ok(new TicketAvailabilityResponseDto
         {
@@ -126,5 +121,18 @@ public class TicketService : ITicketService
         var tickets = await _unitOfWork.TicketsRepository.GetByScheduleAsync(flightScheduleId, ct);
 
         return tickets.Select(t => t.MapToTicketResponse()).ToList();
+    }
+
+    public async Task<Result<TicketResponseDto>> UpdateInventoryAsync(long id, UpdateTicketInventoryRequest request, CancellationToken ct)
+    {
+        var ticket = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
+        if (ticket is null)
+            return Result<TicketResponseDto>.Fail(ErrorType.NotFound, $"Ticket {id} not found.");
+
+        await _unitOfWork.TicketsRepository.UpdateSeatInventoryAsync(id, request.SeatInventory, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        var updated = await _unitOfWork.TicketsRepository.GetByIdAsync(id, ct);
+        return Result<TicketResponseDto>.Ok((updated ?? ticket).MapToTicketResponse());
     }
 }
